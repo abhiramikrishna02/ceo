@@ -1,338 +1,234 @@
-"use client";
+"use client"
 
-import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Link as LinkIcon, Zap } from "lucide-react";
+import * as React from "react"
+import { useMeasure } from "@uidotdev/usehooks"
+import { cva } from "class-variance-authority"
+import { motion, useScroll, useTransform } from "motion/react"
+import { Sparkles, Rocket, Globe, Orbit } from "lucide-react"
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { cn } from "@/lib/utils"
 
-export default function RadialOrbitalTimeline({ timelineData }) {
-  const [expandedItems, setExpandedItems] = useState({});
-  const [viewMode] = useState("orbital");
-  const [rotationAngle, setRotationAngle] = useState(0);
-  const [autoRotate, setAutoRotate] = useState(true);
-  const [pulseEffect, setPulseEffect] = useState({});
-  const [centerOffset] = useState({ x: 0, y: 0 });
-  const [activeNodeId, setActiveNodeId] = useState(null);
-  const containerRef = useRef(null);
-  const orbitRef = useRef(null);
-  const nodeRefs = useRef({});
+// ----------------------------------------------------------------------
+// 1. COMPONENT DEFINITIONS
+// ----------------------------------------------------------------------
 
-  const getRelatedItems = (itemId) => {
-    const currentItem = timelineData.find((item) => item.id === itemId);
-    return currentItem ? currentItem.relatedIds : [];
-  };
+const processCardVariants = cva("flex border backdrop-blur-md transition-colors", {
+  variants: {
+    variant: {
+      // Matte Black and Gold Theme
+      gold: "flex border text-neutral-100 border-[#D4AF37]/20 bg-gradient-to-br from-[#121212]/90 to-[#0a0a0a]/95 shadow-[0_0_30px_rgba(212,175,55,0.03)]",
+      light: "shadow",
+    },
+    size: {
+      sm: "min-w-[25%] max-w-[25%]",
+      md: "min-w-[50%] max-w-[50%]",
+      lg: "min-w-[75%] max-w-[75%]",
+      xl: "min-w-full max-w-full",
+    },
+  },
+  defaultVariants: {
+    variant: "gold",
+    size: "md",
+  },
+})
 
-  const centerViewOnNode = (nodeId) => {
-    if (viewMode !== "orbital" || !nodeRefs.current[nodeId]) return;
+const ContainerScrollContext = React.createContext(undefined)
 
-    const nodeIndex = timelineData.findIndex((item) => item.id === nodeId);
-    const totalNodes = timelineData.length;
-    const targetAngle = (nodeIndex / totalNodes) * 360;
+function useContainerScrollContext() {
+  const context = React.useContext(ContainerScrollContext)
+  if (!context) {
+    throw new Error(
+      "useContainerScrollContext must be used within a ContainerScroll Component"
+    )
+  }
+  return context
+}
 
-    setRotationAngle(270 - targetAngle);
-  };
+export const ContainerScroll = ({
+  children,
+  className,
+  ...props
+}) => {
+  const scrollRef = React.useRef(null)
+  const { scrollYProgress } = useScroll({
+    target: scrollRef,
+  })
+  return (
+    <ContainerScrollContext.Provider value={{ scrollYProgress }}>
+      <div
+        ref={scrollRef}
+        className={cn("relative min-h-[120vh]", className)}
+        {...props}
+      >
+        {children}
+      </div>
+    </ContainerScrollContext.Provider>
+  )
+}
 
-  const handleContainerClick = (event) => {
-    if (event.target === containerRef.current || event.target === orbitRef.current) {
-      setExpandedItems({});
-      setActiveNodeId(null);
-      setPulseEffect({});
-      setAutoRotate(true);
-    }
-  };
+export const ContainerSticky = React.forwardRef(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("sticky left-0 top-0 w-full overflow-hidden", className)}
+    {...props}
+  />
+))
+ContainerSticky.displayName = "ContainerSticky"
 
-  const toggleItem = (id) => {
-    setExpandedItems((prev) => {
-      const newState = { ...prev };
+export const ProcessCardTitle = React.forwardRef(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("p-6 flex items-center justify-center border-r border-[#D4AF37]/20 bg-black/40", className)} {...props} />
+))
+ProcessCardTitle.displayName = "ProcessCardTitle"
 
-      Object.keys(newState).forEach((key) => {
-        if (parseInt(key, 10) !== id) {
-          newState[parseInt(key, 10)] = false;
-        }
-      });
+export const ProcessCardBody = React.forwardRef(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex flex-col gap-6 p-8 md:p-12", className)}
+    {...props}
+  />
+))
+ProcessCardBody.displayName = "ProcessCardBody"
 
-      newState[id] = !prev[id];
+export const ProcessCard = ({
+  className,
+  style,
+  variant,
+  size,
+  itemsLength,
+  index,
+  ...props
+}) => {
+  const { scrollYProgress } = useContainerScrollContext()
+  const start = index / itemsLength
+  const end = start + 1 / itemsLength
+  const [innerWidth, setInnerWidth] = React.useState(() =>
+    typeof window === "undefined" ? 0 : window.innerWidth
+  )
+  const [ref, { width }] = useMeasure()
 
-      if (!prev[id]) {
-        setActiveNodeId(id);
-        setAutoRotate(false);
+  React.useEffect(() => {
+    const handleResize = () => setInnerWidth(window.innerWidth)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
-        const relatedItems = getRelatedItems(id);
-        const newPulseEffect = {};
-        relatedItems.forEach((relId) => {
-          newPulseEffect[relId] = true;
-        });
-        setPulseEffect(newPulseEffect);
-
-        centerViewOnNode(id);
-      } else {
-        setActiveNodeId(null);
-        setAutoRotate(true);
-        setPulseEffect({});
-      }
-
-      return newState;
-    });
-  };
-
-  useEffect(() => {
-    let rotationTimer;
-
-    if (autoRotate && viewMode === "orbital") {
-      rotationTimer = setInterval(() => {
-        setRotationAngle((prev) => {
-          const newAngle = (prev + 0.3) % 360;
-          return Number(newAngle.toFixed(3));
-        });
-      }, 50);
-    }
-
-    return () => {
-      if (rotationTimer) {
-        clearInterval(rotationTimer);
-      }
-    };
-  }, [autoRotate, viewMode]);
-
-  const calculateNodePosition = (index, total) => {
-    const angle = ((index / total) * 360 + rotationAngle) % 360;
-    const radius = 200;
-    const radian = (angle * Math.PI) / 180;
-
-    const x = radius * Math.cos(radian) + centerOffset.x;
-    const y = radius * Math.sin(radian) + centerOffset.y;
-
-    const zIndex = Math.round(100 + 50 * Math.cos(radian));
-    const opacity = Math.max(
-      0.4,
-      Math.min(1, 0.4 + 0.6 * ((1 + Math.sin(radian)) / 2))
-    );
-
-    return { x, y, zIndex, opacity };
-  };
-
-  const isRelatedToActive = (itemId) => {
-    if (!activeNodeId) return false;
-    const relatedItems = getRelatedItems(activeNodeId);
-    return relatedItems.includes(itemId);
-  };
-
-  const getStatusStyles = (status) => {
-    switch (status) {
-      case "completed":
-        return "text-white bg-black border-white";
-      case "in-progress":
-        return "text-black bg-white border-black";
-      case "pending":
-        return "text-white bg-black/40 border-white/50";
-      default:
-        return "text-white bg-black/40 border-white/50";
-    }
-  };
+  const x = useTransform(
+    scrollYProgress,
+    [start, end],
+    [innerWidth, -((width ?? 0) * index) + 64 * index]
+  )
 
   return (
-    <div
-      className="relative flex h-screen min-h-[680px] w-full flex-col items-center justify-center overflow-hidden bg-black"
-      ref={containerRef}
-      onClick={handleContainerClick}
-    >
-      <div className="absolute inset-x-0 top-0 z-20 flex justify-center px-6 pt-12 text-center">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/40">
-            Operating System
+    <motion.div
+      ref={ref}
+      style={{
+        x: index > 0 ? x : 0,
+        ...style,
+      }}
+      className={cn(processCardVariants({ variant, size }), className)}
+      {...props}
+    />
+  )
+}
+ProcessCard.displayName = "ProcessCard"
+
+// ----------------------------------------------------------------------
+// 2. MAIN EXPORT (REPLACING YOUR TIMELINE)
+// ----------------------------------------------------------------------
+
+const PROCESS_PHASES = [
+  {
+    id: "phase-1",
+    title: "Mission Ignition & Feasibility",
+    description:
+      "Every journey begins with a spark. In this phase, we analyze trajectory physics, structural integrity, and deep-space feasibility. We map out the impossible and turn it into calculated mathematical realities.",
+    icon: <Sparkles className="w-5 h-5 text-[#D4AF37]" />,
+  },
+  {
+    id: "phase-2",
+    title: "Orbital Architecture",
+    description:
+      "Transitioning from blueprints to reality. We construct the skeletal framework of the vessel, focusing on aerodynamic resilience and advanced propulsion systems. Here, aesthetics meet absolute zero engineering.",
+    icon: <Orbit className="w-5 h-5 text-[#D4AF37]" />,
+  },
+  {
+    id: "phase-3",
+    title: "Payload Integration",
+    description:
+      "Integrating cutting-edge life support and navigation systems. Our specialists ensure seamless synchronization between human operators and AI-driven telemetry. Form and function operating in the vacuum.",
+    icon: <Globe className="w-5 h-5 text-[#D4AF37]" />,
+  },
+  {
+    id: "phase-4",
+    title: "Launch & Cosmic Touchdown",
+    description:
+      "The final countdown. Rigorous stress-testing under simulated hyper-gravity conditions guarantees flawless execution. We ignite the thrusters, breaking atmosphere to deliver an unforgettable cosmic experience.",
+    icon: <Rocket className="w-5 h-5 text-[#D4AF37]" />,
+  },
+]
+
+export default function ProcessTimeline() {
+  return (
+    <section className="bg-[#050505] min-h-screen w-full relative selection:bg-[#D4AF37]/30">
+      <ContainerScroll
+        className="mx-auto max-w-7xl px-4 md:px-6 py-24 h-[350vh]"
+        style={{
+          // Matte black with a subtle, premium gold radial glow originating from the left
+          background:
+            "radial-gradient(40% 70% at 0% 50%, rgba(212, 175, 55, 0.08) 0%, rgba(10, 10, 10, 1) 100%)",
+        }}
+      >
+        <div className="mb-16 md:mb-24 space-y-6 pt-12">
+          <p className="text-[#D4AF37] font-mono text-sm tracking-[0.2em] uppercase">
+            Trajectory Established
           </p>
-          <h2 className="mt-4 text-4xl font-semibold leading-tight text-white sm:text-6xl">
-            How CEO2 Builds Momentum
+          <h2 className="text-4xl md:text-6xl font-serif text-white tracking-tight leading-[1.1]">
+            Mapping the journey <br />
+            <span className="bg-gradient-to-r from-[#D4AF37] via-[#FDE047] to-[#B48B25] bg-clip-text text-transparent">
+              into the unknown.
+            </span>
           </h2>
+          <p className="max-w-[50ch] text-base md:text-lg text-neutral-400 font-sans leading-relaxed">
+            We blend celestial mechanics with cutting-edge engineering to
+            build stunning, high-performance vessels that elevate humanity and
+            conquer the cosmos.
+          </p>
         </div>
-      </div>
 
-      <div className="relative flex h-full w-full max-w-4xl items-center justify-center">
-        <div
-          className="absolute flex h-full w-full items-center justify-center"
-          ref={orbitRef}
-          style={{
-            perspective: "1000px",
-            transform: `translate(${centerOffset.x}px, ${centerOffset.y}px)`,
-          }}
-        >
-          <div className="absolute z-10 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 via-blue-500 to-teal-500 animate-pulse">
-            <div className="absolute h-20 w-20 rounded-full border border-white/20 opacity-70 animate-ping"></div>
-            <div
-              className="absolute h-24 w-24 rounded-full border border-white/10 opacity-50 animate-ping"
-              style={{ animationDelay: "0.5s" }}
-            ></div>
-            <div className="h-8 w-8 rounded-full bg-white/80 backdrop-blur-md"></div>
-          </div>
-
-          <div className="absolute h-96 w-96 rounded-full border border-white/10"></div>
-
-          {timelineData.map((item, index) => {
-            const position = calculateNodePosition(index, timelineData.length);
-            const isExpanded = expandedItems[item.id];
-            const isRelated = isRelatedToActive(item.id);
-            const isPulsing = pulseEffect[item.id];
-            const Icon = item.icon;
-
-            const nodeStyle = {
-              transform: `translate(${position.x}px, ${position.y}px)`,
-              zIndex: isExpanded ? 200 : position.zIndex,
-              opacity: isExpanded ? 1 : position.opacity,
-            };
-
-            return (
-              <div
-                key={item.id}
-                ref={(el) => {
-                  nodeRefs.current[item.id] = el;
-                }}
-                className="absolute cursor-pointer transition-all duration-700"
-                style={nodeStyle}
-                onClick={(event) => {
-                  event.stopPropagation();
-                  toggleItem(item.id);
-                }}
-              >
-                <div
-                  className={`absolute -inset-1 rounded-full ${
-                    isPulsing ? "animate-pulse duration-1000" : ""
-                  }`}
-                  style={{
-                    background:
-                      "radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%)",
-                    width: `${item.energy * 0.5 + 40}px`,
-                    height: `${item.energy * 0.5 + 40}px`,
-                    left: `-${(item.energy * 0.5 + 40 - 40) / 2}px`,
-                    top: `-${(item.energy * 0.5 + 40 - 40) / 2}px`,
-                  }}
-                ></div>
-
-                <div
-                  className={`
-                    flex h-10 w-10 items-center justify-center rounded-full
-                    ${
-                      isExpanded
-                        ? "bg-white text-black"
-                        : isRelated
-                          ? "bg-white/50 text-black"
-                          : "bg-black text-white"
-                    }
-                    border-2
-                    ${
-                      isExpanded
-                        ? "border-white shadow-lg shadow-white/30"
-                        : isRelated
-                          ? "border-white animate-pulse"
-                          : "border-white/40"
-                    }
-                    transform transition-all duration-300
-                    ${isExpanded ? "scale-150" : ""}
-                  `}
-                >
-                  <Icon size={16} />
+        <ContainerSticky className="top-24 flex flex-nowrap gap-0 items-stretch">
+          {PROCESS_PHASES.map((phase, index) => (
+            <ProcessCard
+              key={phase.id}
+              itemsLength={PROCESS_PHASES.length}
+              index={index}
+              className="min-w-[85%] max-w-[85%] md:min-w-[60%] md:max-w-[60%] rounded-2xl overflow-hidden mr-6 last:mr-0"
+            >
+              <ProcessCardTitle className="hidden sm:flex min-w-[120px]">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="rounded-full size-12 border border-[#D4AF37]/30 bg-[#D4AF37]/10 flex justify-center items-center backdrop-blur-md">
+                    {phase.icon}
+                  </div>
+                  <span className="text-sm font-mono text-[#D4AF37]/60">
+                    PHASE {String(index + 1).padStart(2, "0")}
+                  </span>
                 </div>
-
-                <div
-                  className={`
-                    absolute top-12 whitespace-nowrap text-xs font-semibold tracking-wider
-                    transition-all duration-300
-                    ${isExpanded ? "scale-125 text-white" : "text-white/70"}
-                  `}
-                >
-                  {item.title}
+              </ProcessCardTitle>
+              
+              <ProcessCardBody className="flex flex-col justify-center">
+                <div className="sm:hidden mb-4 rounded-full size-10 border border-[#D4AF37]/30 bg-[#D4AF37]/10 flex justify-center items-center">
+                   {phase.icon}
                 </div>
-
-                {isExpanded && (
-                  <Card className="absolute top-20 left-1/2 w-64 -translate-x-1/2 overflow-visible border-white/30 bg-black/90 shadow-xl shadow-white/10 backdrop-blur-lg">
-                    <div className="absolute -top-3 left-1/2 h-3 w-px -translate-x-1/2 bg-white/50"></div>
-                    <CardHeader className="pb-2">
-                      <div className="flex items-center justify-between">
-                        <Badge
-                          className={`px-2 text-xs ${getStatusStyles(item.status)}`}
-                        >
-                          {item.status === "completed"
-                            ? "COMPLETE"
-                            : item.status === "in-progress"
-                              ? "IN PROGRESS"
-                              : "PENDING"}
-                        </Badge>
-                        <span className="font-mono text-xs text-white/50">
-                          {item.date}
-                        </span>
-                      </div>
-                      <CardTitle className="mt-2 text-sm text-white">
-                        {item.title}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-xs text-white/80">
-                      <p>{item.content}</p>
-
-                      <div className="mt-4 border-t border-white/10 pt-3">
-                        <div className="mb-1 flex items-center justify-between text-xs">
-                          <span className="flex items-center">
-                            <Zap size={10} className="mr-1" />
-                            Energy Level
-                          </span>
-                          <span className="font-mono">{item.energy}%</span>
-                        </div>
-                        <div className="h-1 w-full overflow-hidden rounded-full bg-white/10">
-                          <div
-                            className="h-full bg-gradient-to-r from-blue-500 to-purple-500"
-                            style={{ width: `${item.energy}%` }}
-                          ></div>
-                        </div>
-                      </div>
-
-                      {item.relatedIds.length > 0 && (
-                        <div className="mt-4 border-t border-white/10 pt-3">
-                          <div className="mb-2 flex items-center">
-                            <LinkIcon size={10} className="mr-1 text-white/70" />
-                            <h4 className="text-xs font-medium uppercase tracking-wider text-white/70">
-                              Connected Nodes
-                            </h4>
-                          </div>
-                          <div className="flex flex-wrap gap-1">
-                            {item.relatedIds.map((relatedId) => {
-                              const relatedItem = timelineData.find(
-                                (timelineItem) => timelineItem.id === relatedId
-                              );
-                              return (
-                                <Button
-                                  key={relatedId}
-                                  variant="outline"
-                                  size="sm"
-                                  className="flex h-6 items-center rounded-none border-white/20 bg-transparent px-2 py-0 text-xs text-white/80 transition-all hover:bg-white/10 hover:text-white"
-                                  onClick={(event) => {
-                                    event.stopPropagation();
-                                    toggleItem(relatedId);
-                                  }}
-                                >
-                                  {relatedItem?.title}
-                                  <ArrowRight
-                                    size={8}
-                                    className="ml-1 text-white/60"
-                                  />
-                                </Button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
+                <h3 className="text-2xl md:text-4xl font-serif text-neutral-50 leading-tight">
+                  {phase.title}
+                </h3>
+                <p className="text-neutral-400 font-sans text-sm md:text-base leading-relaxed max-w-xl">
+                  {phase.description}
+                </p>
+              </ProcessCardBody>
+            </ProcessCard>
+          ))}
+        </ContainerSticky>
+      </ContainerScroll>
+    </section>
+  )
 }

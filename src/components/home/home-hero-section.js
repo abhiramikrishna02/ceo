@@ -1,29 +1,58 @@
 import ResponsiveHeroBanner from "@/components/ui/responsive-hero-banner";
 
 const navLinks = [
-  { label: "Home", href: "/home", isActive: true },
-  { label: "About", href: "/about" },
-  { label: "Benefits", href: "/benefits" },
-  { label: "Contact", href: "/contact" },
+  { label: "Home", href: "#", isActive: true },
+  { label: "Missions", href: "#" },
+  { label: "Destinations", href: "#" },
+  { label: "Technology", href: "#" },
+  { label: "Book Flight", href: "#" },
 ];
 
 export default function HomeHeroSection() {
   return (
     <ResponsiveHeroBanner
-      badgeLabel="CEO2"
-      badgeText="Premium executive web presence"
-      title="Lead With Authority"
-      titleLine2="Before You Speak"
-      description="A cinematic homepage system for founders, operators, and leadership teams that need clarity, trust, and a stronger digital first impression."
-      primaryButtonText="Start a Project"
-      primaryButtonHref="/contact"
-      secondaryButtonText="See Benefits"
-      secondaryButtonHref="/benefits"
-      ctaButtonText="Contact CEO2"
-      ctaButtonHref="/contact"
-      partnersTitle="Trusted by leaders building sharper company stories"
-      backgroundImageUrl="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=2400&q=85"
+      badgeLabel="New"
+      badgeText="First Commercial Flight to Mars 2026"
+      title="Journey Beyond Earth"
+      titleLine2="Into the Cosmos"
+      description="Experience the cosmos like never before. Our advanced spacecraft and cutting-edge technology make interplanetary travel accessible, safe, and unforgettable."
+      primaryButtonText="Book Your Journey"
+      primaryButtonHref="#"
+      secondaryButtonText="Watch Launch"
+      secondaryButtonHref="#"
+      ctaButtonText="Reserve Seat"
+      ctaButtonHref="#"
+      partnersTitle="Partnering with leading space agencies worldwide"
+      logoUrl="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/febf2421-4a9a-42d6-871d-ff4f9518021c_1600w.png"
+      backgroundImageUrl="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/0e2dbea0-c0a9-413f-a57b-af279633c0df_3840w.jpg"
       navLinks={navLinks}
+      partners={[
+        {
+          logoUrl:
+            "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/f7466370-2832-4fdd-84c2-0932bb0dd850_800w.png",
+          href: "#",
+        },
+        {
+          logoUrl:
+            "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/0a9a71ec-268b-4689-a510-56f57e9d4f13_1600w.png",
+          href: "#",
+        },
+        {
+          logoUrl:
+            "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/a9ed4369-748a-49f8-9995-55d6c876bbff_1600w.png",
+          href: "#",
+        },
+        {
+          logoUrl:
+            "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/0d8966a4-8525-4e11-9d5d-2d7390b2c798_1600w.png",
+          href: "#",
+        },
+        {
+          logoUrl:
+            "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/2ed33c8b-b8b2-4176-967f-3d785fed07d8_1600w.png",
+          href: "#",
+        },
+      ]}
     />
   );
 }
