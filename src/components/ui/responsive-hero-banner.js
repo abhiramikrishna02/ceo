@@ -123,13 +123,15 @@ function ResponsiveHeroBanner({
                     {link.label}
                   </a>
                 ))}
-                <a
-                  href={ctaButtonHref}
-                  className="ml-1 inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-2 font-sans text-sm font-medium text-neutral-900 transition-colors hover:bg-white/90"
-                >
-                  {ctaButtonText}
-                  <ArrowUpRight className="h-4 w-4" />
-                </a>
+                {ctaButtonText && ctaButtonHref ? (
+                  <a
+                    href={ctaButtonHref}
+                    className="ml-1 inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-2 font-sans text-sm font-medium text-neutral-900 transition-colors hover:bg-white/90"
+                  >
+                    {ctaButtonText}
+                    <ArrowUpRight className="h-4 w-4" />
+                  </a>
+                ) : null}
               </div>
             </nav>
 
@@ -160,13 +162,15 @@ function ResponsiveHeroBanner({
                     {link.label}
                   </a>
                 ))}
-                <a
-                  href={ctaButtonHref}
-                  className="mt-2 inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-neutral-950"
-                >
-                  {ctaButtonText}
-                  <ArrowUpRight className="h-4 w-4" />
-                </a>
+                {ctaButtonText && ctaButtonHref ? (
+                  <a
+                    href={ctaButtonHref}
+                    className="mt-2 inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-neutral-950"
+                  >
+                    {ctaButtonText}
+                    <ArrowUpRight className="h-4 w-4" />
+                  </a>
+                ) : null}
               </div>
             </div>
           ) : null}

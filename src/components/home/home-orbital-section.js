@@ -1,7 +1,6 @@
 import { Calendar, Code, FileText, Rocket, User } from "lucide-react";
 
 import RadialOrbitalTimeline from "@/components/ui/radial-orbital-timeline";
-import { revealStyle, useReveal } from "@/components/home/use-reveal";
 
 const timelineData = [
   {
@@ -66,14 +65,8 @@ const timelineData = [
 ];
 
 export default function HomeOrbitalSection() {
-  const [sectionRef, sectionVisible] = useReveal(0.24);
-
   return (
-    <section
-      ref={sectionRef}
-      style={revealStyle(sectionVisible)}
-      className="border-t border-white/10"
-    >
+    <section className="border-t border-white/10">
       <RadialOrbitalTimeline timelineData={timelineData} />
     </section>
   );

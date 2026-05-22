@@ -169,64 +169,68 @@ const PROCESS_PHASES = [
 
 export default function ProcessTimeline() {
   return (
-    <section className="bg-[#050505] min-h-screen w-full relative selection:bg-[#D4AF37]/30">
+    <section className="relative w-full bg-[#050505] selection:bg-[#D4AF37]/30">
       <ContainerScroll
-        className="mx-auto max-w-7xl px-4 md:px-6 py-24 h-[350vh]"
+        className="h-[420vh]"
         style={{
           // Matte black with a subtle, premium gold radial glow originating from the left
           background:
-            "radial-gradient(40% 70% at 0% 50%, rgba(212, 175, 55, 0.08) 0%, rgba(10, 10, 10, 1) 100%)",
+            "radial-gradient(40% 70% at 0% 50%, rgba(212, 175, 55, 0.09) 0%, rgba(5, 5, 5, 1) 78%)",
         }}
       >
-        <div className="mb-16 md:mb-24 space-y-6 pt-12">
-          <p className="text-[#D4AF37] font-mono text-sm tracking-[0.2em] uppercase">
-            Trajectory Established
-          </p>
-          <h2 className="text-4xl md:text-6xl font-serif text-white tracking-tight leading-[1.1]">
-            Mapping the journey <br />
-            <span className="bg-gradient-to-r from-[#D4AF37] via-[#FDE047] to-[#B48B25] bg-clip-text text-transparent">
-              into the unknown.
-            </span>
-          </h2>
-          <p className="max-w-[50ch] text-base md:text-lg text-neutral-400 font-sans leading-relaxed">
-            We blend celestial mechanics with cutting-edge engineering to
-            build stunning, high-performance vessels that elevate humanity and
-            conquer the cosmos.
-          </p>
-        </div>
+        <ContainerSticky className="top-0 flex min-h-screen items-start">
+          <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-16 md:px-6 md:py-20">
+            <div className="mb-10 space-y-6 md:mb-16">
+              <p className="font-mono text-sm uppercase tracking-[0.2em] text-[#D4AF37]">
+                Trajectory Established
+              </p>
+              <h2 className="font-serif text-4xl leading-[1.1] tracking-tight text-white md:text-6xl">
+                Mapping the journey <br />
+                <span className="bg-gradient-to-r from-[#D4AF37] via-[#FDE047] to-[#B48B25] bg-clip-text text-transparent">
+                  into the unknown.
+                </span>
+              </h2>
+              <p className="max-w-[50ch] font-sans text-base leading-relaxed text-neutral-400 md:text-lg">
+                We blend celestial mechanics with cutting-edge engineering to
+                build stunning, high-performance vessels that elevate humanity and
+                conquer the cosmos.
+              </p>
+            </div>
 
-        <ContainerSticky className="top-24 flex flex-nowrap gap-0 items-stretch">
-          {PROCESS_PHASES.map((phase, index) => (
-            <ProcessCard
-              key={phase.id}
-              itemsLength={PROCESS_PHASES.length}
-              index={index}
-              className="min-w-[85%] max-w-[85%] md:min-w-[60%] md:max-w-[60%] rounded-2xl overflow-hidden mr-6 last:mr-0"
-            >
-              <ProcessCardTitle className="hidden sm:flex min-w-[120px]">
-                <div className="flex flex-col items-center gap-4">
-                  <div className="rounded-full size-12 border border-[#D4AF37]/30 bg-[#D4AF37]/10 flex justify-center items-center backdrop-blur-md">
-                    {phase.icon}
-                  </div>
-                  <span className="text-sm font-mono text-[#D4AF37]/60">
-                    PHASE {String(index + 1).padStart(2, "0")}
-                  </span>
-                </div>
-              </ProcessCardTitle>
-              
-              <ProcessCardBody className="flex flex-col justify-center">
-                <div className="sm:hidden mb-4 rounded-full size-10 border border-[#D4AF37]/30 bg-[#D4AF37]/10 flex justify-center items-center">
-                   {phase.icon}
-                </div>
-                <h3 className="text-2xl md:text-4xl font-serif text-neutral-50 leading-tight">
-                  {phase.title}
-                </h3>
-                <p className="text-neutral-400 font-sans text-sm md:text-base leading-relaxed max-w-xl">
-                  {phase.description}
-                </p>
-              </ProcessCardBody>
-            </ProcessCard>
-          ))}
+            <div className="flex flex-nowrap items-stretch gap-0 pb-8">
+              {PROCESS_PHASES.map((phase, index) => (
+                <ProcessCard
+                  key={phase.id}
+                  itemsLength={PROCESS_PHASES.length}
+                  index={index}
+                  className="mr-6 min-w-[85%] max-w-[85%] overflow-hidden rounded-2xl last:mr-0 md:min-w-[60%] md:max-w-[60%]"
+                >
+                  <ProcessCardTitle className="hidden min-w-[120px] sm:flex">
+                    <div className="flex flex-col items-center gap-4">
+                      <div className="flex size-12 items-center justify-center rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 backdrop-blur-md">
+                        {phase.icon}
+                      </div>
+                      <span className="font-mono text-sm text-[#D4AF37]/60">
+                        PHASE {String(index + 1).padStart(2, "0")}
+                      </span>
+                    </div>
+                  </ProcessCardTitle>
+
+                  <ProcessCardBody className="flex flex-col justify-center">
+                    <div className="mb-4 flex size-10 items-center justify-center rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 sm:hidden">
+                      {phase.icon}
+                    </div>
+                    <h3 className="font-serif text-2xl leading-tight text-neutral-50 md:text-4xl">
+                      {phase.title}
+                    </h3>
+                    <p className="max-w-xl font-sans text-sm leading-relaxed text-neutral-400 md:text-base">
+                      {phase.description}
+                    </p>
+                  </ProcessCardBody>
+                </ProcessCard>
+              ))}
+            </div>
+          </div>
         </ContainerSticky>
       </ContainerScroll>
     </section>
