@@ -130,123 +130,289 @@ export default function About() {
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
+    const mm = gsap.matchMedia();
 
     const ctx = gsap.context(() => {
-      shellRefs.current.forEach((shell, i) => {
-        if (!shell) return;
+      mm.add("(min-width: 1100px)", () => {
+        shellRefs.current.forEach((shell, i) => {
+          if (!shell) return;
 
-        const content = contentRefs.current[i];
-        const visual = visualRefs.current[i];
-        const chips = shell.querySelectorAll("[data-intro-chip]");
-        const metrics = shell.querySelectorAll("[data-intro-metric]");
+          const content = contentRefs.current[i];
+          const visual = visualRefs.current[i];
+          const chips = shell.querySelectorAll("[data-intro-chip]");
+          const metrics = shell.querySelectorAll("[data-intro-metric]");
 
-        if (content) {
-          gsap.fromTo(
-            content,
-            { y: 64, opacity: 0, filter: "blur(10px)" },
-            {
-              y: 0,
-              opacity: 1,
-              filter: "blur(0px)",
-              ease: "none",
-              scrollTrigger: {
-                trigger: shell,
-                start: "top 78%",
-                end: "top 35%",
-                scrub: 1,
+          const baseStart = i === 0 ? "top 82%" : "top 78%";
+          const baseEnd = i === 0 ? "top 42%" : "top 35%";
+
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: shell,
+              start: baseStart,
+              end: baseEnd,
+              scrub: 1,
+              onEnter: () => setActive(i),
+              onEnterBack: () => setActive(i),
+            },
+          });
+
+          if (content) {
+            tl.fromTo(
+              content,
+              { y: 70, opacity: 0, filter: "blur(12px)", scale: 0.985 },
+              { y: 0, opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.65 },
+              0
+            );
+          }
+
+          if (visual) {
+            tl.fromTo(
+              visual,
+              {
+                y: 96,
+                x: i % 2 === 0 ? 52 : -52,
+                rotate: i % 2 === 0 ? 8 : -8,
+                opacity: 0,
+                scale: 0.96,
               },
-            }
-          );
-        }
+              { y: 0, x: 0, rotate: 0, opacity: 1, scale: 1, duration: 0.9 },
+              0.03
+            );
+          }
 
-        if (visual) {
-          gsap.fromTo(
-            visual,
-            { y: 96, x: i % 2 === 0 ? 36 : -36, rotate: i % 2 === 0 ? 6 : -6, opacity: 0 },
-            {
-              y: 0,
-              x: 0,
-              rotate: 0,
-              opacity: 1,
-              ease: "none",
-              scrollTrigger: {
-                trigger: shell,
-                start: "top 78%",
-                end: "top 35%",
-                scrub: 1,
-              },
-            }
-          );
-        }
+          if (chips && chips.length) {
+            tl.fromTo(
+              chips,
+              { y: 24, opacity: 0 },
+              { y: 0, opacity: 1, stagger: 0.05, duration: 0.45 },
+              0.08
+            );
+          }
 
-        if (chips && chips.length) {
-          gsap.fromTo(
-            chips,
-            { y: 22, opacity: 0 },
-            {
-              y: 0,
-              opacity: 1,
-              stagger: 0.05,
-              ease: "none",
-              scrollTrigger: {
-                trigger: shell,
-                start: "top 82%",
-                end: "top 35%",
-                scrub: 1,
-              },
-            }
-          );
-        }
+          if (metrics && metrics.length) {
+            tl.fromTo(
+              metrics,
+              { y: 28, opacity: 0 },
+              { y: 0, opacity: 1, stagger: 0.06, duration: 0.45 },
+              0.05
+            );
+          }
 
-        if (metrics && metrics.length) {
-          gsap.fromTo(
-            metrics,
-            { y: 26, opacity: 0 },
-            {
-              y: 0,
-              opacity: 1,
-              stagger: 0.06,
-              ease: "none",
-              scrollTrigger: {
-                trigger: shell,
-                start: "top 80%",
-                end: "top 35%",
-                scrub: 1,
-              },
+          gsap.to(shell, {
+            scrollTrigger: {
+              trigger: shell,
+              start: "bottom 68%",
+              end: "bottom 38%",
+              scrub: true,
+            },
+            y: -28,
+            opacity: 0.98,
+            ease: "none",
+          });
+
+          if (visual) {
+            switch (SCENES[i].visual) {
+              case "shards":
+                gsap.fromTo(
+                  visual.querySelectorAll(".shard"),
+                  { y: 12, rotation: 4, opacity: 0 },
+                  {
+                    y: -18,
+                    rotation: 22,
+                    opacity: 1,
+                    stagger: 0.08,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                      trigger: shell,
+                      start: "top 82%",
+                      end: "top 35%",
+                      scrub: true,
+                    },
+                  }
+                );
+                break;
+              case "ring-open":
+                gsap.fromTo(
+                  visual.querySelectorAll(".ro-core, .ro-mid, .ro-outer"),
+                  { scale: 0.86, opacity: 0.6 },
+                  {
+                    scale: 1,
+                    opacity: 1,
+                    stagger: 0.06,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                      trigger: shell,
+                      start: "top 82%",
+                      end: "top 35%",
+                      scrub: true,
+                    },
+                  }
+                );
+                break;
+              case "ring-close":
+                gsap.fromTo(
+                  visual.querySelectorAll(".rc-core, .rc-mid, .rc-outer"),
+                  { scale: 1.12, opacity: 0.65 },
+                  {
+                    scale: 1,
+                    opacity: 1,
+                    stagger: 0.06,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                      trigger: shell,
+                      start: "top 82%",
+                      end: "top 35%",
+                      scrub: true,
+                    },
+                  }
+                );
+                break;
+              default:
+                break;
             }
-          );
-        }
+          }
+        });
 
         ScrollTrigger.create({
-          trigger: shell,
-          start: "top center",
-          end: "bottom center",
-          onEnter: () => setActive(i),
-          onEnterBack: () => setActive(i),
+          trigger: trackRef.current,
+          start: "top top",
+          end: () => `+=${window.innerHeight * (SCENES.length - 1)}`,
+          pin: trackRef.current,
+          pinSpacing: false,
+          scrub: 0.6,
+          onUpdate: (self) => {
+            if (progressRef.current) {
+              progressRef.current.style.transform = `scaleX(${self.progress})`;
+            }
+            const idx = Math.min(
+              SCENES.length - 1,
+              Math.round(self.progress * (SCENES.length - 1))
+            );
+            setActive(idx);
+          },
         });
       });
 
-      ScrollTrigger.create({
-        trigger: trackRef.current,
-        start: "top top",
-        end: () => `+=${window.innerHeight * (SCENES.length - 1)}`,
-        scrub: 1,
-        onUpdate: (self) => {
-          if (progressRef.current) {
-            progressRef.current.style.transform = `scaleX(${self.progress})`;
+      mm.add("(max-width: 1099px)", () => {
+        shellRefs.current.forEach((shell, i) => {
+          if (!shell) return;
+          const content = contentRefs.current[i];
+          const visual = visualRefs.current[i];
+          const chips = shell.querySelectorAll("[data-intro-chip]");
+          const metrics = shell.querySelectorAll("[data-intro-metric]");
+
+          if (content) {
+            gsap.fromTo(
+              content,
+              { y: 28, opacity: 0 },
+              {
+                y: 0,
+                opacity: 1,
+                ease: "power2.out",
+                scrollTrigger: {
+                  trigger: shell,
+                  start: "top 85%",
+                  end: "top 60%",
+                  scrub: false,
+                  toggleActions: "play none none reverse",
+                },
+              }
+            );
           }
-          const idx = Math.min(
-            SCENES.length - 1,
-            Math.round(self.progress * (SCENES.length - 1))
-          );
-          setActive(idx);
-        },
+
+          if (visual) {
+            gsap.fromTo(
+              visual,
+              { y: 32, opacity: 0 },
+              {
+                y: 0,
+                opacity: 1,
+                ease: "power2.out",
+                scrollTrigger: {
+                  trigger: shell,
+                  start: "top 85%",
+                  end: "top 60%",
+                  scrub: false,
+                  toggleActions: "play none none reverse",
+                },
+              }
+            );
+          }
+
+          if (chips && chips.length) {
+            gsap.fromTo(
+              chips,
+              { y: 16, opacity: 0 },
+              {
+                y: 0,
+                opacity: 1,
+                stagger: 0.04,
+                ease: "power2.out",
+                scrollTrigger: {
+                  trigger: shell,
+                  start: "top 88%",
+                  end: "top 62%",
+                  scrub: false,
+                  toggleActions: "play none none reverse",
+                },
+              }
+            );
+          }
+
+          if (metrics && metrics.length) {
+            gsap.fromTo(
+              metrics,
+              { y: 18, opacity: 0 },
+              {
+                y: 0,
+                opacity: 1,
+                stagger: 0.04,
+                ease: "power2.out",
+                scrollTrigger: {
+                  trigger: shell,
+                  start: "top 88%",
+                  end: "top 62%",
+                  scrub: false,
+                  toggleActions: "play none none reverse",
+                },
+              }
+            );
+          }
+
+          ScrollTrigger.create({
+            trigger: shell,
+            start: "top center",
+            end: "bottom center",
+            onEnter: () => setActive(i),
+            onEnterBack: () => setActive(i),
+          });
+        });
+
+        ScrollTrigger.create({
+          trigger: trackRef.current,
+          start: "top top",
+          end: () => `+=${window.innerHeight * (SCENES.length - 1)}`,
+          scrub: 1,
+          onUpdate: (self) => {
+            if (progressRef.current) {
+              progressRef.current.style.transform = `scaleX(${self.progress})`;
+            }
+            const idx = Math.min(
+              SCENES.length - 1,
+              Math.round(self.progress * (SCENES.length - 1))
+            );
+            setActive(idx);
+          },
+        });
       });
 
       ScrollTrigger.refresh();
     }, rootRef);
 
-    return () => ctx.revert();
+    return () => {
+      mm.revert();
+      ctx.revert();
+    };
   }, []);
 
   const scrollToScene = (i) => {
@@ -595,7 +761,7 @@ const STYLES = `
     --mono:'DM Mono',monospace;
   }
 
-  .ceo-progress{position:fixed;top:0;left:0;height:2px;width:100%;background:var(--gold);transform-origin:left;transform:scaleX(0);z-index:200}
+  .ceo-progress{position:fixed;top:0;left:0;height:2px;width:100%;background:var(--gold);transform-origin:left;transform:scaleX(0);z-index:200;will-change:transform}
 
   .ceo-nav{
     position:fixed;top:0;left:0;right:0;z-index:150;
@@ -631,7 +797,7 @@ const STYLES = `
   .sc-title.gold{color:var(--gold)}
   .sc-body{font-family:var(--serif);font-size:clamp(1rem,1.5vw,1.18rem);font-weight:300;line-height:1.82;color:var(--ivory-lo);max-width:420px}
 
-  .sc-visual{position:relative;width:min(100%,520px);display:flex;align-items:center;justify-content:center;margin-left:auto}
+  .sc-visual{position:relative;width:min(100%,520px);display:flex;align-items:center;justify-content:center;margin-left:auto;will-change:transform,opacity}
   .scene-dots{position:fixed;right:1.8rem;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:100}
   .dot{width:6px;height:6px;border-radius:50%;background:rgba(212,175,55,0.3);border:none;cursor:pointer;padding:0;transition:background .3s,transform .3s}
   .dot-active{background:var(--gold);transform:scale(1.5)}
