@@ -745,257 +745,318 @@ const benefits = [
   },
 ];
 
+const storySlides = [
+  {
+    id: "01",
+    img: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&q=80&w=2000",
+    giantText: "Private Wealth",
+    title: "Relationship First",
+    desc: "A dedicated relationship manager available 24/7. No queues. No bots. Direct access to the financial minds that matter.",
+    features: ["Bespoke Strategy", "Direct Access", "24/7 Advisory"],
+  },
+  {
+    id: "02",
+    img: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=2000",
+    giantText: "Zero Limits",
+    title: "Spend Without Boundaries",
+    desc: "Dynamic credit limits that scale with your ambition. Pre-approved across 180 countries with zero foreign transaction friction.",
+    features: ["Dynamic Limits", "Zero FX Friction", "Global Acceptance"],
+  },
+  {
+    id: "03",
+    img: "https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?auto=format&fit=crop&q=80&w=2000",
+    giantText: "Jet Access",
+    title: "First Class, Always",
+    desc: "Complimentary lounge access across 1,400+ airports. Priority boarding. A travel experience that mirrors your status.",
+    features: ["1,400+ Lounges", "Priority Boarding", "Concierge Assist"],
+  },
+  {
+    id: "04",
+    img: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?auto=format&fit=crop&q=80&w=2000",
+    giantText: "Legacy Guard",
+    title: "Protection at Scale",
+    desc: "Comprehensive protection for you, your family, and your assets. Estate planning, insurance architecture, and risk shielding.",
+    features: ["Asset Shielding", "Estate Planning", "Generational Wealth"],
+  },
+];
+
 const BenefitsGridSection = () => {
   const sectionRef = useRef(null);
-  const cardRefs = useRef([]);
+  const slideRefs = useRef([]);
+  const imageRefs = useRef([]);
+  const contentRefs = useRef([]);
+  const titleRefs = useRef([]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const cards = cardRefs.current.filter(Boolean);
+      storySlides.forEach((_, i) => {
+        if (i === 0) return;
 
-      gsap.set(cards, {
-        opacity: 0,
-        y: 60,
-        scale: 0.97,
+        if (imageRefs.current[i]) {
+          gsap.set(imageRefs.current[i], {
+            clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)",
+          });
+        }
+        if (contentRefs.current[i]) {
+          gsap.set(contentRefs.current[i], { opacity: 0, y: 60 });
+        }
+        if (titleRefs.current[i]) {
+          gsap.set(titleRefs.current[i].querySelectorAll(".char"), {
+            opacity: 0,
+            y: 80,
+            rotationX: -90,
+          });
+        }
       });
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
           start: "top top",
-          end: "+=300%",
+          end: `+=${storySlides.length * 100}%`,
           pin: true,
-          scrub: true,
+          scrub: 1,
           anticipatePin: 1,
         },
       });
 
-      tl.from(".benefits-title", {
-        opacity: 0,
-        y: 40,
-        duration: 1.2,
-        ease: "power2.out",
-      });
+      storySlides.forEach((_, i) => {
+        if (i === 0) return;
 
-      cards.forEach((card, i) => {
-        tl.to(
-          card,
-          {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.55,
-            ease: "power2.out",
-          },
-          0.15 + i * 0.1
-        );
+        const prevContent = contentRefs.current[i - 1];
+        const prevChars = titleRefs.current[i - 1]?.querySelectorAll(".char");
+        const currImage = imageRefs.current[i];
+        const currContent = contentRefs.current[i];
+        const currChars = titleRefs.current[i]?.querySelectorAll(".char");
+
+        const stepTl = gsap.timeline();
+
+        if (prevContent) {
+          stepTl.to(prevContent, { opacity: 0, y: -60, duration: 1 }, 0);
+        }
+        if (prevChars?.length) {
+          stepTl.to(
+            prevChars,
+            { opacity: 0, y: -80, rotationX: 90, stagger: 0.02, duration: 0.8 },
+            0
+          );
+        }
+
+        if (currImage) {
+          stepTl.to(
+            currImage,
+            {
+              clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+              duration: 1.5,
+              ease: "power2.inOut",
+            },
+            0
+          );
+        }
+        if (currContent) {
+          stepTl.to(currContent, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, 0.5);
+        }
+        if (currChars?.length) {
+          stepTl.to(
+            currChars,
+            { opacity: 1, y: 0, rotationX: 0, stagger: 0.03, duration: 1, ease: "back.out(1.5)" },
+            0.5
+          );
+        }
+
+        tl.add(stepTl);
       });
     }, sectionRef);
 
-    return () => {
-      ctx.revert();
-    };
+    return () => ctx.revert();
   }, []);
+
+  const splitTextToSpans = (text) =>
+    text.split("").map((char, idx) => (
+      <span
+        key={idx}
+        className="char"
+        style={{
+          display: "inline-block",
+          willChange: "transform, opacity",
+          transformOrigin: "50% 50% -20px",
+        }}
+      >
+        {char === " " ? "\u00A0" : char}
+      </span>
+    ));
 
   return (
     <section
       ref={sectionRef}
-      style={{ padding: "120px 24px", position: "relative", minHeight: "100vh" }}
+      style={{
+        height: "100vh",
+        position: "relative",
+        backgroundColor: "#050505",
+        overflow: "hidden",
+        color: "#f5f0e8",
+      }}
     >
-      <div style={{ maxWidth: 1280, margin: "0 auto" }}>
-        <div className="benefits-title" style={{ textAlign: "center", marginBottom: 100 }}>
-          <Reveal>
-            <p
-              style={{
-                fontFamily: "Poppins",
-                fontSize: 11,
-                fontWeight: 300,
-                color: "#c9a84c",
-                letterSpacing: "0.4em",
-                textTransform: "uppercase",
-                marginBottom: 24,
-              }}
-            >
-              The Suite
-            </p>
-            <h2
-              style={{
-                fontFamily: "Poppins",
-                fontWeight: 200,
-                fontSize: "clamp(36px, 5vw, 72px)",
-                color: "#f5f0e8",
-                lineHeight: 1.15,
-              }}
-            >
-              Every benefit,
-              <span className="gold-gradient" style={{ fontWeight: 700 }}>
-                {" "}
-                by design.
-              </span>
-            </h2>
-          </Reveal>
-        </div>
-
+      {storySlides.map((slide, i) => (
         <div
+          key={slide.id}
+          ref={(el) => {
+            slideRefs.current[i] = el;
+          }}
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
-            gap: 1,
-            background: "rgba(201,168,76,0.06)",
-            border: "1px solid rgba(201,168,76,0.06)",
-            marginTop: 32,
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            zIndex: i,
           }}
         >
-          {benefits.map((b, i) => (
+          <div
+            ref={(el) => {
+              imageRefs.current[i] = el;
+            }}
+            style={{
+              width: "55%",
+              height: "100%",
+              position: "relative",
+              overflow: "hidden",
+              willChange: "clip-path",
+            }}
+          >
             <div
-              key={b.number}
-              ref={(el) => {
-                cardRefs.current[i] = el;
-              }}
               style={{
-                height: "100%",
-                position: "relative",
-                opacity: 0,
-                transform: "translateY(60px) scale(0.97)",
-                willChange: "transform, opacity",
+                position: "absolute",
+                inset: 0,
+                backgroundColor: "#000",
+                opacity: 0.2,
+                zIndex: 1,
               }}
+            />
+            <img
+              src={slide.img}
+              alt={slide.title}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          </div>
+
+          <div
+            style={{
+              width: "45%",
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              padding: "0 6%",
+              position: "relative",
+              zIndex: 2,
+            }}
+          >
+            <div
+              ref={(el) => {
+                contentRefs.current[i] = el;
+              }}
+              style={{ maxWidth: 480, willChange: "transform, opacity" }}
             >
-              <TiltCard style={{ height: "100%", position: "relative" }}>
-                <div
-                  style={{
-                    padding: "52px 44px",
-                    background: "#0d0d0d",
-                    height: "100%",
-                    position: "relative",
-                    overflow: "hidden",
-                    transition: "background 0.4s ease",
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "#101010")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "#0d0d0d")}
-                >
-                  <div
+              <p
+                style={{
+                  fontFamily: "Poppins",
+                  fontSize: 13,
+                  fontWeight: 400,
+                  color: "#c9a84c",
+                  letterSpacing: "0.2em",
+                  textTransform: "uppercase",
+                  marginBottom: 20,
+                }}
+              >
+                {slide.id} - The Suite
+              </p>
+              <h3
+                style={{
+                  fontFamily: "Poppins",
+                  fontWeight: 300,
+                  fontSize: "clamp(32px, 3vw, 48px)",
+                  color: "#ffffff",
+                  lineHeight: 1.1,
+                  marginBottom: 24,
+                }}
+              >
+                {slide.title}
+              </h3>
+              <p
+                style={{
+                  fontFamily: "Poppins",
+                  fontWeight: 300,
+                  fontSize: 16,
+                  color: "rgba(245,240,232,0.6)",
+                  lineHeight: 1.6,
+                  marginBottom: 40,
+                }}
+              >
+                {slide.desc}
+              </p>
+              <ul
+                style={{
+                  listStyle: "none",
+                  padding: 0,
+                  margin: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 16,
+                }}
+              >
+                {slide.features.map((feat, idx) => (
+                  <li
+                    key={idx}
                     style={{
-                      position: "absolute",
-                      right: -20,
-                      bottom: -20,
+                      display: "flex",
+                      alignItems: "center",
                       fontFamily: "Poppins",
-                      fontWeight: 800,
-                      fontSize: 140,
-                      color: "rgba(201,168,76,0.03)",
-                      lineHeight: 1,
-                      pointerEvents: "none",
-                      userSelect: "none",
-                    }}
-                  >
-                    {b.number}
-                  </div>
-
-                  <div
-                    style={{
-                      display: "inline-block",
-                      marginBottom: 32,
-                      padding: "4px 12px",
-                      border: "1px solid rgba(201,168,76,0.2)",
-                      borderRadius: 1,
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontFamily: "Poppins",
-                        fontSize: 10,
-                        fontWeight: 400,
-                        color: "#c9a84c",
-                        letterSpacing: "0.25em",
-                        textTransform: "uppercase",
-                      }}
-                    >
-                      {b.tag}
-                    </span>
-                  </div>
-
-                  <div
-                    style={{
-                      fontSize: 32,
-                      color: "#c9a84c",
-                      marginBottom: 24,
-                      lineHeight: 1,
-                      filter: "drop-shadow(0 0 12px rgba(201,168,76,0.4))",
-                    }}
-                  >
-                    {b.icon}
-                  </div>
-
-                  <p
-                    style={{
-                      fontFamily: "Poppins",
-                      fontSize: 11,
+                      fontSize: 14,
                       fontWeight: 300,
-                      color: "rgba(245,240,232,0.25)",
-                      letterSpacing: "0.2em",
-                      marginBottom: 12,
+                      color: "rgba(245,240,232,0.8)",
                     }}
                   >
-                    {b.number}
-                  </p>
-
-                  <h3
-                    style={{
-                      fontFamily: "Poppins",
-                      fontWeight: 600,
-                      fontSize: 26,
-                      color: "#f5f0e8",
-                      marginBottom: 6,
-                      lineHeight: 1.2,
-                    }}
-                  >
-                    {b.title}
-                  </h3>
-                  <p
-                    style={{
-                      fontFamily: "Poppins",
-                      fontWeight: 300,
-                      fontSize: 12,
-                      color: "#c9a84c",
-                      letterSpacing: "0.15em",
-                      textTransform: "uppercase",
-                      marginBottom: 24,
-                    }}
-                  >
-                    {b.sub}
-                  </p>
-                  <p
-                    style={{
-                      fontFamily: "Poppins",
-                      fontWeight: 300,
-                      fontSize: 15,
-                      color: "rgba(245,240,232,0.5)",
-                      lineHeight: 1.8,
-                    }}
-                  >
-                    {b.desc}
-                  </p>
-
-                  <div
-                    style={{
-                      position: "absolute",
-                      bottom: 0,
-                      left: 0,
-                      width: "0%",
-                      height: 1,
-                      background: "linear-gradient(90deg, #c9a84c, #f0d080)",
-                      transition: "width 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-                    }}
-                    className="card-bottom-line"
-                  />
-                </div>
-              </TiltCard>
+                    <span style={{ color: "#c9a84c", marginRight: 16, fontSize: 18 }}>✦</span>
+                    {feat}
+                  </li>
+                ))}
+              </ul>
             </div>
-          ))}
+          </div>
+
+          <div
+            ref={(el) => {
+              titleRefs.current[i] = el;
+            }}
+            style={{
+              position: "absolute",
+              bottom: "7%",
+              left: "50%",
+              transform: "translateX(-50%)",
+              zIndex: 1,
+              width: "100%",
+              pointerEvents: "none",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "flex-end",
+              fontFamily: "Poppins, sans-serif",
+              fontWeight: 300,
+              fontSize: "clamp(46px, 8.5vw, 120px)",
+              color: "rgba(255,255,255,0.58)",
+              letterSpacing: "0.08em",
+              lineHeight: 0.92,
+              mixBlendMode: "overlay",
+              textShadow: "0px 12px 36px rgba(0,0,0,0.55)",
+              filter: "drop-shadow(0 0 18px rgba(201,168,76,0.12))",
+              perspective: "1000px",
+            }}
+          >
+            {splitTextToSpans(slide.giantText)}
+          </div>
         </div>
-      </div>
-      <style>{`
-        .card-tilt:hover .card-bottom-line { width: 100% !important; }
-      `}</style>
+      ))}
     </section>
   );
 };
