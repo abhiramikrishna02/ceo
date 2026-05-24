@@ -2,6 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const navItems = [
   { label: "Home", href: "/home" },
@@ -251,128 +255,193 @@ const Ring = ({ size = 300, opacity = 0.08, speed = "20s", reverse = false }) =>
 // ─── Section 1: Hero ──────────────────────────────────────────────────────────
 const HeroSection = () => {
   const { scrollY } = useScroll();
-  const y = useTransform(scrollY, [0, 600], [0, 200]);
-  const opacity = useTransform(scrollY, [0, 500], [1, 0]);
-  const scale = useTransform(scrollY, [0, 600], [1, 0.85]);
+
+  // --- Cinematic 3D Scroll Transforms ---
+  // Mapping scroll distance (0px to 1200px) into 3D space movements
+  const rotateX = useTransform(scrollY, [0, 1000], [0, 60]); // Deep tilt backwards
+  const rotateY = useTransform(scrollY, [0, 1000], [0, -4]); // Subtle diagonal twist
+  const z = useTransform(scrollY, [0, 1000], [0, -300]); // Pushes backward into the screen
+  const scale = useTransform(scrollY, [0, 1000], [1, 0.85]); // Slight shrink
+  const y = useTransform(scrollY, [0, 1000], [0, -120]); // Moves up away from user
+  const opacity = useTransform(scrollY, [700, 1100], [1, 0]); // Delayed fade for smooth exit
+
+  // --- Secondary Layer (Parallax Shadow Panel) Transforms ---
+  // This creates the "layered card" illusion beneath the main text
+  const layerOpacity = useTransform(scrollY, [100, 600, 1000], [0, 0.4, 0.8]);
+  const layerScale = useTransform(scrollY, [0, 1000], [0.8, 0.98]);
+  const layerY = useTransform(scrollY, [0, 1000], [200, 0]);
+  const layerRotateX = useTransform(scrollY, [0, 1000], [20, 65]);
+
+  // --- Scroll Indicator Fade ---
+  const indicatorOpacity = useTransform(scrollY, [0, 200], [1, 0]);
 
   return (
     <section style={{
-      minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
-      position: "relative", overflow: "hidden", padding: "0 24px",
+      height: "250vh", // Extended height acts as the scroll track for the animation
+      position: "relative",
+      backgroundColor: "transparent" // Preserves your existing theme
     }}>
-      {/* BG Glow */}
+      {/* STICKY SCENE CONTAINER
+        Pins the view in place while mapping scroll to 3D transforms.
+      */}
       <div style={{
-        position: "absolute", top: "20%", left: "50%", transform: "translateX(-50%)",
-        width: 800, height: 800, borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%)",
-        pointerEvents: "none",
-      }} />
-      {/* Rotating Rings */}
-      <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 0, height: 0 }}>
-        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>
-          <Ring size={700} opacity={0.04} speed="40s" />
-        </div>
-        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>
-          <Ring size={500} opacity={0.06} speed="25s" reverse />
-        </div>
-        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>
-          <Ring size={320} opacity={0.1} speed="15s" />
-        </div>
-      </div>
+        position: "sticky",
+        top: 0,
+        height: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        overflow: "hidden",
+        perspective: "1500px", // CRITICAL: Enables 3D depth illusion
+        padding: "0 24px",
+      }}>
 
-      <motion.div style={{ y, opacity, scale, textAlign: "center", position: "relative", zIndex: 2, maxWidth: 900 }}>
-        <motion.p
-          initial={{ opacity: 0, letterSpacing: "0.5em" }}
-          animate={{ opacity: 1, letterSpacing: "0.4em" }}
-          transition={{ duration: 1.2, delay: 0.2 }}
-          style={{
-            fontFamily: "Poppins", fontSize: 11, fontWeight: 300, color: "#c9a84c",
-            letterSpacing: "0.4em", textTransform: "uppercase", marginBottom: 32,
-          }}
-        >
-          Crafted for the exceptional
-        </motion.p>
-
-        <motion.h1
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.1, delay: 0.5 }}
-          style={{
-            fontFamily: "Poppins", fontWeight: 200, lineHeight: 1.1,
-            fontSize: "clamp(48px, 8vw, 110px)", color: "#f5f0e8",
-            marginBottom: 8,
-          }}
-        >
-          <StaggerText text="You've earned" delay={0.4} />
-        </motion.h1>
-
-        <motion.h1
-          style={{
-            fontFamily: "Poppins", fontWeight: 700, lineHeight: 1.1,
-            fontSize: "clamp(48px, 8vw, 110px)", marginBottom: 40,
-          }}
-        >
-          <span className="shimmer-text">
-            <StaggerText text="more than this." delay={0.7} />
-          </span>
-        </motion.h1>
-
-        <Reveal delay={1.1} y={30}>
-          <p style={{
-            fontFamily: "Poppins", fontWeight: 300, fontSize: "clamp(16px, 2vw, 20px)",
-            color: "rgba(245,240,232,0.5)", maxWidth: 580, margin: "0 auto 56px",
-            lineHeight: 1.8,
-          }}>
-            A platform built for those who lead. Where every benefit is a statement,
-            every reward a recognition of your worth.
-          </p>
-        </Reveal>
-
-        <Reveal delay={1.3}>
-          <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
-            <motion.button
-              whileHover={{ scale: 1.04, boxShadow: "0 0 40px rgba(201,168,76,0.4)" }}
-              whileTap={{ scale: 0.97 }}
-              style={{
-                fontFamily: "Poppins", fontWeight: 500, fontSize: 14,
-                letterSpacing: "0.1em", textTransform: "uppercase",
-                padding: "18px 48px", borderRadius: 2, cursor: "pointer", border: "none",
-                background: "linear-gradient(135deg, #c9a84c, #f0d080, #b8882a)",
-                color: "#0a0a0a",
-                animation: "glowPulse 3s ease-in-out infinite",
-              }}
-            >
-              Claim Your Benefits
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.04, borderColor: "rgba(201,168,76,0.5)" }}
-              whileTap={{ scale: 0.97 }}
-              style={{
-                fontFamily: "Poppins", fontWeight: 300, fontSize: 14,
-                letterSpacing: "0.1em", textTransform: "uppercase",
-                padding: "18px 48px", borderRadius: 2, cursor: "pointer",
-                background: "transparent", color: "#f5f0e8",
-                border: "1px solid rgba(245,240,232,0.2)",
-              }}
-            >
-              Learn More
-            </motion.button>
-          </div>
-        </Reveal>
-      </motion.div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        style={{ position: "absolute", bottom: 48, left: "50%", transform: "translateX(-50%)" }}
-        animate={{ y: [0, 10, 0] }}
-        transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-      >
+        {/* BG Glow */}
         <div style={{
-          width: 1, height: 60,
-          background: "linear-gradient(to bottom, transparent, rgba(201,168,76,0.6), transparent)",
-          margin: "0 auto",
+          position: "absolute", top: "20%", left: "50%", transform: "translateX(-50%)",
+          width: 800, height: 800, borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%)",
+          pointerEvents: "none",
         }} />
-      </motion.div>
+
+        {/* Rotating Rings */}
+        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 0, height: 0 }}>
+          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>
+            <Ring size={700} opacity={0.04} speed="40s" />
+          </div>
+          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>
+            <Ring size={500} opacity={0.06} speed="25s" reverse />
+          </div>
+          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)" }}>
+            <Ring size={320} opacity={0.1} speed="15s" />
+          </div>
+        </div>
+
+        {/* NEW: SECONDARY DARK LAYER 
+          Emerges from behind during scroll to create the deep floating-card stack illusion 
+        */}
+        <motion.div style={{
+          position: "absolute",
+          width: "100%",
+          maxWidth: 1050,
+          height: "80vh",
+          background: "linear-gradient(180deg, rgba(15,15,15,0.4) 0%, rgba(0,0,0,0.8) 100%)",
+          borderRadius: 32,
+          border: "1px solid rgba(255,255,255,0.02)",
+          boxShadow: "0 40px 100px rgba(0,0,0,0.9)",
+          zIndex: 1,
+          opacity: layerOpacity,
+          scale: layerScale,
+          y: layerY,
+          rotateX: layerRotateX,
+          transformOrigin: "bottom center"
+        }} />
+
+        {/* MAIN HERO CONTENT (FLOATING CARD)
+          Your original exact code nested inside the new 3D transform wrapper.
+        */}
+        <motion.div style={{ 
+          y, z, opacity, scale, rotateX, rotateY, 
+          textAlign: "center", position: "relative", zIndex: 2, maxWidth: 900,
+          transformStyle: "preserve-3d", // Ensures text behaves physically in the 3D space
+          transformOrigin: "center center", 
+        }}>
+          <motion.p
+            initial={{ opacity: 0, letterSpacing: "0.5em" }}
+            animate={{ opacity: 1, letterSpacing: "0.4em" }}
+            transition={{ duration: 1.2, delay: 0.2 }}
+            style={{
+              fontFamily: "Poppins", fontSize: 11, fontWeight: 300, color: "#c9a84c",
+              letterSpacing: "0.4em", textTransform: "uppercase", marginBottom: 32,
+            }}
+          >
+            Crafted for the exceptional
+          </motion.p>
+
+          <motion.h1
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.1, delay: 0.5 }}
+            style={{
+              fontFamily: "Poppins", fontWeight: 200, lineHeight: 1.1,
+              fontSize: "clamp(48px, 8vw, 110px)", color: "#f5f0e8",
+              marginBottom: 8,
+            }}
+          >
+            <StaggerText text="You've earned" delay={0.4} />
+          </motion.h1>
+
+          <motion.h1
+            style={{
+              fontFamily: "Poppins", fontWeight: 700, lineHeight: 1.1,
+              fontSize: "clamp(48px, 8vw, 110px)", marginBottom: 40,
+            }}
+          >
+            <span className="shimmer-text">
+              <StaggerText text="more than this." delay={0.7} />
+            </span>
+          </motion.h1>
+
+          <Reveal delay={1.1} y={30}>
+            <p style={{
+              fontFamily: "Poppins", fontWeight: 300, fontSize: "clamp(16px, 2vw, 20px)",
+              color: "rgba(245,240,232,0.5)", maxWidth: 580, margin: "0 auto 56px",
+              lineHeight: 1.8,
+            }}>
+              A platform built for those who lead. Where every benefit is a statement,
+              every reward a recognition of your worth.
+            </p>
+          </Reveal>
+
+          <Reveal delay={1.3}>
+            <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap" }}>
+              <motion.button
+                whileHover={{ scale: 1.04, boxShadow: "0 0 40px rgba(201,168,76,0.4)" }}
+                whileTap={{ scale: 0.97 }}
+                style={{
+                  fontFamily: "Poppins", fontWeight: 500, fontSize: 14,
+                  letterSpacing: "0.1em", textTransform: "uppercase",
+                  padding: "18px 48px", borderRadius: 2, cursor: "pointer", border: "none",
+                  background: "linear-gradient(135deg, #c9a84c, #f0d080, #b8882a)",
+                  color: "#0a0a0a",
+                  animation: "glowPulse 3s ease-in-out infinite",
+                }}
+              >
+                Claim Your Benefits
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.04, borderColor: "rgba(201,168,76,0.5)" }}
+                whileTap={{ scale: 0.97 }}
+                style={{
+                  fontFamily: "Poppins", fontWeight: 300, fontSize: 14,
+                  letterSpacing: "0.1em", textTransform: "uppercase",
+                  padding: "18px 48px", borderRadius: 2, cursor: "pointer",
+                  background: "transparent", color: "#f5f0e8",
+                  border: "1px solid rgba(245,240,232,0.2)",
+                }}
+              >
+                Learn More
+              </motion.button>
+            </div>
+          </Reveal>
+        </motion.div>
+
+        {/* Scroll indicator - Modified to fade out smoothly as the user begins the cinematic scroll */}
+        <motion.div
+          style={{ 
+            position: "absolute", bottom: 48, left: "50%", transform: "translateX(-50%)",
+            opacity: indicatorOpacity 
+          }}
+          animate={{ y: [0, 10, 0] }}
+          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+        >
+          <div style={{
+            width: 1, height: 60,
+            background: "linear-gradient(to bottom, transparent, rgba(201,168,76,0.6), transparent)",
+            margin: "0 auto",
+          }} />
+        </motion.div>
+      </div>
     </section>
   );
 };
@@ -380,68 +449,250 @@ const HeroSection = () => {
 // ─── Section 2: Statement ─────────────────────────────────────────────────────
 const StatementSection = () => {
   const ref = useRef(null);
+  
+  // ORIGINAL HOOKS (Preserved for perfect architectural stability)
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const x1 = useTransform(scrollYProgress, [0, 1], [-50, 50]);
   const x2 = useTransform(scrollYProgress, [0, 1], [50, -50]);
+  
+  // Phase 1 Settle Transforms: Entire section settles cleanly first
+  const sectionLift = useTransform(scrollYProgress, [0, 0.15], [120, 0]);
+  const sectionFade = useTransform(scrollYProgress, [0, 0.15], [0, 1]);
+  const handoffGlow = useTransform(scrollYProgress, [0, 0.2, 0.5, 1], [0, 0.75, 0.5, 0.18]);
+
+  // Phase 4: Background Text Layer Fade/Blur (Gradually vanishes from 0.45 to 0.65)
+  const textOpacity = useTransform(scrollYProgress, [0, 0.15, 0.45, 0.65], [0, 1, 1, 0.02]);
+  const textScale = useTransform(scrollYProgress, [0.45, 0.65], [1, 0.92]);
+  const textBlur = useTransform(scrollYProgress, [0.45, 0.65], ["blur(0px)", "blur(16px)"]);
+
+  // Phase 7: Final Card Content Scroll-Driven Crossfade
+  const finalCardText1Opacity = useTransform(scrollYProgress, [0, 0.72, 0.82], [1, 1, 0]);
+  const finalCardText2Opacity = useTransform(scrollYProgress, [0, 0.72, 0.82], [0, 0, 1]);
+
+  // STAGGERED FLOATING CARDS TIMELINES (Polished for buttery-smooth interpolation)
+  
+  // Card 1 (Center Final Focus Hero Card - Large dominant asset)
+  const c1Y = useTransform(scrollYProgress, [0.30, 0.55, 0.75, 1], [200, 0, 0, 0]);
+  const c1Scale = useTransform(scrollYProgress, [0.30, 0.55, 0.75, 0.95], [0.95, 1, 1, 1.03]);
+  const c1Opacity = useTransform(scrollYProgress, [0, 0.30, 0.40, 1], [0, 0, 1, 1]);
+
+  // Card 2 (Top Left - Medium Premium Asset)
+  const c2X = useTransform(scrollYProgress, [0.22, 0.45, 0.60, 0.75], ["-60vw", "-22vw", "-5vw", "0vw"]);
+  const c2Y = useTransform(scrollYProgress, [0.22, 0.45, 0.60, 0.75], ["-40vh", "-15vh", "-5vh", "0vh"]);
+  const c2Rot = useTransform(scrollYProgress, [0.22, 0.45, 0.60, 0.75], [-3, -1.5, -0.4, 0]);
+  const c2Opacity = useTransform(scrollYProgress, [0, 0.22, 0.30, 0.60, 0.75], [0, 0, 1, 1, 0]);
+
+  // Card 5 (Bottom Left - Sleek Smaller Accent Card)
+  const c5X = useTransform(scrollYProgress, [0.24, 0.47, 0.62, 0.77], ["-50vw", "-18vw", "-6vw", "0vw"]);
+  const c5Y = useTransform(scrollYProgress, [0.24, 0.47, 0.62, 0.77], ["50vh", "22vh", "6vh", "0vh"]);
+  const c5Rot = useTransform(scrollYProgress, [0.24, 0.47, 0.62, 0.77], [-2, -1, -0.3, 0]);
+  const c5Opacity = useTransform(scrollYProgress, [0, 0.24, 0.32, 0.62, 0.77], [0, 0, 1, 1, 0]);
+
+  // Card 3 (Bottom Right - Widescreen Medium Asset)
+  const c3X = useTransform(scrollYProgress, [0.26, 0.49, 0.64, 0.79], ["60vw", "25vw", "8vw", "0vw"]);
+  const c3Y = useTransform(scrollYProgress, [0.26, 0.49, 0.64, 0.79], ["40vh", "18vh", "5vh", "0vh"]);
+  const c3Rot = useTransform(scrollYProgress, [0.26, 0.49, 0.64, 0.79], [2.5, 1.2, 0.3, 0]);
+  const c3Opacity = useTransform(scrollYProgress, [0, 0.26, 0.34, 0.64, 0.79], [0, 0, 1, 1, 0]);
+
+  // Card 4 (Top Right - Compact Profile Card)
+  const c4X = useTransform(scrollYProgress, [0.28, 0.51, 0.66, 0.81], ["55vw", "18vw", "4vw", "0vw"]);
+  const c4Y = useTransform(scrollYProgress, [0.28, 0.51, 0.66, 0.81], ["-50vh", "-22vh", "-8vh", "0vh"]);
+  const c4Rot = useTransform(scrollYProgress, [0.28, 0.51, 0.66, 0.81], [3.5, 1.8, 0.5, 0]);
+  const c4Opacity = useTransform(scrollYProgress, [0, 0.28, 0.36, 0.66, 0.81], [0, 0, 1, 1, 0]);
 
   return (
     <section ref={ref} style={{
-      padding: "140px 24px", overflow: "hidden", position: "relative",
+      height: "400vh", 
+      marginTop: "-10vh",
+      position: "relative",
       borderTop: "1px solid rgba(201,168,76,0.06)",
       borderBottom: "1px solid rgba(201,168,76,0.06)",
+      zIndex: 1,
+      willChange: "transform",
     }}>
       <div style={{
-        position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)",
-        width: 600, height: 300, borderRadius: "50%",
-        background: "radial-gradient(ellipse, rgba(201,168,76,0.04), transparent 70%)",
-        pointerEvents: "none",
-      }} />
+        position: "sticky",
+        top: 0,
+        height: "100vh",
+        overflow: "hidden",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "0 24px"
+      }}>
+        
+        {/* ORIGINAL BACKGROUND GLOWS */}
+        <motion.div
+          aria-hidden="true"
+          style={{
+            position: "absolute", top: -140, left: "50%", width: "min(980px, 92vw)", height: 280,
+            transform: "translateX(-50%)", borderRadius: "50%",
+            background: "radial-gradient(ellipse, rgba(201,168,76,0.08) 0%, rgba(10,10,10,0) 72%)",
+            filter: "blur(10px)", opacity: handoffGlow, pointerEvents: "none",
+          }}
+        />
+        <motion.div
+          aria-hidden="true"
+          style={{
+            position: "absolute", inset: "0 0 auto 0", height: 240,
+            background: "linear-gradient(180deg, rgba(10,10,10,0.96) 0%, rgba(10,10,10,0.72) 42%, rgba(10,10,10,0) 100%)",
+            opacity: handoffGlow, pointerEvents: "none",
+          }}
+        />
 
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <motion.div style={{ x: x1 }}>
-          <p style={{
-            fontFamily: "Poppins", fontWeight: 800,
-            fontSize: "clamp(42px, 7vw, 96px)", lineHeight: 1.05,
-            color: "rgba(245,240,232,0.04)",
-            textAlign: "left", whiteSpace: "nowrap",
-            letterSpacing: "-0.02em",
-          }}>
-            EXCELLENCE — PRIVILEGE — PRESTIGE — POWER
-          </p>
-        </motion.div>
-
-        <div style={{ padding: "60px 0", textAlign: "center", position: "relative", zIndex: 2 }}>
-          <Reveal>
-            <h2 style={{
-              fontFamily: "Poppins", fontWeight: 200,
-              fontSize: "clamp(28px, 4vw, 52px)", lineHeight: 1.4,
-              color: "#f5f0e8", maxWidth: 800, margin: "0 auto",
+        {/* ORIGINAL TEXT LAYER (Strictly Isolated to entry phase, fades away later) */}
+        <motion.div style={{ 
+          maxWidth: 1200, width: "100%", margin: "0 auto", position: "absolute", 
+          zIndex: 1, y: sectionLift, opacity: textOpacity, scale: textScale, filter: textBlur,
+          willChange: "transform, opacity, filter"
+        }}>
+          <motion.div style={{ x: x1 }}>
+            <p style={{
+              fontFamily: "Poppins", fontWeight: 800, fontSize: "clamp(42px, 7vw, 96px)", 
+              lineHeight: 1.05, color: "rgba(245,240,232,0.04)", textAlign: "left", 
+              whiteSpace: "nowrap", letterSpacing: "-0.02em",
             }}>
-              Not every CEO gets treated like one.
-              <br />
-              <span className="gold-gradient" style={{ fontWeight: 600 }}>
-                You will.
-              </span>
-            </h2>
-          </Reveal>
-        </div>
+              EXCELLENCE — PRIVILEGE — PRESTIGE — POWER
+            </p>
+          </motion.div>
 
-        <motion.div style={{ x: x2 }}>
-          <p style={{
-            fontFamily: "Poppins", fontWeight: 800,
-            fontSize: "clamp(42px, 7vw, 96px)", lineHeight: 1.05,
-            color: "rgba(201,168,76,0.04)",
-            textAlign: "right", whiteSpace: "nowrap",
-            letterSpacing: "-0.02em",
-          }}>
-            WEALTH — LUXURY — LEGACY — AUTHORITY
-          </p>
+          <div style={{ padding: "60px 0", textAlign: "center", position: "relative", zIndex: 2 }}>
+            <Reveal>
+              <h2 style={{
+                fontFamily: "Poppins", fontWeight: 200, fontSize: "clamp(28px, 4vw, 52px)", 
+                lineHeight: 1.4, color: "#f5f0e8", maxWidth: 800, margin: "0 auto",
+              }}>
+                Not every CEO gets treated like one.
+                <br />
+                <span className="gold-gradient" style={{ fontWeight: 600 }}>
+                  You will.
+                </span>
+              </h2>
+            </Reveal>
+          </div>
+
+          <motion.div style={{ x: x2 }}>
+            <p style={{
+              fontFamily: "Poppins", fontWeight: 800, fontSize: "clamp(42px, 7vw, 96px)", 
+              lineHeight: 1.05, color: "rgba(201,168,76,0.04)", textAlign: "right", 
+              whiteSpace: "nowrap", letterSpacing: "-0.02em",
+            }}>
+              WEALTH — LUXURY — LEGACY — AUTHORITY
+            </p>
+          </motion.div>
         </motion.div>
+
+        {/* FLOATING SCENE CONTAINER */}
+        <div style={{ 
+          position: "absolute", inset: 0, zIndex: 10, pointerEvents: "none", 
+          display: "flex", alignItems: "center", justifyContent: "center" 
+        }}>
+          
+          {/* Card 5 (Bottom Left Layer - Smallest Accent Card) */}
+          <motion.div style={{
+            position: "absolute", width: 230, height: 155, borderRadius: 24,
+            background: "linear-gradient(145deg, rgba(30,30,30,0.9) 0%, rgba(15,15,15,0.9) 100%)",
+            border: "1px solid rgba(255,255,255,0.05)", boxShadow: "0 20px 40px rgba(0,0,0,0.5)", 
+            padding: 24, backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+            x: c5X, y: c5Y, rotate: c5Rot, opacity: c5Opacity, zIndex: 7,
+            transformStyle: "preserve-3d", backfaceVisibility: "hidden", willChange: "transform, opacity"
+          }}>
+            <p style={{ color: "#888", fontSize: 11, fontFamily: "Poppins", letterSpacing: 1 }}>GLOBAL ACCESS</p>
+            <h4 style={{ color: "#f5f0e8", fontSize: 16, marginTop: 6, fontFamily: "Poppins", fontWeight: 400 }}>Borderless Limits</h4>
+          </motion.div>
+
+          {/* Card 4 (Top Right Layer - Compact Profile Card) */}
+          <motion.div style={{
+            position: "absolute", width: 250, height: 185, borderRadius: 24,
+            background: "linear-gradient(135deg, rgba(201,168,76,0.08) 0%, rgba(10,10,10,0.8) 100%)",
+            border: "1px solid rgba(201,168,76,0.15)", backdropFilter: "blur(16px)", 
+            WebkitBackdropFilter: "blur(16px)", padding: 24,
+            x: c4X, y: c4Y, rotate: c4Rot, opacity: c4Opacity, zIndex: 4,
+            transformStyle: "preserve-3d", backfaceVisibility: "hidden", willChange: "transform, opacity"
+          }}>
+            <p style={{ color: "rgba(201,168,76,0.8)", fontSize: 11, fontFamily: "Poppins", letterSpacing: 1 }}>PRIVATE EQUITY</p>
+            <h4 style={{ color: "#f5f0e8", fontSize: 18, marginTop: 6, fontFamily: "Poppins", fontWeight: 300 }}>Exclusive Portfolios</h4>
+          </motion.div>
+
+          {/* Card 3 (Bottom Right Layer - Widescreen Medium Asset) */}
+          <motion.div style={{
+            position: "absolute", width: 280, height: 170, borderRadius: 24,
+            background: "linear-gradient(145deg, rgba(20,20,20,0.8) 0%, rgba(5,5,5,0.9) 100%)",
+            border: "1px solid rgba(255,255,255,0.08)", padding: 24, backdropFilter: "blur(12px)",
+            x: c3X, y: c3Y, rotate: c3Rot, opacity: c3Opacity, zIndex: 6,
+            transformStyle: "preserve-3d", backfaceVisibility: "hidden", willChange: "transform, opacity"
+          }}>
+            <p style={{ color: "#888", fontSize: 11, fontFamily: "Poppins", letterSpacing: 1 }}>LIQUIDITY</p>
+            <h4 style={{ color: "#f5f0e8", fontSize: 19, marginTop: 6, fontFamily: "Poppins", fontWeight: 300 }}>Instant Settlements</h4>
+          </motion.div>
+
+          {/* Card 2 (Top Left Layer - Medium Premium Asset) */}
+          <motion.div style={{
+            position: "absolute", width: 310, height: 210, borderRadius: 24,
+            background: "rgba(25,25,25,0.6)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
+            border: "1px solid rgba(255,255,255,0.06)", padding: 24, boxShadow: "0 30px 60px rgba(0,0,0,0.6)",
+            x: c2X, y: c2Y, rotate: c2Rot, opacity: c2Opacity, zIndex: 5, display: "flex", flexDirection: "column",
+            transformStyle: "preserve-3d", backfaceVisibility: "hidden", willChange: "transform, opacity"
+          }}>
+            <p style={{ color: "#aaa", fontSize: 11, fontFamily: "Poppins", letterSpacing: 1 }}>CORPORATE</p>
+            <h4 style={{ color: "#f5f0e8", fontSize: 19, marginTop: 6, fontFamily: "Poppins", fontWeight: 300 }}>Multi-currency IBAN</h4>
+            <div style={{ marginTop: "auto", paddingTop: 20 }}>
+              <div style={{ height: 1, background: "rgba(255,255,255,0.1)", width: "100%" }} />
+              <p style={{ color: "#666", fontSize: 11, marginTop: 10, fontFamily: "Poppins" }}>Blockchain Secured</p>
+            </div>
+          </motion.div>
+
+          {/* Card 1 (Center Final Focus Hero Card - Large Dominant Asset) */}
+          <motion.div style={{
+            position: "absolute", width: "min(90vw, 440px)", height: 290, borderRadius: 24,
+            background: "linear-gradient(145deg, rgba(201,168,76,0.15) 0%, rgba(15,15,15,1) 100%)",
+            border: "1px solid rgba(201,168,76,0.3)", backdropFilter: "blur(24px)",
+            boxShadow: "0 40px 80px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.1)", 
+            padding: 32, display: "flex", flexDirection: "column", justifyContent: "space-between",
+            y: c1Y, scale: c1Scale, opacity: c1Opacity, zIndex: 20, pointerEvents: "auto",
+            transformStyle: "preserve-3d", backfaceVisibility: "hidden", willChange: "transform, opacity"
+          }}>
+            <div style={{ position: "relative", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              
+              <div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <p style={{ color: "rgba(201,168,76,0.9)", fontSize: 12, fontFamily: "Poppins", fontWeight: 600, letterSpacing: 1.5 }}>PREMIUM ACCOUNT</p>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="rgba(201,168,76,0.8)"/>
+                  </svg>
+                </div>
+                
+                {/* Scroll-controlled Text Change containers */}
+                <div style={{ position: "relative", marginTop: 16 }}>
+                  <motion.h3 style={{ 
+                    color: "#f5f0e8", fontSize: 32, fontFamily: "Poppins", fontWeight: 300, lineHeight: 1.2,
+                    position: "absolute", top: 0, left: 0, width: "100%", opacity: finalCardText1Opacity 
+                  }}>
+                    Global Wealth Management
+                  </motion.h3>
+                  
+                  <motion.h3 style={{ 
+                    color: "#f5f0e8", fontSize: 32, fontFamily: "Poppins", fontWeight: 300, lineHeight: 1.2,
+                    position: "relative", opacity: finalCardText2Opacity, className: "gold-gradient"
+                  }}>
+                    The Future Of Sovereign Finance
+                  </motion.h3>
+                </div>
+              </div>
+
+              <div>
+                <p style={{ color: "#aaa", fontSize: 13, fontFamily: "Poppins" }}>Available Balance</p>
+                <p style={{ color: "#f5f0e8", fontSize: 28, fontFamily: "Poppins", fontWeight: 500, marginTop: 4 }}>$2,840,000.00</p>
+              </div>
+
+            </div>
+          </motion.div>
+
+        </div>
       </div>
     </section>
   );
 };
-
 // ─── Section 3: Core Benefits Grid ───────────────────────────────────────────
 const benefits = [
   {
@@ -494,127 +745,260 @@ const benefits = [
   },
 ];
 
-const BenefitsGridSection = () => (
-  <section style={{ padding: "120px 24px", position: "relative" }}>
-    <div style={{ maxWidth: 1280, margin: "0 auto" }}>
-      <div style={{ textAlign: "center", marginBottom: 100 }}>
-        <Reveal>
-          <p style={{
-            fontFamily: "Poppins", fontSize: 11, fontWeight: 300, color: "#c9a84c",
-            letterSpacing: "0.4em", textTransform: "uppercase", marginBottom: 24,
-          }}>
-            The Suite
-          </p>
-          <h2 style={{
-            fontFamily: "Poppins", fontWeight: 200, fontSize: "clamp(36px, 5vw, 72px)",
-            color: "#f5f0e8", lineHeight: 1.15,
-          }}>
-            Every benefit,
-            <span className="gold-gradient" style={{ fontWeight: 700 }}> by design.</span>
-          </h2>
-        </Reveal>
-      </div>
+const BenefitsGridSection = () => {
+  const sectionRef = useRef(null);
+  const cardRefs = useRef([]);
 
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
-        gap: 1,
-        background: "rgba(201,168,76,0.06)",
-        border: "1px solid rgba(201,168,76,0.06)",
-      }}>
-        {benefits.map((b, i) => (
-          <Reveal key={b.number} delay={i * 0.1}>
-            <TiltCard style={{ height: "100%", position: "relative" }}>
-              <div style={{
-                padding: "52px 44px",
-                background: "#0d0d0d",
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const cards = cardRefs.current.filter(Boolean);
+
+      gsap.set(cards, {
+        opacity: 0,
+        y: 60,
+        scale: 0.97,
+      });
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "+=300%",
+          pin: true,
+          scrub: true,
+          anticipatePin: 1,
+        },
+      });
+
+      tl.from(".benefits-title", {
+        opacity: 0,
+        y: 40,
+        duration: 1.2,
+        ease: "power2.out",
+      });
+
+      cards.forEach((card, i) => {
+        tl.to(
+          card,
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.55,
+            ease: "power2.out",
+          },
+          0.15 + i * 0.1
+        );
+      });
+    }, sectionRef);
+
+    return () => {
+      ctx.revert();
+    };
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      style={{ padding: "120px 24px", position: "relative", minHeight: "100vh" }}
+    >
+      <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+        <div className="benefits-title" style={{ textAlign: "center", marginBottom: 100 }}>
+          <Reveal>
+            <p
+              style={{
+                fontFamily: "Poppins",
+                fontSize: 11,
+                fontWeight: 300,
+                color: "#c9a84c",
+                letterSpacing: "0.4em",
+                textTransform: "uppercase",
+                marginBottom: 24,
+              }}
+            >
+              The Suite
+            </p>
+            <h2
+              style={{
+                fontFamily: "Poppins",
+                fontWeight: 200,
+                fontSize: "clamp(36px, 5vw, 72px)",
+                color: "#f5f0e8",
+                lineHeight: 1.15,
+              }}
+            >
+              Every benefit,
+              <span className="gold-gradient" style={{ fontWeight: 700 }}>
+                {" "}
+                by design.
+              </span>
+            </h2>
+          </Reveal>
+        </div>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))",
+            gap: 1,
+            background: "rgba(201,168,76,0.06)",
+            border: "1px solid rgba(201,168,76,0.06)",
+            marginTop: 32,
+          }}
+        >
+          {benefits.map((b, i) => (
+            <div
+              key={b.number}
+              ref={(el) => {
+                cardRefs.current[i] = el;
+              }}
+              style={{
                 height: "100%",
                 position: "relative",
-                overflow: "hidden",
-                transition: "background 0.4s ease",
+                opacity: 0,
+                transform: "translateY(60px) scale(0.97)",
+                willChange: "transform, opacity",
               }}
-                onMouseEnter={(e) => e.currentTarget.style.background = "#101010"}
-                onMouseLeave={(e) => e.currentTarget.style.background = "#0d0d0d"}
-              >
-                {/* BG Number */}
-                <div style={{
-                  position: "absolute", right: -20, bottom: -20,
-                  fontFamily: "Poppins", fontWeight: 800, fontSize: 140,
-                  color: "rgba(201,168,76,0.03)", lineHeight: 1, pointerEvents: "none",
-                  userSelect: "none",
-                }}>
-                  {b.number}
+            >
+              <TiltCard style={{ height: "100%", position: "relative" }}>
+                <div
+                  style={{
+                    padding: "52px 44px",
+                    background: "#0d0d0d",
+                    height: "100%",
+                    position: "relative",
+                    overflow: "hidden",
+                    transition: "background 0.4s ease",
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#101010")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "#0d0d0d")}
+                >
+                  <div
+                    style={{
+                      position: "absolute",
+                      right: -20,
+                      bottom: -20,
+                      fontFamily: "Poppins",
+                      fontWeight: 800,
+                      fontSize: 140,
+                      color: "rgba(201,168,76,0.03)",
+                      lineHeight: 1,
+                      pointerEvents: "none",
+                      userSelect: "none",
+                    }}
+                  >
+                    {b.number}
+                  </div>
+
+                  <div
+                    style={{
+                      display: "inline-block",
+                      marginBottom: 32,
+                      padding: "4px 12px",
+                      border: "1px solid rgba(201,168,76,0.2)",
+                      borderRadius: 1,
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: "Poppins",
+                        fontSize: 10,
+                        fontWeight: 400,
+                        color: "#c9a84c",
+                        letterSpacing: "0.25em",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      {b.tag}
+                    </span>
+                  </div>
+
+                  <div
+                    style={{
+                      fontSize: 32,
+                      color: "#c9a84c",
+                      marginBottom: 24,
+                      lineHeight: 1,
+                      filter: "drop-shadow(0 0 12px rgba(201,168,76,0.4))",
+                    }}
+                  >
+                    {b.icon}
+                  </div>
+
+                  <p
+                    style={{
+                      fontFamily: "Poppins",
+                      fontSize: 11,
+                      fontWeight: 300,
+                      color: "rgba(245,240,232,0.25)",
+                      letterSpacing: "0.2em",
+                      marginBottom: 12,
+                    }}
+                  >
+                    {b.number}
+                  </p>
+
+                  <h3
+                    style={{
+                      fontFamily: "Poppins",
+                      fontWeight: 600,
+                      fontSize: 26,
+                      color: "#f5f0e8",
+                      marginBottom: 6,
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    {b.title}
+                  </h3>
+                  <p
+                    style={{
+                      fontFamily: "Poppins",
+                      fontWeight: 300,
+                      fontSize: 12,
+                      color: "#c9a84c",
+                      letterSpacing: "0.15em",
+                      textTransform: "uppercase",
+                      marginBottom: 24,
+                    }}
+                  >
+                    {b.sub}
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: "Poppins",
+                      fontWeight: 300,
+                      fontSize: 15,
+                      color: "rgba(245,240,232,0.5)",
+                      lineHeight: 1.8,
+                    }}
+                  >
+                    {b.desc}
+                  </p>
+
+                  <div
+                    style={{
+                      position: "absolute",
+                      bottom: 0,
+                      left: 0,
+                      width: "0%",
+                      height: 1,
+                      background: "linear-gradient(90deg, #c9a84c, #f0d080)",
+                      transition: "width 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+                    }}
+                    className="card-bottom-line"
+                  />
                 </div>
-
-                {/* Tag */}
-                <div style={{
-                  display: "inline-block", marginBottom: 32,
-                  padding: "4px 12px", border: "1px solid rgba(201,168,76,0.2)",
-                  borderRadius: 1,
-                }}>
-                  <span style={{
-                    fontFamily: "Poppins", fontSize: 10, fontWeight: 400,
-                    color: "#c9a84c", letterSpacing: "0.25em", textTransform: "uppercase",
-                  }}>{b.tag}</span>
-                </div>
-
-                {/* Icon */}
-                <div style={{
-                  fontSize: 32, color: "#c9a84c", marginBottom: 24, lineHeight: 1,
-                  filter: "drop-shadow(0 0 12px rgba(201,168,76,0.4))",
-                }}>
-                  {b.icon}
-                </div>
-
-                {/* Number */}
-                <p style={{
-                  fontFamily: "Poppins", fontSize: 11, fontWeight: 300,
-                  color: "rgba(245,240,232,0.25)", letterSpacing: "0.2em",
-                  marginBottom: 12,
-                }}>
-                  {b.number}
-                </p>
-
-                <h3 style={{
-                  fontFamily: "Poppins", fontWeight: 600, fontSize: 26,
-                  color: "#f5f0e8", marginBottom: 6, lineHeight: 1.2,
-                }}>
-                  {b.title}
-                </h3>
-                <p style={{
-                  fontFamily: "Poppins", fontWeight: 300, fontSize: 12,
-                  color: "#c9a84c", letterSpacing: "0.15em", textTransform: "uppercase",
-                  marginBottom: 24,
-                }}>
-                  {b.sub}
-                </p>
-                <p style={{
-                  fontFamily: "Poppins", fontWeight: 300, fontSize: 15,
-                  color: "rgba(245,240,232,0.5)", lineHeight: 1.8,
-                }}>
-                  {b.desc}
-                </p>
-
-                {/* Bottom border accent */}
-                <div style={{
-                  position: "absolute", bottom: 0, left: 0,
-                  width: "0%", height: 1,
-                  background: "linear-gradient(90deg, #c9a84c, #f0d080)",
-                  transition: "width 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
-                }}
-                  className="card-bottom-line"
-                />
-              </div>
-            </TiltCard>
-          </Reveal>
-        ))}
+              </TiltCard>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
-    <style>{`
-      .card-tilt:hover .card-bottom-line { width: 100% !important; }
-    `}</style>
-  </section>
-);
+      <style>{`
+        .card-tilt:hover .card-bottom-line { width: 100% !important; }
+      `}</style>
+    </section>
+  );
+};
 
 // ─── Section 4: Cinematic Stat Section ───────────────────────────────────────
 const stats = [
@@ -724,55 +1108,146 @@ const stories = [
     accent: "Wealth that transcends generations.",
     align: "left",
   },
+  {
+    eyebrow: "Security",
+    title: "Fortified architecture for absolute peace of mind.",
+    body: "Military-grade encryption. Institutional storage. Your assets are shielded by the most advanced security protocols ever deployed in personal finance.",
+    accent: "Impenetrable. Invulnerable.",
+    align: "right",
+  }
 ];
 
 const StorySection = () => (
-  <section style={{ padding: "80px 24px 160px", position: "relative" }}>
+  <section style={{ padding: "120px 24px 160px", position: "relative" }}>
     <div style={{ maxWidth: 1280, margin: "0 auto" }}>
-      {stories.map((story, i) => (
-        <Reveal key={story.eyebrow} delay={0.1}>
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 80,
-            padding: "100px 0",
-            borderBottom: i < stories.length - 1 ? "1px solid rgba(201,168,76,0.06)" : "none",
-            alignItems: "center",
-          }}
+      
+      {/* 2. Cinematic Section Intro Reveal */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }}
+        style={{ marginBottom: 100 }}
+      >
+        <h2 style={{
+          fontFamily: "Poppins", fontWeight: 700, letterSpacing: "0.05em",
+          fontSize: "clamp(36px, 6vw, 72px)", color: "#f5f0e8",
+          textAlign: "center", borderBottom: "1px solid rgba(201,168,76,0.1)",
+          paddingBottom: 40, textTransform: "uppercase"
+        }}>
+          Selected Work
+        </h2>
+      </motion.div>
+
+      {/* 3. The Storytelling Sequence */}
+      {stories.map((story, i) => {
+        // Layout logic: determines direction of the cinematic pull
+        const isTextLeft = story.align === "left";
+        const imageClipInitial = isTextLeft ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)";
+        
+        // Increased translation travel distance for a grander cinematic "pull" speed reduction
+        const imageXInitial = isTextLeft ? 90 : -90;
+
+        return (
+          <motion.div
+            key={story.eyebrow}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-30%" }} // Adjusted viewport offset to strictly separate project entries
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 80,
+              padding: "160px 0", // Increased row padding to create a physical spatial "hold" moment during scroll navigation
+              borderBottom: i < stories.length - 1 ? "1px solid rgba(201,168,76,0.06)" : "none",
+              alignItems: "center",
+            }}
             className="story-grid"
           >
-            {/* Text side */}
-            <div style={{ order: story.align === "right" ? 2 : 0 }}>
-              <p style={{
-                fontFamily: "Poppins", fontSize: 11, fontWeight: 300, color: "#c9a84c",
-                letterSpacing: "0.4em", textTransform: "uppercase", marginBottom: 28,
-              }}>
+            {/* --- TEXT REVEAL SEQUENCE --- */}
+            {/* Elevated delays give the image ample time to unfold before typography smoothly layers in */}
+            <div style={{ order: isTextLeft ? 0 : 2 }}>
+              <motion.p
+                variants={{
+                  hidden: { opacity: 0, y: 30 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 1.0, delay: 0.9, ease: [0.16, 1, 0.3, 1] } }
+                }}
+                style={{
+                  fontFamily: "Poppins", fontSize: 13, fontWeight: 500, color: "#c9a84c",
+                  letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 28,
+                }}
+              >
+                <span style={{ fontSize: 24, fontWeight: 300, marginRight: 12 }}>
+                  {["01", "02", "03", "04"][i]}
+                </span> 
                 {story.eyebrow}
-              </p>
-              <h3 style={{
-                fontFamily: "Poppins", fontWeight: 300,
-                fontSize: "clamp(28px, 3.5vw, 52px)", lineHeight: 1.2,
-                color: "#f5f0e8", marginBottom: 28,
-              }}>
-                <StaggerText text={story.title} />
-              </h3>
-              <p style={{
-                fontFamily: "Poppins", fontWeight: 300, fontSize: 17,
-                color: "rgba(245,240,232,0.45)", lineHeight: 1.9, marginBottom: 36,
-                maxWidth: 480,
-              }}>
+              </motion.p>
+
+              <motion.h3
+                variants={{
+                  hidden: { opacity: 0, y: 30 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 1.0, delay: 1.1, ease: [0.16, 1, 0.3, 1] } }
+                }}
+                style={{
+                  fontFamily: "Poppins", fontWeight: 300,
+                  fontSize: "clamp(28px, 3.5vw, 52px)", lineHeight: 1.2,
+                  color: "#f5f0e8", marginBottom: 28,
+                }}
+              >
+                <StaggerText text={story.title} delay={1.1} />
+              </motion.h3>
+
+              <motion.p
+                variants={{
+                  hidden: { opacity: 0, y: 30 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 1.0, delay: 1.3, ease: [0.16, 1, 0.3, 1] } }
+                }}
+                style={{
+                  fontFamily: "Poppins", fontWeight: 300, fontSize: 17,
+                  color: "rgba(245,240,232,0.45)", lineHeight: 1.9, marginBottom: 36,
+                  maxWidth: 480,
+                }}
+              >
                 {story.body}
-              </p>
-              <p style={{
-                fontFamily: "Poppins", fontWeight: 500, fontSize: 15,
-                color: "#c9a84c", letterSpacing: "0.05em",
-              }}>
-                — {story.accent}
-              </p>
+              </motion.p>
+
+              <motion.div
+                variants={{
+                  hidden: { opacity: 0, y: 30 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 1.0, delay: 1.5, ease: [0.16, 1, 0.3, 1] } }
+                }}
+              >
+                <p style={{
+                  fontFamily: "Poppins", fontWeight: 500, fontSize: 15,
+                  color: "#c9a84c", letterSpacing: "0.05em", display: "inline-block"
+                }}>
+                  — {story.accent}
+                </p>
+                {/* Appended CTA to match the reference images */}
+                <span style={{
+                  marginLeft: 32, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.1em",
+                  borderBottom: "1px solid rgba(201,168,76,0.4)", paddingBottom: 4, cursor: "pointer", color: "#f5f0e8"
+                }}>
+                  View Case Study →
+                </span>
+              </motion.div>
             </div>
 
-            {/* Visual side */}
-            <div style={{ order: story.align === "right" ? 0 : 1, position: "relative" }}>
+            {/* --- VISUAL REVEAL SEQUENCE --- */}
+            {/* Extended duration to 2.2s combined with custom ultra-smooth ease curve and subtle depth scale shift */}
+            <motion.div
+              variants={{
+                hidden: { opacity: 0.2, clipPath: imageClipInitial, x: imageXInitial, scale: 0.96 },
+                visible: { 
+                  opacity: 1, 
+                  clipPath: "inset(0 0% 0 0)", 
+                  x: 0, 
+                  scale: 1,
+                  transition: { duration: 2.2, ease: [0.16, 1, 0.3, 1] } 
+                }
+              }}
+              style={{ order: isTextLeft ? 1 : 0, position: "relative" }}
+            >
               <TiltCard style={{ borderRadius: 4 }}>
                 <div className="glass" style={{
                   borderRadius: 4, padding: "80px 60px",
@@ -804,8 +1279,9 @@ const StorySection = () => (
                     fontFamily: "Poppins", fontWeight: 200, fontSize: 22,
                     color: "rgba(245,240,232,0.6)", textAlign: "center", lineHeight: 1.6,
                   }}>
-                    {["01", "02", "03"][i]} / {story.eyebrow}
+                    {story.eyebrow}
                   </p>
+                  
                   {/* Corner accents */}
                   {["top left", "top right", "bottom left", "bottom right"].map((pos) => {
                     const [v, h] = pos.split(" ");
@@ -822,15 +1298,17 @@ const StorySection = () => (
                   })}
                 </div>
               </TiltCard>
-            </div>
-          </div>
-        </Reveal>
-      ))}
+            </motion.div>
+
+          </motion.div>
+        );
+      })}
     </div>
     <style>{`
       @media (max-width: 768px) {
-        .story-grid { grid-template-columns: 1fr !important; gap: 40px !important; }
-        .story-grid > div { order: unset !important; }
+        .story-grid { grid-template-columns: 1fr !important; gap: 40px !important; padding: 80px 0 !important; }
+        /* On mobile, stack image first, then text, regardless of L/R alignment */
+        .story-grid > div:nth-child(2) { order: -1 !important; } 
       }
     `}</style>
   </section>
