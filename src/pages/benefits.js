@@ -1316,33 +1316,42 @@ const StorySection = () => (
                   justifyContent: "center", alignItems: "center",
                   position: "relative", overflow: "hidden",
                 }}>
-                  {/* Decorative element */}
-                  <div style={{ position: "relative", marginBottom: 40 }}>
-                    <div style={{
-                      width: 120, height: 120, borderRadius: "50%",
-                      border: "1px solid rgba(201,168,76,0.2)",
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                    }}>
-                      <div style={{
-                        width: 80, height: 80, borderRadius: "50%",
-                        border: "1px solid rgba(201,168,76,0.3)",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                      }}>
-                        <div style={{
-                          width: 40, height: 40, borderRadius: "50%",
-                          background: "linear-gradient(135deg, #c9a84c, #f0d080)",
-                          boxShadow: "0 0 30px rgba(201,168,76,0.4)",
-                        }} />
-                      </div>
-                    </div>
-                  </div>
-                  <p style={{
-                    fontFamily: "Poppins", fontWeight: 200, fontSize: 22,
-                    color: "rgba(245,240,232,0.6)", textAlign: "center", lineHeight: 1.6,
-                  }}>
-                    {story.eyebrow}
-                  </p>
-                  
+                  <img
+                    src="/ceo.png"
+                    alt={story.eyebrow}
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      objectPosition: "center",
+                      display: "block",
+                      transform: "scale(1.02)",
+                    }}
+                  />
+
+                  <div
+                    aria-hidden="true"
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      background:
+                        "linear-gradient(135deg, rgba(10,10,10,0.82) 0%, rgba(10,10,10,0.42) 40%, rgba(10,10,10,0.68) 100%)",
+                    }}
+                  />
+
+                  <div
+                    aria-hidden="true"
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      background:
+                        "radial-gradient(circle at 50% 45%, rgba(201,168,76,0.12) 0%, transparent 40%)",
+                      mixBlendMode: "screen",
+                    }}
+                  />
+
                   {/* Corner accents */}
                   {["top left", "top right", "bottom left", "bottom right"].map((pos) => {
                     const [v, h] = pos.split(" ");
@@ -1357,6 +1366,23 @@ const StorySection = () => (
                       }} />
                     );
                   })}
+
+                  <div style={{
+                    position: "relative",
+                    zIndex: 1,
+                    marginTop: "auto",
+                    alignSelf: "flex-start",
+                  }}>
+                    <p style={{
+                      fontFamily: "Poppins",
+                      fontWeight: 200,
+                      fontSize: 22,
+                      color: "rgba(245,240,232,0.65)",
+                      lineHeight: 1.6,
+                    }}>
+                      {story.eyebrow}
+                    </p>
+                  </div>
                 </div>
               </TiltCard>
             </motion.div>
