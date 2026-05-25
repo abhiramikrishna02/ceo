@@ -89,7 +89,7 @@ export default function HomeOfferSection() {
   return (
     <section
       ref={sectionRef}
-      className="relative isolate overflow-hidden border-t border-white/10 bg-black px-6 py-24 sm:px-10 lg:px-12"
+      className="relative isolate overflow-hidden border-t border-white/10 bg-black px-6 py-28 sm:px-10 sm:py-32 lg:min-h-[820px] lg:px-12 lg:py-36"
     >
       <DottedSurface className="opacity-45" />
 
@@ -103,11 +103,11 @@ export default function HomeOfferSection() {
         )}
       />
 
-      <div className="relative z-10 mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
+      <div className="relative z-10 mx-auto grid w-full max-w-7xl gap-16 lg:grid-cols-[0.95fr_1.05fr] lg:items-center lg:gap-20">
         <div style={revealStyle(sectionVisible)}>
           <motion.div
             style={{ y: titleY, x: titleX, rotate: titleRotate }}
-            className="will-change-transform"
+            className="max-w-2xl will-change-transform"
           >
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-white/40">
               What Gets Built
@@ -122,10 +122,10 @@ export default function HomeOfferSection() {
           </motion.div>
         </div>
 
-        <div className="grid gap-5" style={revealStyle(sectionVisible, 160)}>
+        <div className="grid gap-8" style={revealStyle(sectionVisible, 160)}>
           <motion.div
             style={{ y: cardY, x: cardX, rotate: cardRotate }}
-            className="rounded-lg border border-white/10 bg-black/60 p-6 backdrop-blur-xl will-change-transform"
+            className="rounded-lg border border-white/10 bg-black/60 p-7 sm:p-8 backdrop-blur-xl will-change-transform"
           >
             <div className="flex items-center gap-3">
               <CircleDot className="h-5 w-5 text-white/60" />
@@ -133,7 +133,7 @@ export default function HomeOfferSection() {
             </div>
 
             <motion.div
-              className="mt-6 grid gap-3"
+              className="mt-7 grid gap-4"
               variants={listVariants}
               initial="hidden"
               whileInView="show"
@@ -143,7 +143,7 @@ export default function HomeOfferSection() {
                 <motion.div
                   key={service}
                   variants={itemVariants}
-                  className="flex items-start gap-3 border-t border-white/10 pt-3 first:border-t-0 first:pt-0"
+                  className="flex items-start gap-3 border-t border-white/10 pt-4 first:border-t-0 first:pt-0"
                 >
                   <Check className="mt-0.5 h-4 w-4 shrink-0 text-white/70" />
                   <p className="leading-7 text-white/70">{service}</p>
@@ -154,7 +154,7 @@ export default function HomeOfferSection() {
 
           <motion.div
             style={{ y: metricsY, x: metricsX }}
-            className="grid gap-4 sm:grid-cols-3 will-change-transform"
+            className="grid gap-5 sm:grid-cols-3 will-change-transform"
           >
             {metrics.map((metric, index) => (
               <motion.div
@@ -164,7 +164,7 @@ export default function HomeOfferSection() {
                 whileInView="show"
                 viewport={{ once: false, amount: 0.45 }}
                 transition={{ delay: index * 0.08 }}
-                className="rounded-lg border border-white/10 bg-black/60 p-5 backdrop-blur-xl"
+                className="rounded-lg border border-white/10 bg-black/60 p-6 backdrop-blur-xl"
               >
                 <p className="text-3xl font-semibold text-white">{metric.value}</p>
                 <p className="mt-2 text-sm leading-6 text-white/55">
