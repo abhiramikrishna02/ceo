@@ -1,895 +1,537 @@
-"use client";
-
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Check, CircleDot } from "lucide-react";
-
 import SiteNavbar from "@/components/layout/site-navbar";
-import { cn } from "@/lib/utils";
 
-const SCENES = [
-  {
-    id: 0,
-    chapter: "01",
-    label: "Atmosphere",
-    title: "Clarity.\nDirection.\nExecution.",
-    body:
-      "A cinematic about page built as a scroll story, not a static wall of text.",
-    visual: "intro",
-  },
-  {
-    id: 1,
-    chapter: "02",
-    label: "Arrival",
-    title: "We help leaders\nthink clearer.",
-    body:
-      "CEO Studio is the strategic partner for founders and executives who need clarity, not noise.",
-    visual: "glow-panel",
-  },
-  {
-    id: 2,
-    chapter: "03",
-    label: "Tension",
-    title: "The pressure\nnever stops.",
-    body:
-      "Fast growth hides slow confusion. Every morning brings decisions no framework was built to answer.",
-    visual: "shards",
-  },
-  {
-    id: 3,
-    chapter: "04",
-    label: "Clarity",
-    title: "There is a\nway through.",
-    body:
-      "We bring a live thinking system into the room - structured, precise, built around how you actually decide.",
-    visual: "ring-open",
-  },
-  {
-    id: 4,
-    chapter: "05",
-    label: "Rhythm",
-    title: "Cadence creates\nmomentum.",
-    body:
-      "Consistent language. Weekly rhythm. Shared maps. When the team runs on the same clock, execution flows.",
-    visual: "rails",
-  },
-  {
-    id: 5,
-    chapter: "06",
-    label: "Alignment",
-    title: "Your team\naligns faster.",
-    body:
-      "We work at the leadership layer - with you and your direct reports. Alignment is a system, not a meeting.",
-    visual: "grid",
-  },
-  {
-    id: 6,
-    chapter: "07",
-    label: "Execution",
-    title: "Decisions lock\ninto motion.",
-    body:
-      "When the thinking is done well, the doing becomes easy. Teams stop waiting for clarity and start building.",
-    visual: "streaks",
-  },
-  {
-    id: 7,
-    chapter: "08",
-    label: "Trust",
-    title: "Consistency\nbuilds everything.",
-    body:
-      "Same quality. Same language. Quarter after quarter. The organisations that endure are the most dependable.",
-    visual: "symmetry",
-  },
-  {
-    id: 8,
-    chapter: "09",
-    label: "Resolve",
-    title: "Quiet confidence\nis the goal.",
-    body:
-      "Not louder. Not faster. Just clearer - until the whole organisation moves with precision.",
-    visual: "ring-close",
-  },
-  {
-    id: 9,
-    chapter: "10",
-    label: "Begin",
-    title: "Ready to think\nclearer?",
-    body: "The first conversation is always the most revealing.",
-    visual: "cta",
-  },
+const PRINCIPLES = [
+  { num: "01", title: "Clarity over noise", body: "We strip away complexity that slows organisations down. Every engagement ends with sharper thinking, not more frameworks." },
+  { num: "02", title: "Precision in language", body: "Vague language produces vague decisions. We build shared vocabulary that makes alignment automatic." },
+  { num: "03", title: "Rhythm creates momentum", body: "Consistent cadence beats sporadic intensity. We install operating rhythms that compound over time." },
+  { num: "04", title: "Leaders shape culture", body: "The way a leader thinks becomes the way a company moves. We work at the source." },
 ];
 
-const SERVICES = [
-  "Homepage narrative and section strategy",
-  "Responsive interface design direction",
-  "Conversion-focused contact path",
-  "Motion and visual polish for premium pacing",
+const PROCESS = [
+  { step: "Diagnose", desc: "A deep-dive into how decisions are actually made — not how they should be made on paper." },
+  { step: "Design",   desc: "We build a bespoke operating system: language, cadence, decision architecture." },
+  { step: "Install",  desc: "Live sessions with you and your leadership team. We work in the room, not from a deck." },
+  { step: "Sustain",  desc: "Quarterly reviews and on-call access. Clarity is a practice, not a one-time event." },
 ];
 
-const METRICS = [
-  { value: "05", label: "Focused sections" },
-  { value: "01", label: "Clear next action" },
-  { value: "24/7", label: "Always-on first impression" },
+const STATS = [
+  { value: "12+", label: "Years advising executives" },
+  { value: "94%", label: "Client retention rate" },
+  { value: "3×",  label: "Average decision velocity" },
 ];
+
+// ── Spotlight card hook ──────────────────────────────────────────────────────
+function useSpotlight(ref) {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const onMove = (e) => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty("--sx", `${e.clientX - r.left}px`);
+      el.style.setProperty("--sy", `${e.clientY - r.top}px`);
+    };
+    el.addEventListener("mousemove", onMove);
+    return () => el.removeEventListener("mousemove", onMove);
+  }, []);
+}
+
+function PrincipleCard({ p, index, setRef }) {
+  const cardRef = useRef(null);
+  useSpotlight(cardRef);
+  return (
+    <div
+      ref={(el) => { cardRef.current = el; setRef(el); }}
+      className="principle-card"
+    >
+      <div className="pc-spotlight" />
+      <span className="principle-num">{p.num}</span>
+      <h3 className="principle-title">{p.title}</h3>
+      <p className="principle-body">{p.body}</p>
+    </div>
+  );
+}
 
 export default function About() {
-  const rootRef = useRef(null);
-  const trackRef = useRef(null);
-  const progressRef = useRef(null);
+  const rootRef    = useRef(null);
+  const canvasRef  = useRef(null);
+  const heroRef    = useRef(null);
+  const linesRef   = useRef([]);
+  const manifestoRef = useRef(null);
+  const statsRef   = useRef([]);
+  const principlesRef = useRef([]);
+  const connLineRef = useRef(null);
+  const processRef = useRef([]);
+  const ctaRef     = useRef(null);
+  const cursorRef  = useRef(null);
+  const cursorDotRef = useRef(null);
 
-  const shellRefs = useRef([]);
-  const contentRefs = useRef([]);
-  const visualRefs = useRef([]);
-
-  const [active, setActive] = useState(0);
-
+  // ── Noise canvas orb ──────────────────────────────────────────────────────
   useEffect(() => {
-    document.title = "About - CEO Studio";
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    let raf, t = 0;
+    const resize = () => { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; };
+    resize();
+    window.addEventListener("resize", resize);
+
+    const draw = () => {
+      const { width: w, height: h } = canvas;
+      ctx.clearRect(0, 0, w, h);
+      t += 0.008;
+
+      // Rotating arcs
+      const cx = w / 2, cy = h / 2;
+      const maxR = Math.min(w, h) * 0.42;
+      for (let i = 0; i < 5; i++) {
+        const r = maxR * (0.3 + i * 0.16);
+        const start = t * (i % 2 === 0 ? 1 : -1.3) + i;
+        const end = start + Math.PI * (0.6 + i * 0.18);
+        const alpha = 0.08 + i * 0.04;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, start, end);
+        ctx.strokeStyle = `rgba(212,175,55,${alpha})`;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      // Pulsing core glow
+      const pulse = 0.5 + 0.5 * Math.sin(t * 2.2);
+      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxR * 0.55);
+      grad.addColorStop(0, `rgba(212,175,55,${0.18 + pulse * 0.12})`);
+      grad.addColorStop(0.5, `rgba(212,175,55,${0.04 + pulse * 0.04})`);
+      grad.addColorStop(1, "rgba(212,175,55,0)");
+      ctx.beginPath();
+      ctx.arc(cx, cy, maxR * 0.55, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Floating particles
+      for (let i = 0; i < 18; i++) {
+        const angle = (i / 18) * Math.PI * 2 + t * (i % 3 === 0 ? 0.4 : -0.3);
+        const dist = maxR * (0.25 + 0.55 * ((i * 137.5) % 1));
+        const px = cx + Math.cos(angle) * dist;
+        const py = cy + Math.sin(angle) * dist;
+        const a = 0.15 + 0.35 * Math.abs(Math.sin(t + i));
+        ctx.beginPath();
+        ctx.arc(px, py, 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(212,175,55,${a})`;
+        ctx.fill();
+      }
+
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); };
   }, []);
 
+  // ── GSAP animations ───────────────────────────────────────────────────────
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
-    const mm = gsap.matchMedia();
-
     const ctx = gsap.context(() => {
-      mm.add("(min-width: 1100px)", () => {
-        shellRefs.current.forEach((shell, i) => {
-          if (!shell) return;
 
-          const content = contentRefs.current[i];
-          const visual = visualRefs.current[i];
-          const chips = shell.querySelectorAll("[data-intro-chip]");
-          const metrics = shell.querySelectorAll("[data-intro-metric]");
-
-          const baseStart = i === 0 ? "top 82%" : "top 78%";
-          const baseEnd = i === 0 ? "top 42%" : "top 35%";
-
-          const tl = gsap.timeline({
-            scrollTrigger: {
-              trigger: shell,
-              start: baseStart,
-              end: baseEnd,
-              scrub: 1,
-              onEnter: () => setActive(i),
-              onEnterBack: () => setActive(i),
-            },
-          });
-
-          if (content) {
-            tl.fromTo(
-              content,
-              { y: 70, opacity: 0, filter: "blur(12px)", scale: 0.985 },
-              { y: 0, opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.65 },
-              0
-            );
-          }
-
-          if (visual) {
-            tl.fromTo(
-              visual,
-              {
-                y: 96,
-                x: i % 2 === 0 ? 52 : -52,
-                rotate: i % 2 === 0 ? 8 : -8,
-                opacity: 0,
-                scale: 0.96,
-              },
-              { y: 0, x: 0, rotate: 0, opacity: 1, scale: 1, duration: 0.9 },
-              0.03
-            );
-          }
-
-          if (chips && chips.length) {
-            tl.fromTo(
-              chips,
-              { y: 24, opacity: 0 },
-              { y: 0, opacity: 1, stagger: 0.05, duration: 0.45 },
-              0.08
-            );
-          }
-
-          if (metrics && metrics.length) {
-            tl.fromTo(
-              metrics,
-              { y: 28, opacity: 0 },
-              { y: 0, opacity: 1, stagger: 0.06, duration: 0.45 },
-              0.05
-            );
-          }
-
-          gsap.to(shell, {
-            scrollTrigger: {
-              trigger: shell,
-              start: "bottom 68%",
-              end: "bottom 38%",
-              scrub: true,
-            },
-            y: -28,
-            opacity: 0.98,
-            ease: "none",
-          });
-
-          if (visual) {
-            switch (SCENES[i].visual) {
-              case "shards":
-                gsap.fromTo(
-                  visual.querySelectorAll(".shard"),
-                  { y: 12, rotation: 4, opacity: 0 },
-                  {
-                    y: -18,
-                    rotation: 22,
-                    opacity: 1,
-                    stagger: 0.08,
-                    ease: "power3.out",
-                    scrollTrigger: {
-                      trigger: shell,
-                      start: "top 82%",
-                      end: "top 35%",
-                      scrub: true,
-                    },
-                  }
-                );
-                break;
-              case "ring-open":
-                gsap.fromTo(
-                  visual.querySelectorAll(".ro-core, .ro-mid, .ro-outer"),
-                  { scale: 0.86, opacity: 0.6 },
-                  {
-                    scale: 1,
-                    opacity: 1,
-                    stagger: 0.06,
-                    ease: "power2.out",
-                    scrollTrigger: {
-                      trigger: shell,
-                      start: "top 82%",
-                      end: "top 35%",
-                      scrub: true,
-                    },
-                  }
-                );
-                break;
-              case "ring-close":
-                gsap.fromTo(
-                  visual.querySelectorAll(".rc-core, .rc-mid, .rc-outer"),
-                  { scale: 1.12, opacity: 0.65 },
-                  {
-                    scale: 1,
-                    opacity: 1,
-                    stagger: 0.06,
-                    ease: "power2.out",
-                    scrollTrigger: {
-                      trigger: shell,
-                      start: "top 82%",
-                      end: "top 35%",
-                      scrub: true,
-                    },
-                  }
-                );
-                break;
-              default:
-                break;
-            }
-          }
-        });
-
-        ScrollTrigger.create({
-          trigger: trackRef.current,
-          start: "top top",
-          end: () => `+=${window.innerHeight * (SCENES.length - 1)}`,
-          pin: trackRef.current,
-          pinSpacing: false,
-          scrub: 0.6,
-          onUpdate: (self) => {
-            if (progressRef.current) {
-              progressRef.current.style.transform = `scaleX(${self.progress})`;
-            }
-            const idx = Math.min(
-              SCENES.length - 1,
-              Math.round(self.progress * (SCENES.length - 1))
-            );
-            setActive(idx);
-          },
-        });
+      // Hero lines clip-reveal
+      linesRef.current.forEach((el, i) => {
+        if (!el) return;
+        gsap.fromTo(el,
+          { yPercent: 110, opacity: 0 },
+          { yPercent: 0, opacity: 1, duration: 1, ease: "power4.out", delay: 0.3 + i * 0.15 }
+        );
       });
 
-      mm.add("(max-width: 1099px)", () => {
-        shellRefs.current.forEach((shell, i) => {
-          if (!shell) return;
-          const content = contentRefs.current[i];
-          const visual = visualRefs.current[i];
-          const chips = shell.querySelectorAll("[data-intro-chip]");
-          const metrics = shell.querySelectorAll("[data-intro-metric]");
+      // Manifesto word scrub
+      if (manifestoRef.current) {
+        const words = manifestoRef.current.querySelectorAll(".mw");
+        gsap.fromTo(words,
+          { opacity: 0.1 },
+          { opacity: 1, stagger: 0.035, ease: "none",
+            scrollTrigger: { trigger: manifestoRef.current, start: "top 70%", end: "bottom 35%", scrub: 1 } }
+        );
+      }
 
-          if (content) {
-            gsap.fromTo(
-              content,
-              { y: 28, opacity: 0 },
-              {
-                y: 0,
-                opacity: 1,
-                ease: "power2.out",
-                scrollTrigger: {
-                  trigger: shell,
-                  start: "top 85%",
-                  end: "top 60%",
-                  scrub: false,
-                  toggleActions: "play none none reverse",
-                },
-              }
-            );
-          }
-
-          if (visual) {
-            gsap.fromTo(
-              visual,
-              { y: 32, opacity: 0 },
-              {
-                y: 0,
-                opacity: 1,
-                ease: "power2.out",
-                scrollTrigger: {
-                  trigger: shell,
-                  start: "top 85%",
-                  end: "top 60%",
-                  scrub: false,
-                  toggleActions: "play none none reverse",
-                },
-              }
-            );
-          }
-
-          if (chips && chips.length) {
-            gsap.fromTo(
-              chips,
-              { y: 16, opacity: 0 },
-              {
-                y: 0,
-                opacity: 1,
-                stagger: 0.04,
-                ease: "power2.out",
-                scrollTrigger: {
-                  trigger: shell,
-                  start: "top 88%",
-                  end: "top 62%",
-                  scrub: false,
-                  toggleActions: "play none none reverse",
-                },
-              }
-            );
-          }
-
-          if (metrics && metrics.length) {
-            gsap.fromTo(
-              metrics,
-              { y: 18, opacity: 0 },
-              {
-                y: 0,
-                opacity: 1,
-                stagger: 0.04,
-                ease: "power2.out",
-                scrollTrigger: {
-                  trigger: shell,
-                  start: "top 88%",
-                  end: "top 62%",
-                  scrub: false,
-                  toggleActions: "play none none reverse",
-                },
-              }
-            );
-          }
-
-          ScrollTrigger.create({
-            trigger: shell,
-            start: "top center",
-            end: "bottom center",
-            onEnter: () => setActive(i),
-            onEnterBack: () => setActive(i),
-          });
-        });
-
-        ScrollTrigger.create({
-          trigger: trackRef.current,
-          start: "top top",
-          end: () => `+=${window.innerHeight * (SCENES.length - 1)}`,
-          scrub: 1,
-          onUpdate: (self) => {
-            if (progressRef.current) {
-              progressRef.current.style.transform = `scaleX(${self.progress})`;
-            }
-            const idx = Math.min(
-              SCENES.length - 1,
-              Math.round(self.progress * (SCENES.length - 1))
-            );
-            setActive(idx);
-          },
-        });
+      // Stats clip-path fill reveal
+      statsRef.current.forEach((el, i) => {
+        if (!el) return;
+        const fill = el.querySelector(".stat-fill");
+        if (!fill) return;
+        gsap.fromTo(fill,
+          { clipPath: "inset(0 100% 0 0)" },
+          { clipPath: "inset(0 0% 0 0)", duration: 1.2, ease: "power3.out",
+            scrollTrigger: { trigger: el, start: "top 82%", toggleActions: "play none none reverse" },
+            delay: i * 0.15 }
+        );
       });
+
+      // Principles stagger
+      principlesRef.current.forEach((el, i) => {
+        if (!el) return;
+        gsap.fromTo(el,
+          { y: 60, opacity: 0, scale: 0.96 },
+          { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: "power3.out",
+            scrollTrigger: { trigger: el, start: "top 88%", toggleActions: "play none none reverse" },
+            delay: i * 0.1 }
+        );
+      });
+
+      // Process connecting line draw
+      if (connLineRef.current) {
+        gsap.fromTo(connLineRef.current,
+          { scaleY: 0 },
+          { scaleY: 1, ease: "none",
+            scrollTrigger: { trigger: ".process-list", start: "top 70%", end: "bottom 60%", scrub: 1 } }
+        );
+      }
+
+      // Process items
+      processRef.current.forEach((el, i) => {
+        if (!el) return;
+        gsap.fromTo(el,
+          { x: 50, opacity: 0 },
+          { x: 0, opacity: 1, duration: 0.7, ease: "power3.out",
+            scrollTrigger: { trigger: el, start: "top 88%", toggleActions: "play none none reverse" },
+            delay: i * 0.1 }
+        );
+      });
+
+      // CTA
+      if (ctaRef.current) {
+        gsap.fromTo(ctaRef.current,
+          { y: 80, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1.1, ease: "power3.out",
+            scrollTrigger: { trigger: ctaRef.current, start: "top 80%", toggleActions: "play none none reverse" } }
+        );
+      }
 
       ScrollTrigger.refresh();
     }, rootRef);
-
-    return () => {
-      mm.revert();
-      ctx.revert();
-    };
+    return () => ctx.revert();
   }, []);
 
-  const scrollToScene = (i) => {
-    if (!trackRef.current) return;
-    const top = trackRef.current.getBoundingClientRect().top + window.scrollY;
-    window.scrollTo({ top: top + i * window.innerHeight, behavior: "smooth" });
-  };
+  // ── Magnetic cursor ───────────────────────────────────────────────────────
+  useEffect(() => {
+    const ring = cursorRef.current;
+    const dot  = cursorDotRef.current;
+    if (!ring || !dot) return;
+    let mx = -100, my = -100, cx = -100, cy = -100, raf;
+    const onMove = (e) => { mx = e.clientX; my = e.clientY; };
+    window.addEventListener("mousemove", onMove);
+    const tick = () => {
+      cx += (mx - cx) * 0.1; cy += (my - cy) * 0.1;
+      ring.style.transform = `translate(${cx - 22}px,${cy - 22}px)`;
+      dot.style.transform  = `translate(${mx - 3}px,${my - 3}px)`;
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    const grow = () => ring.classList.add("cursor-grow");
+    const shrink = () => ring.classList.remove("cursor-grow");
+    document.querySelectorAll("a,button,.principle-card,.process-item,.stat-card").forEach(el => {
+      el.addEventListener("mouseenter", grow);
+      el.addEventListener("mouseleave", shrink);
+    });
+    return () => { window.removeEventListener("mousemove", onMove); cancelAnimationFrame(raf); };
+  }, []);
+
+  // ── Rotating CTA ring text ────────────────────────────────────────────────
+  useEffect(() => {
+    const el = document.querySelector(".cta-ring-text");
+    if (!el) return;
+    let angle = 0, raf;
+    const spin = () => { angle += 0.25; el.style.transform = `rotate(${angle}deg)`; raf = requestAnimationFrame(spin); };
+    raf = requestAnimationFrame(spin);
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   return (
-    <div ref={rootRef} className="ceo-page">
+    <div ref={rootRef} className="about-root">
       <style>{STYLES}</style>
-
       <SiteNavbar />
 
-      <div ref={progressRef} className="ceo-progress" />
+      {/* Cursor */}
+      <div ref={cursorRef} className="cursor-ring" />
+      <div ref={cursorDotRef} className="cursor-dot" />
 
-      <div ref={trackRef} className="ceo-track">
-        <div className="ceo-stage">
-          <div className="orb-main" />
-          <div className="orb-secondary" />
-          <div className="vig-top" />
-          <div className="vig-bot" />
-          <div className="gold-streak gs-1" />
-          <div className="gold-streak gs-2" />
-
-          {SCENES.map((scene, i) => (
-            <SceneShell
-              key={scene.id}
-              scene={scene}
-              index={i}
-              setShellRef={(el) => {
-                shellRefs.current[i] = el;
-              }}
-              setContentRef={(el) => {
-                contentRefs.current[i] = el;
-              }}
-              setVisualRef={(el) => {
-                visualRefs.current[i] = el;
-              }}
-            />
-          ))}
-        </div>
-      </div>
-
-      <div className="scene-dots">
-        {SCENES.map((_, i) => (
-          <button
-            key={i}
-            className={cn("dot", i === active && "dot-active")}
-            aria-label={`Scene ${i + 1}`}
-            onClick={() => scrollToScene(i)}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function SceneShell({ scene, index, setShellRef, setContentRef, setVisualRef }) {
-  const isIntro = index === 0;
-  const isCta = index === SCENES.length - 1;
-
-  return (
-    <section
-      ref={setShellRef}
-      className={cn(
-        "ceo-shell",
-        index === 0 && "scene-intro",
-        scene.visual === "shards" && "scene-tension",
-        scene.visual === "cta" && "scene-cta"
-      )}
-      style={{ zIndex: 20 + index }}
-    >
-      <div className="ceo-sticky">
-        {isIntro ? (
-          <IntroScene setContentRef={setContentRef} setVisualRef={setVisualRef} />
-        ) : isCta ? (
-          <CtaScene scene={scene} setContentRef={setContentRef} setVisualRef={setVisualRef} />
-        ) : (
-          <StoryScene scene={scene} setContentRef={setContentRef} setVisualRef={setVisualRef} />
-        )}
-      </div>
-    </section>
-  );
-}
-
-function IntroScene({ setContentRef, setVisualRef }) {
-  return (
-    <div className="s0-center">
-      <div className="s0-copy" ref={setContentRef}>
-        <p className="s0-brand">CEO Studio</p>
-        <h1 className="s0-headline">
-          Clarity.
-          <br />
-          Direction.
-          <br />
-          Execution.
-        </h1>
-        <p className="s0-kicker">
-          A cinematic about page with scenes that actually move, instead of sitting there like decorative furniture.
-        </p>
-
-        <div className="s0-chiprow">
-          {SERVICES.map((item) => (
-            <span key={item} className="s0-chip" data-intro-chip>
-              {item}
+      {/* ── HERO ── */}
+      <section ref={heroRef} className="about-hero">
+        <div className="hero-left">
+          <p className="hero-eyebrow">CEO Studio — About</p>
+          <h1 className="hero-headline">
+            {["We exist to make", "great leaders", "think clearer."].map((line, i) => (
+              <span key={i} className="line-mask">
+                <span ref={el => linesRef.current[i] = el} className={`line-inner${i === 1 ? " gold-italic" : ""}`}>
+                  {line}
+                </span>
+              </span>
+            ))}
+          </h1>
+          <p className="hero-sub">
+            CEO Studio is the strategic partner for founders and executives who need
+            precision, not noise. We work at the leadership layer — where thinking
+            becomes culture, and culture becomes execution.
+          </p>
+          <div className="hero-cta-row">
+            <Link href="/contact" className="btn-gold">Work with us</Link>
+            <span className="hero-scroll-hint">
+              <span className="scroll-label">Scroll to explore</span>
+              <span className="scroll-line" />
             </span>
-          ))}
-        </div>
-
-        <div className="s0-metrics" ref={setVisualRef}>
-          {METRICS.map((metric) => (
-            <div key={metric.label} className="s0-metric" data-intro-metric>
-              <p>{metric.value}</p>
-              <span>{metric.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function StoryScene({ scene, setContentRef, setVisualRef }) {
-  return (
-    <div className="ceo-layout">
-      <div className="ceo-left" ref={setContentRef}>
-        <span className={cn("sc-chapter", scene.chapter === "03" && "sc-chapter-bronze")}>
-          {scene.chapter} — {scene.label}
-        </span>
-        <h2 className={cn("sc-title", (scene.chapter === "04" || scene.chapter === "09") && "gold")}>
-          {scene.title.split("\n").map((line, idx) => (
-            <span key={idx} style={{ display: "block" }}>
-              {line}
-            </span>
-          ))}
-        </h2>
-        <p className="sc-body">{scene.body}</p>
-
-        {scene.visual === "glow-panel" && (
-          <div className="sc-mini-grid">
-            <div className="mini-box">
-              <Check className="mini-icon" />
-              <span>Authority</span>
-            </div>
-            <div className="mini-box">
-              <Check className="mini-icon" />
-              <span>Strategy</span>
-            </div>
-            <div className="mini-box">
-              <Check className="mini-icon" />
-              <span>Motion</span>
-            </div>
           </div>
-        )}
-      </div>
-
-      <div className="sc-visual" ref={setVisualRef}>
-        {scene.visual === "glow-panel" && <GlowPanel />}
-        {scene.visual === "shards" && <Shards />}
-        {scene.visual === "ring-open" && <RingOpen />}
-        {scene.visual === "rails" && <Rails />}
-        {scene.visual === "grid" && <GridExpand />}
-        {scene.visual === "streaks" && <ExecutionStreaks />}
-        {scene.visual === "symmetry" && <Symmetry />}
-        {scene.visual === "ring-close" && <RingClose />}
-      </div>
-    </div>
-  );
-}
-
-function CtaScene({ scene, setContentRef, setVisualRef }) {
-  return (
-    <div className="cta-inner">
-      <span className="sc-chapter" ref={setContentRef}>
-        {scene.chapter} — {scene.label}
-      </span>
-      <h2 className="sc-title gold cta-h2" ref={setContentRef}>
-        {scene.title.split("\n").map((line, idx) => (
-          <span key={idx} style={{ display: "block" }}>
-            {line}
-          </span>
-        ))}
-      </h2>
-      <p className="sc-body cta-body" ref={setContentRef}>
-        {scene.body}
-      </p>
-      <div className="cta-btns" ref={setVisualRef}>
-        <Link href="/contact" className="btn-primary">
-          Start a conversation
-        </Link>
-        <Link href="/home" className="btn-ghost">
-          Return home
-        </Link>
-      </div>
-      <div className="cta-halo" />
-    </div>
-  );
-}
-
-function GlowPanel() {
-  return (
-    <div className="glow-panel">
-      <div className="gp-shine" />
-      <div className="gp-line" />
-      <div className="gp-orb gp-one" />
-      <div className="gp-orb gp-two" />
-      <div className="gp-glow" />
-      <Corner pos="tl" />
-      <Corner pos="br" />
-    </div>
-  );
-}
-
-function Shards() {
-  return (
-    <div className="shards-wrap">
-      {[0, 1, 2, 3, 4].map((i) => (
-        <div
-          key={i}
-          className="shard"
-          style={{
-            width: `${36 + i * 15}px`,
-            height: `${36 + i * 15}px`,
-            top: `${i * 12}%`,
-            left: `${6 + i * 13}%`,
-            opacity: 0.22 + i * 0.15,
-            animationDelay: `${i * 0.7}s`,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-function RingOpen() {
-  return (
-    <div className="ring-open">
-      <div className="ro-outer" />
-      <div className="ro-mid" />
-      <div className="ro-core" />
-      <div className="ro-beam-h" />
-      <div className="ro-beam-d" />
-    </div>
-  );
-}
-
-function Rails() {
-  return (
-    <div className="rails-wrap">
-      {[1, 0.88, 0.74, 0.6, 0.46, 0.32, 0.18].map((op, i) => (
-        <div key={i} className="rail-line" style={{ opacity: op, width: `${100 - i * 8}%` }} />
-      ))}
-    </div>
-  );
-}
-
-function GridExpand() {
-  return (
-    <div className="grid-expand">
-      {[...Array(6)].map((_, i) => (
-        <div key={i} className="ge-block" style={{ opacity: 0.3 + (i % 3) * 0.22 }} />
-      ))}
-    </div>
-  );
-}
-
-function ExecutionStreaks() {
-  return (
-    <div className="exec-wrap">
-      {[0, 1, 2, 3].map((i) => (
-        <div
-          key={i}
-          className="exec-streak"
-          style={{
-            top: `${18 + i * 18}%`,
-            width: `${52 + i * 9}%`,
-            opacity: 0.3 + i * 0.17,
-            animationDelay: `${i * 0.5}s`,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-function Symmetry() {
-  return (
-    <div className="sym-wrap">
-      {[0, 1, 2].map((i) => (
-        <div key={i} className="sym-row">
-          <div className="sym-block" style={{ opacity: 0.42 + i * 0.24 }} />
-          <div className="sym-gap" />
-          <div className="sym-block" style={{ opacity: 0.42 + i * 0.24 }} />
         </div>
-      ))}
+        <div className="hero-right">
+          <canvas ref={canvasRef} className="hero-canvas" />
+          <div className="hero-canvas-label">
+            <span>Strategic clarity</span>
+            <span className="hcl-dot" />
+            <span>In motion</span>
+          </div>
+        </div>
+      </section>
+
+      {/* ── MARQUEE ── */}
+      <div className="marquee-band" aria-hidden="true">
+        <div className="marquee-track">
+          {[...Array(6)].map((_, i) => (
+            <span key={i} className="marquee-set">
+              Clarity&nbsp;·&nbsp;Direction&nbsp;·&nbsp;Execution&nbsp;·&nbsp;Precision&nbsp;·&nbsp;Alignment&nbsp;·&nbsp;Momentum&nbsp;·&nbsp;
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── MANIFESTO ── */}
+      <section className="manifesto-section">
+        <div className="manifesto-inner">
+          <p className="section-eyebrow">Our Belief</p>
+          <p ref={manifestoRef} className="manifesto-text">
+            {"The best organisations in the world are not the loudest. They are the most precise. Every word, every decision, every meeting runs on a shared operating system — built by leaders who chose clarity over comfort.".split(" ").map((w, i) => (
+              <span key={i} className="mw">{w} </span>
+            ))}
+          </p>
+        </div>
+      </section>
+
+      {/* ── STATS ── */}
+      <section className="stats-section">
+        <div className="stats-inner">
+          {STATS.map((s, i) => (
+            <div key={s.label} ref={el => statsRef.current[i] = el} className="stat-card">
+              <div className="stat-num-wrap">
+                <span className="stat-outline">{s.value}</span>
+                <span className="stat-fill">{s.value}</span>
+              </div>
+              <p className="stat-label">{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── PRINCIPLES ── */}
+      <section className="principles-section">
+        <div className="principles-inner">
+          <div className="section-header">
+            <p className="section-eyebrow">How We Think</p>
+            <h2 className="section-title">Four principles<br />we never compromise.</h2>
+          </div>
+          <div className="principles-grid">
+            {PRINCIPLES.map((p, i) => (
+              <PrincipleCard key={p.num} p={p} index={i} setRef={el => principlesRef.current[i] = el} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── PROCESS ── */}
+      <section className="process-section">
+        <div className="process-inner">
+          <div className="section-header">
+            <p className="section-eyebrow">How We Work</p>
+            <h2 className="section-title">A four-stage<br />engagement model.</h2>
+          </div>
+          <div className="process-list">
+            <div ref={connLineRef} className="process-conn-line" />
+            {PROCESS.map((p, i) => (
+              <div key={p.step} ref={el => processRef.current[i] = el} className="process-item">
+                <div className="process-node">
+                  <span className="pn-num">{String(i + 1).padStart(2, "0")}</span>
+                  <div className="pn-dot" />
+                </div>
+                <div className="process-content">
+                  <h3 className="process-step">{p.step}</h3>
+                  <p className="process-desc">{p.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA ── */}
+      <section className="about-cta">
+        <div className="cta-bg-glow" />
+        <div ref={ctaRef} className="cta-inner">
+          <p className="section-eyebrow">Ready to begin?</p>
+          <h2 className="cta-headline">The first conversation<br />is always the most revealing.</h2>
+          <p className="cta-sub">No pitch decks. No discovery calls disguised as sales calls. Just a direct conversation about what you are trying to solve.</p>
+          <div className="cta-btn-wrap">
+            <div className="cta-ring-text-wrap" aria-hidden="true">
+              <svg className="cta-ring-text" viewBox="0 0 200 200">
+                <defs>
+                  <path id="circle-path" d="M 100,100 m -75,0 a 75,75 0 1,1 150,0 a 75,75 0 1,1 -150,0" />
+                </defs>
+                <text fontSize="11" fill="rgba(212,175,55,0.55)" letterSpacing="6">
+                  <textPath href="#circle-path">START A CONVERSATION · CEO STUDIO · CLARITY · </textPath>
+                </text>
+              </svg>
+            </div>
+            <Link href="/contact" className="btn-gold cta-main-btn">Start a conversation</Link>
+          </div>
+          <Link href="/home" className="btn-outline">Return home</Link>
+        </div>
+      </section>
     </div>
   );
-}
-
-function RingClose() {
-  return (
-    <div className="ring-close">
-      <div className="rc-outer" />
-      <div className="rc-mid" />
-      <div className="rc-core" />
-    </div>
-  );
-}
-
-function Corner({ pos }) {
-  const styles = {
-    tl: { top: 10, left: 10, borderWidth: "1px 0 0 1px" },
-    br: { bottom: 10, right: 10, borderWidth: "0 1px 1px 0" },
-  };
-
-  return <div className="gp-corner" style={styles[pos]} />;
 }
 
 const STYLES = `
-  *,:before,:after{box-sizing:border-box}
-  html,body{margin:0;padding:0;background:#070706;color:#F4EFE6;overflow-x:hidden}
-  html{scroll-behavior:smooth}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#070706;color:#F4EFE6;overflow-x:hidden;scroll-behavior:smooth}
   a{text-decoration:none}
-
-  .ceo-page{position:relative;isolation:isolate;background:
-    radial-gradient(ellipse at top, rgba(212,175,55,0.07) 0%, transparent 42%),
-    radial-gradient(ellipse at 80% 18%, rgba(255,255,255,0.03) 0%, transparent 30%),
-    #070706;
-  }
-
   :root{
-    --blk:#070706;
-    --gold:#D4AF37;
-    --bronze:#A07840;
-    --ivory:#F4EFE6;
+    --blk:#070706;--gold:#D4AF37;--ivory:#F4EFE6;
     --ivory-lo:rgba(244,239,230,0.52);
     --serif:'Cormorant Garamond',Georgia,serif;
     --mono:'DM Mono',monospace;
   }
 
-  .ceo-progress{position:fixed;top:0;left:0;height:2px;width:100%;background:var(--gold);transform-origin:left;transform:scaleX(0);z-index:200;will-change:transform}
+  /* CURSOR */
+  .cursor-ring{position:fixed;width:44px;height:44px;border:1px solid rgba(212,175,55,0.55);border-radius:50%;pointer-events:none;z-index:9999;top:0;left:0;transition:width .35s,height .35s,background .35s,border-color .35s;will-change:transform}
+  .cursor-ring.cursor-grow{width:72px;height:72px;background:rgba(212,175,55,0.07);border-color:var(--gold)}
+  .cursor-dot{position:fixed;width:6px;height:6px;background:var(--gold);border-radius:50%;pointer-events:none;z-index:9999;top:0;left:0;will-change:transform}
+  @media(hover:none){.cursor-ring,.cursor-dot{display:none}}
 
-  .ceo-nav{
-    position:fixed;top:0;left:0;right:0;z-index:150;
-    display:flex;align-items:center;justify-content:space-between;
-    padding:1.25rem 2rem;background:linear-gradient(to bottom,rgba(7,7,6,0.9),transparent);
-    backdrop-filter:blur(8px);border-bottom:1px solid rgba(212,175,55,0.08)
+  /* ROOT */
+  .about-root{position:relative;background:#070706;isolation:isolate}
+
+  /* ── HERO ── */
+  .about-hero{
+    min-height:100vh;display:grid;grid-template-columns:1fr 1fr;
+    align-items:center;padding:120px 7vw 80px;gap:6vw;position:relative;overflow:hidden;
   }
-  .ceo-logo{font-family:var(--serif);font-size:1.05rem;font-weight:600;letter-spacing:.1em;color:var(--ivory)}
-  .ceo-navlink{font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ivory-lo);transition:color .3s}
-  .ceo-navlink:hover{color:var(--gold)}
+  .hero-left{position:relative;z-index:2}
+  .hero-eyebrow{font-family:var(--mono);font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);opacity:.72;margin-bottom:2rem}
+  .hero-headline{font-family:var(--serif);font-size:clamp(3rem,6.5vw,6.5rem);font-weight:300;line-height:1.02;margin-bottom:2rem;display:flex;flex-direction:column;gap:.1em}
+  .line-mask{overflow:hidden;display:block}
+  .line-inner{display:block}
+  .gold-italic{font-style:italic;color:var(--gold)}
+  .hero-sub{font-family:var(--serif);font-size:clamp(.95rem,1.4vw,1.15rem);font-weight:300;line-height:1.85;color:var(--ivory-lo);max-width:480px;margin-bottom:2.5rem}
+  .hero-cta-row{display:flex;align-items:center;gap:2.5rem}
+  .hero-scroll-hint{display:flex;align-items:center;gap:.8rem}
+  .scroll-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ivory-lo)}
+  .scroll-line{width:40px;height:1px;background:linear-gradient(to right,var(--gold),transparent);animation:sline 2s ease-in-out infinite}
+  @keyframes sline{0%,100%{opacity:.4;transform:scaleX(1)}50%{opacity:1;transform:scaleX(1.3)}}
 
-  .ceo-track{position:relative}
-  .ceo-stage{position:relative}
+  /* Hero canvas */
+  .hero-right{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .hero-canvas{width:100%;max-width:520px;aspect-ratio:1;display:block}
+  .hero-canvas-label{display:flex;align-items:center;gap:.7rem;margin-top:1.2rem;font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ivory-lo)}
+  .hcl-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);animation:blink 1.8s ease-in-out infinite}
+  @keyframes blink{0%,100%{opacity:.4}50%{opacity:1}}
 
-  .orb-main{position:fixed;width:640px;height:640px;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,0.12) 0%,transparent 68%);top:44%;left:58%;transform:translate(-50%,-50%);pointer-events:none;z-index:1;filter:blur(6px)}
-  .orb-secondary{position:fixed;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(160,120,64,0.08) 0%,transparent 70%);top:18%;left:10%;pointer-events:none;z-index:1;filter:blur(4px)}
-  .vig-top{position:fixed;top:0;left:0;right:0;height:180px;background:linear-gradient(to bottom,var(--blk),transparent);z-index:30;pointer-events:none}
-  .vig-bot{position:fixed;bottom:0;left:0;right:0;height:180px;background:linear-gradient(to top,var(--blk),transparent);z-index:30;pointer-events:none}
+  /* MARQUEE */
+  .marquee-band{overflow:hidden;border-top:1px solid rgba(212,175,55,0.1);border-bottom:1px solid rgba(212,175,55,0.1);padding:1rem 0;background:rgba(212,175,55,0.025)}
+  .marquee-track{display:flex;white-space:nowrap;animation:marquee 28s linear infinite}
+  .marquee-set{font-family:var(--mono);font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);opacity:.5;flex-shrink:0}
+  @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-  .gold-streak{position:fixed;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,rgba(212,175,55,0.38),transparent);z-index:5;pointer-events:none;opacity:.3}
-  .gs-1{top:36%}
-  .gs-2{top:64%}
+  /* MANIFESTO */
+  .manifesto-section{padding:130px 7vw;border-top:1px solid rgba(212,175,55,0.07)}
+  .manifesto-inner{max-width:960px;margin:0 auto}
+  .section-eyebrow{font-family:var(--mono);font-size:.64rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:2rem}
+  .manifesto-text{font-family:var(--serif);font-size:clamp(1.6rem,3.2vw,2.8rem);font-weight:300;line-height:1.5;color:var(--ivory)}
+  .mw{display:inline;opacity:.1}
 
-  .ceo-shell{position:relative;min-height:160vh;background:transparent}
-  .ceo-sticky{position:sticky;top:0;height:100vh;height:100svh;display:flex;align-items:center;justify-content:center;padding:0 7vw;overflow:hidden;box-shadow:0 -1px 0 rgba(212,175,55,0.04)}
+  /* STATS */
+  .stats-section{padding:80px 7vw;border-top:1px solid rgba(212,175,55,0.08);border-bottom:1px solid rgba(212,175,55,0.08)}
+  .stats-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr)}
+  .stat-card{padding:3rem 2.5rem;border-right:1px solid rgba(212,175,55,0.1);position:relative;overflow:hidden}
+  .stat-card:last-child{border-right:none}
+  .stat-num-wrap{position:relative;display:inline-block;margin-bottom:.7rem}
+  .stat-outline{font-family:var(--serif);font-size:clamp(3.5rem,6vw,6rem);font-weight:300;line-height:1;-webkit-text-stroke:1px rgba(212,175,55,0.35);color:transparent;display:block}
+  .stat-fill{font-family:var(--serif);font-size:clamp(3.5rem,6vw,6rem);font-weight:300;line-height:1;color:var(--gold);position:absolute;inset:0;clip-path:inset(0 100% 0 0);display:block}
+  .stat-label{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ivory-lo)}
 
-  .ceo-layout{position:relative;z-index:80;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,0.98fr);gap:4.5vw;align-items:center;width:min(100%,1440px)}
-  .ceo-left{position:relative;padding-left:2.2rem;border-left:1px solid rgba(212,175,55,0.2);max-width:560px}
-
-  .sc-chapter{display:block;font-family:var(--mono);font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:1.6rem;opacity:.82}
-  .sc-chapter-bronze{color:var(--bronze)}
-  .sc-title{font-family:var(--serif);font-size:clamp(2.2rem,4.5vw,4.35rem);font-weight:300;line-height:1.02;color:var(--ivory);margin-bottom:1.5rem;text-shadow:0 0 26px rgba(255,255,255,0.03)}
-  .sc-title.gold{color:var(--gold)}
-  .sc-body{font-family:var(--serif);font-size:clamp(1rem,1.5vw,1.18rem);font-weight:300;line-height:1.82;color:var(--ivory-lo);max-width:420px}
-
-  .sc-visual{position:relative;width:min(100%,520px);display:flex;align-items:center;justify-content:center;margin-left:auto;will-change:transform,opacity}
-  .scene-dots{position:fixed;right:1.8rem;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:100}
-  .dot{width:6px;height:6px;border-radius:50%;background:rgba(212,175,55,0.3);border:none;cursor:pointer;padding:0;transition:background .3s,transform .3s}
-  .dot-active{background:var(--gold);transform:scale(1.5)}
-
-  .scene-intro{background:radial-gradient(ellipse at 50% 56%,rgba(212,175,55,0.04) 0%,transparent 58%)}
-  .scene-tension{background:radial-gradient(ellipse at 68% 50%,rgba(212,175,55,0.03) 0%,transparent 55%)}
-  .scene-cta{background:radial-gradient(ellipse at 50% 56%,rgba(212,175,55,0.07) 0%,transparent 62%)}
-
-  .s0-center{position:relative;z-index:80;display:flex;align-items:center;justify-content:center;width:min(100%,1200px);min-height:100vh}
-  .s0-copy{max-width:820px}
-  .s0-brand{font-family:var(--mono);font-size:.72rem;letter-spacing:.36em;text-transform:uppercase;color:var(--gold);opacity:.72;margin-bottom:1.6rem}
-  .s0-headline{font-family:var(--serif);font-size:clamp(3rem,7vw,6.2rem);font-weight:300;line-height:1.02;color:var(--ivory);margin:0}
-  .s0-kicker{max-width:42ch;margin:1.6rem 0 0;font-family:var(--serif);font-size:clamp(1rem,1.35vw,1.15rem);line-height:1.8;color:var(--ivory-lo)}
-  .s0-chiprow{display:flex;flex-wrap:wrap;gap:0.7rem;margin-top:1.8rem}
-  .s0-chip{border:1px solid rgba(212,175,55,0.16);background:rgba(255,255,255,0.03);backdrop-filter:blur(10px);padding:.65rem .95rem;border-radius:999px;font-family:var(--mono);font-size:.68rem;letter-spacing:.09em;color:var(--ivory-lo)}
-  .s0-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-top:2rem}
-  .s0-metric{border:1px solid rgba(212,175,55,0.12);background:rgba(0,0,0,0.45);border-radius:18px;padding:1rem 1.1rem;text-align:left;box-shadow:0 0 40px rgba(0,0,0,0.22)}
-  .s0-metric p{margin:0;font-size:2rem;font-weight:700;color:#fff}
-  .s0-metric span{display:block;margin-top:.35rem;font-size:.8rem;line-height:1.4;color:var(--ivory-lo)}
-
-  .glow-panel{width:min(100%,460px);aspect-ratio:3/4;border:1px solid rgba(212,175,55,0.2);background:linear-gradient(135deg,rgba(212,175,55,0.06) 0%,transparent 58%);box-shadow:0 0 90px rgba(212,175,55,0.09),inset 0 0 50px rgba(212,175,55,0.05);position:relative;overflow:hidden;border-radius:2px}
-  .gp-shine{position:absolute;inset:0;background:linear-gradient(180deg,rgba(212,175,55,0.08) 0%,transparent 42%)}
-  .gp-line{position:absolute;bottom:22%;left:50%;transform:translateX(-50%);width:58%;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);box-shadow:0 0 14px var(--gold)}
-  .gp-corner{position:absolute;width:18px;height:18px;border-color:rgba(212,175,55,0.5);border-style:solid}
-  .gp-orb{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,0.16) 0%,transparent 70%);filter:blur(10px)}
-  .gp-one{width:180px;height:180px;top:-20px;left:-10px}
-  .gp-two{width:260px;height:260px;bottom:-40px;right:-30px}
-  .gp-glow{position:absolute;inset:18% 10% auto 10%;height:40%;background:radial-gradient(ellipse at center,rgba(255,141,52,0.3) 0%,rgba(212,175,55,0.12) 38%,transparent 72%);filter:blur(18px);mix-blend-mode:screen}
-
-  .shards-wrap{position:relative;width:100%;height:320px}
-  .shard{position:absolute;border:1px solid rgba(212,175,55,0.35);background:rgba(212,175,55,0.04);transform:rotate(15deg);animation:tumble 7s ease-in-out infinite}
-  @keyframes tumble{0%,100%{transform:rotate(15deg) translateY(0)}50%{transform:rotate(55deg) translateY(-18px)}}
-
-  .ring-open{position:relative;width:clamp(180px,22vw,260px);height:clamp(180px,22vw,260px);display:flex;align-items:center;justify-content:center}
-  .ro-outer{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(212,175,55,0.25);box-shadow:0 0 60px rgba(212,175,55,0.14);animation:rpulse 4s ease-in-out infinite}
-  .ro-mid{position:absolute;width:64%;height:64%;border-radius:50%;border:1px solid rgba(212,175,55,0.38)}
-  .ro-core{position:absolute;width:26%;height:26%;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,0.5) 0%,transparent 75%);animation:cpulse 2.2s ease-in-out infinite}
-  .ro-beam-h{position:absolute;height:1px;width:145%;top:50%;background:linear-gradient(to right,transparent,rgba(212,175,55,0.35),transparent)}
-  .ro-beam-d{position:absolute;height:1px;width:105%;top:32%;background:linear-gradient(to right,transparent,rgba(212,175,55,0.25),transparent);transform:rotate(32deg)}
-  @keyframes rpulse{0%,100%{box-shadow:0 0 30px rgba(212,175,55,0.1)}50%{box-shadow:0 0 80px rgba(212,175,55,0.28)}}
-  @keyframes cpulse{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.4);opacity:1}}
-
-  .rails-wrap{display:flex;flex-direction:column;gap:18px;width:100%;max-width:480px}
-  .rail-line{height:1px;background:linear-gradient(to right,rgba(212,175,55,.9),rgba(212,175,55,.04));transform-origin:left}
-
-  .grid-expand{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;width:min(100%,420px)}
-  .ge-block{aspect-ratio:1;border:1px solid rgba(212,175,55,0.2);background:rgba(212,175,55,0.04)}
-
-  .exec-wrap{position:relative;width:min(100%,460px);height:230px}
-  .exec-streak{position:absolute;left:0;height:1px;background:linear-gradient(to right,rgba(212,175,55,.85),rgba(212,175,55,.03));animation:execAnim 2.6s ease-in-out infinite}
-  @keyframes execAnim{0%{transform:scaleX(0) translateX(-10px);opacity:0}20%{opacity:1}80%{opacity:1}100%{transform:scaleX(1) translateX(10px);opacity:0}}
-
-  .sym-wrap{display:flex;flex-direction:column;gap:20px;width:min(100%,460px)}
-  .sym-row{display:flex;align-items:center}
-  .sym-block{flex:1;height:clamp(26px,4vh,44px);border:1px solid rgba(212,175,55,0.24);background:rgba(212,175,55,0.05)}
-  .sym-gap{width:22px;height:1px;background:rgba(212,175,55,0.38)}
-
-  .ring-close{position:relative;width:clamp(160px,20vw,240px);height:clamp(160px,20vw,240px);display:flex;align-items:center;justify-content:center}
-  .rc-outer{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(212,175,55,0.22);box-shadow:0 0 70px rgba(212,175,55,0.2);animation:rpulse 3.5s ease-in-out infinite}
-  .rc-mid{position:absolute;width:62%;height:62%;border-radius:50%;border:1px solid rgba(212,175,55,0.38);box-shadow:0 0 35px rgba(212,175,55,0.18)}
-  .rc-core{position:absolute;width:26%;height:26%;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,0.65) 0%,transparent 78%);box-shadow:0 0 22px rgba(212,175,55,0.45);animation:cpulse 2s ease-in-out infinite}
-
-  .sc-mini-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.75rem;margin-top:1.6rem;max-width:520px}
-  .mini-box{display:flex;align-items:center;gap:.6rem;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03);padding:.85rem .9rem;border-radius:16px;font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;color:var(--ivory-lo)}
-  .mini-icon{width:14px;height:14px;color:rgba(255,255,255,.72);flex:none}
-
-  .cta-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;max-width:560px;width:min(100%,560px)}
-  .cta-h2,.cta-body{text-align:center}
-  .cta-h2{margin-bottom:1.2rem}
-  .cta-body{margin-bottom:2.8rem}
-  .cta-btns{display:flex;gap:1.2rem;flex-wrap:wrap;justify-content:center}
-  .cta-halo{position:absolute;width:520px;height:520px;border-radius:50%;border:1px solid rgba(212,175,55,0.12);box-shadow:0 0 140px rgba(212,175,55,0.12);animation:rpulse 5s ease-in-out infinite;pointer-events:none}
-  .btn-primary{font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--blk);background:var(--gold);padding:.9rem 2.3rem;text-decoration:none;transition:opacity .3s}
-  .btn-primary:hover{opacity:.82}
-  .btn-ghost{font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(212,175,55,0.38);padding:.9rem 2.3rem;text-decoration:none;transition:border-color .3s}
-  .btn-ghost:hover{border-color:var(--gold)}
-
-  @media (max-width: 1100px){
-    .ceo-layout{grid-template-columns:1fr;gap:3rem}
-    .sc-visual{justify-content:flex-start;margin-left:0}
+  /* PRINCIPLES */
+  .principles-section{padding:130px 7vw}
+  .principles-inner{max-width:1200px;margin:0 auto}
+  .section-header{margin-bottom:5rem}
+  .section-title{font-family:var(--serif);font-size:clamp(2.2rem,4vw,3.8rem);font-weight:300;line-height:1.1;color:var(--ivory);margin-top:1rem}
+  .principles-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(212,175,55,0.1)}
+  .principle-card{
+    padding:3.2rem 3rem;background:#070706;position:relative;overflow:hidden;
+    --sx:50%;--sy:50%;
+    transition:background .4s;
   }
-
-  @media(max-width:768px){
-    .ceo-nav{padding:1rem 1.2rem}
-    .ceo-sticky{padding:0 1.2rem}
-    .ceo-layout{grid-template-columns:1fr;gap:2rem}
-    .ceo-left{border-left:none;padding-left:0;border-top:1px solid rgba(212,175,55,0.18);padding-top:1.2rem;max-width:100%}
-    .sc-visual{display:none}
-    .s0-center{align-items:flex-start}
-    .s0-headline{font-size:clamp(2.8rem,11vw,4.6rem)}
-    .s0-metrics{grid-template-columns:1fr}
-    .sc-mini-grid{grid-template-columns:1fr}
-    .scene-dots{display:none}
-    .cta-halo{width:320px;height:320px}
+  .pc-spotlight{
+    position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(circle 220px at var(--sx) var(--sy),rgba(212,175,55,0.09),transparent 70%);
+    opacity:0;transition:opacity .4s;
   }
+  .principle-card:hover .pc-spotlight{opacity:1}
+  .principle-num{display:block;font-family:var(--mono);font-size:.6rem;letter-spacing:.22em;color:var(--gold);opacity:.55;margin-bottom:1.4rem}
+  .principle-title{font-family:var(--serif);font-size:clamp(1.3rem,2vw,1.8rem);font-weight:400;color:var(--ivory);margin-bottom:1rem;line-height:1.2}
+  .principle-body{font-family:var(--serif);font-size:1rem;font-weight:300;line-height:1.8;color:var(--ivory-lo)}
 
+  /* PROCESS */
+  .process-section{padding:130px 7vw;border-top:1px solid rgba(212,175,55,0.08);background:radial-gradient(ellipse at 50% 0%,rgba(212,175,55,0.04) 0%,transparent 55%)}
+  .process-inner{max-width:1000px;margin:0 auto}
+  .process-list{position:relative;padding-left:3rem;margin-top:0}
+  .process-conn-line{position:absolute;left:1.1rem;top:1.5rem;bottom:1.5rem;width:1px;background:linear-gradient(to bottom,var(--gold),rgba(212,175,55,0.1));transform-origin:top;will-change:transform}
+  .process-item{display:grid;grid-template-columns:auto 1fr;gap:2.5rem;padding:2.8rem 0;border-bottom:1px solid rgba(212,175,55,0.08);align-items:start;position:relative}
+  .process-item:first-child{border-top:1px solid rgba(212,175,55,0.08)}
+  .process-node{display:flex;flex-direction:column;align-items:center;gap:.6rem;padding-top:.3rem}
+  .pn-num{font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;color:var(--gold);opacity:.5}
+  .pn-dot{width:8px;height:8px;border-radius:50%;border:1px solid var(--gold);background:transparent;transition:background .3s}
+  .process-item:hover .pn-dot{background:var(--gold)}
+  .process-step{font-family:var(--serif);font-size:clamp(1.5rem,2.5vw,2.2rem);font-weight:300;color:var(--ivory);margin-bottom:.6rem;transition:color .3s}
+  .process-item:hover .process-step{color:var(--gold)}
+  .process-desc{font-family:var(--serif);font-size:1rem;font-weight:300;line-height:1.8;color:var(--ivory-lo);max-width:560px}
+
+  /* CTA */
+  .about-cta{position:relative;padding:180px 7vw;display:flex;align-items:center;justify-content:center;overflow:hidden;border-top:1px solid rgba(212,175,55,0.08)}
+  .cta-bg-glow{position:absolute;width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(212,175,55,0.07) 0%,transparent 65%);pointer-events:none;animation:glowPulse 6s ease-in-out infinite}
+  @keyframes glowPulse{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.12);opacity:1}}
+  .cta-inner{position:relative;z-index:2;text-align:center;max-width:640px;display:flex;flex-direction:column;align-items:center}
+  .cta-headline{font-family:var(--serif);font-size:clamp(2.4rem,5vw,4.8rem);font-weight:300;line-height:1.06;color:var(--ivory);margin:1rem 0 1.6rem}
+  .cta-sub{font-family:var(--serif);font-size:1.05rem;font-weight:300;line-height:1.8;color:var(--ivory-lo);margin-bottom:3.5rem;max-width:480px}
+  .cta-btn-wrap{position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:1.4rem}
+  .cta-ring-text-wrap{position:absolute;width:200px;height:200px;pointer-events:none}
+  .cta-ring-text{width:200px;height:200px;display:block}
+  .cta-main-btn{position:relative;z-index:2}
+  .btn-gold{font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--blk);background:var(--gold);padding:1rem 2.6rem;transition:opacity .3s,transform .3s;display:inline-block}
+  .btn-gold:hover{opacity:.85;transform:translateY(-1px)}
+  .btn-outline{font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(212,175,55,0.35);padding:.9rem 2.2rem;transition:border-color .3s,transform .3s;display:inline-block}
+  .btn-outline:hover{border-color:var(--gold);transform:translateY(-1px)}
+
+  /* RESPONSIVE */
+  @media(max-width:900px){
+    .about-hero{grid-template-columns:1fr;padding-top:100px}
+    .hero-right{display:none}
+    .stats-inner{grid-template-columns:1fr}
+    .stat-card{border-right:none;border-bottom:1px solid rgba(212,175,55,0.1)}
+    .stat-card:last-child{border-bottom:none}
+    .principles-grid{grid-template-columns:1fr}
+    .process-list{padding-left:2rem}
+  }
+  @media(max-width:600px){
+    .about-hero,.manifesto-section,.principles-section,.process-section{padding-left:1.4rem;padding-right:1.4rem}
+    .stats-section,.about-cta{padding-left:1.4rem;padding-right:1.4rem}
+    .principle-card{padding:2rem 1.6rem}
+    .cta-ring-text-wrap{display:none}
+  }
   @media(prefers-reduced-motion:reduce){
-    .shard,.exec-streak,.ro-outer,.rc-outer,.cta-halo,.ro-core,.rc-core{animation:none!important}
-    .sc-title,.sc-body{transition:none!important;opacity:1!important;transform:none!important}
+    .scroll-line,.cta-bg-glow,.hcl-dot,.marquee-track{animation:none!important}
   }
 `;
