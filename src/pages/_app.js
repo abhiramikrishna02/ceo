@@ -1,5 +1,4 @@
 import "../styles/globals.css";
-// import SiteFooter from "@/components/layout/site-footer";
 
 export default function App({ Component, pageProps }) {
   return (
@@ -7,7 +6,6 @@ export default function App({ Component, pageProps }) {
       <main className="flex-auto">
         <Component {...pageProps} />
       </main>
-      {/* <SiteFooter /> */}
     </div>
   );
 }

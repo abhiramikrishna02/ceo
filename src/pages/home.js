@@ -19,28 +19,37 @@ const BG = "#0a0a0a";
 const TEXT = "#f5f0e8";
 const EASE = [0.16, 1, 0.3, 1];
 
-const stats = [{ value: "₹50Cr+", label: "Credit Limit", note: "Dynamic" },{ value: "1,400+", label: "Airport Lounges", note: "Worldwide" },{ value: "180", label: "Countries", note: "Zero FX" },{ value: "24/7", label: "Concierge", note: "Dedicated" }];
+const stats = [
+  { value: "180+", label: "Countries", note: "Global Reach" },
+  { value: "500+", label: "Elite Members", note: "Founders & CEOs" },
+  { value: "50+", label: "Annual Summits", note: "Invite-Only" },
+  { value: "24/7", label: "Mentorship", note: "Executive Access" },
+];
+
 const stories = [
-  { eyebrow: "Power", title: "Command your finances from anywhere on Earth.", body: "Real-time portfolio overview. Instant transfers. One-tap settlements. Your financial empire, governed from the palm of your hand.", accent: "Total control. Zero compromise.", align: "left" },
-  { eyebrow: "Prestige", title: "Access that money can't buy. Only earn.", body: "Invitations to curated events, private dinners with industry leaders, and first-look access to luxury launches – reserved for those who qualify.", accent: "Not available. Only obtainable.", align: "right" },
-  { eyebrow: "Legacy", title: "Build something that outlasts the moment.", body: "Multi-generational wealth planning. Succession strategies. A platform designed not just for your success, but for what you leave behind.", accent: "Wealth that transcends generations.", align: "left" },
-  { eyebrow: "Security", title: "Fortified architecture for absolute peace of mind.", body: "Military-grade encryption. Institutional storage. Your assets are shielded by the most advanced security protocols ever deployed in personal finance.", accent: "Impenetrable. Invulnerable.", align: "right" },
+  { eyebrow: "Network", title: "Connect with the world's most influential business leaders.", body: "Access curated networking experiences, private communities, and international business events designed exclusively for top-tier entrepreneurs, executives, and investors.", accent: "Global connections. Limitless possibilities.", align: "left" },
+  { eyebrow: "Mentorship", title: "Gain direct access to the minds that have been where you're going.", body: "Personalized coaching, leadership guidance, and mastermind-driven growth sessions with experienced business leaders who have scaled empires and navigated disruption.", accent: "Wisdom that accelerates. Guidance that transforms.", align: "right" },
+  { eyebrow: "Summits", title: "Step into rooms where the future of business is decided.", body: "Invitation-only conferences, executive forums, and leadership retreats featuring impactful keynote speakers, interactive workshops, and transformative discussions reserved for those who qualify.", accent: "Not attended. Only earned.", align: "left" },
+  { eyebrow: "Legacy", title: "Build something that outlasts the moment and defines a generation.", body: "Strategic investment networks, venture partner access, and high-growth business opportunities designed for scalable success and multi-generational wealth creation.", accent: "Influence that transcends. Legacy that endures.", align: "right" },
 ];
+
 const storySlides = [
-  { id: "01", img: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&q=80&w=2000", giantText: "Private Wealth", title: "Relationship First", desc: "A dedicated relationship manager available 24/7. No queues. No bots. Direct access to the financial minds that matter.", features: ["Bespoke Strategy", "Direct Access", "24/7 Advisory"] },
-  { id: "02", img: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=2000", giantText: "Zero Limits", title: "Spend Without Boundaries", desc: "Dynamic credit limits that scale with your ambition. Pre-approved across 180 countries with zero foreign transaction friction.", features: ["Dynamic Limits", "Zero FX Friction", "Global Acceptance"] },
-  { id: "03", img: "https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?auto=format&fit=crop&q=80&w=2000", giantText: "Jet Access", title: "First Class, Always", desc: "Complimentary lounge access across 1,400+ airports. Priority boarding. A travel experience that mirrors your status.", features: ["1,400+ Lounges", "Priority Boarding", "Concierge Assist"] },
-  { id: "04", img: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?auto=format&fit=crop&q=80&w=2000", giantText: "Legacy Guard", title: "Protection at Scale", desc: "Comprehensive protection for you, your family, and your assets. Estate planning, insurance architecture, and risk shielding.", features: ["Asset Shielding", "Estate Planning", "Generational Wealth"] },
+  { id: "01", img: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&q=80&w=2000", giantText: "Elite Network", title: "Global Connections", desc: "Connect with influential entrepreneurs, executives, investors, and industry pioneers through curated networking experiences, private communities, and international business events.", features: ["Curated Introductions", "Private Communities", "International Events"] },
+  { id: "02", img: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=2000", giantText: "Mentorship", title: "Executive Guidance", desc: "Gain direct access to experienced business leaders and mentors through personalized coaching, leadership guidance, and mastermind-driven growth sessions.", features: ["1-on-1 Coaching", "Mastermind Sessions", "Leadership Frameworks"] },
+  { id: "03", img: "https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?auto=format&fit=crop&q=80&w=2000", giantText: "Leadership Summits", title: "Exclusive Retreats", desc: "Attend invitation-only conferences, executive forums, and leadership retreats featuring impactful keynote speakers, interactive workshops, and transformative discussions.", features: ["Keynote Speakers", "Executive Forums", "Leadership Retreats"] },
+  { id: "04", img: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?auto=format&fit=crop&q=80&w=2000", giantText: "Investment Access", title: "Strategic Capital", desc: "Access curated investment networks and connect with qualified investors, venture partners, and high-growth business opportunities designed for scalable success.", features: ["Venture Partners", "Investor Access", "Deal Flow Network"] },
 ];
+
 const quotes = [
-  { text: "This isn't a credit card. It's a declaration of where I stand.", name: "Vikram S.", role: "Managing Director, Series D" },
-  { text: "I stopped counting the number of times the concierge saved a deal.", name: "Ananya R.", role: "Founder, VC-backed fintech" },
-  { text: "The platform treats me the way I treat my clients. With absolute priority.", name: "Rohan M.", role: "CEO, Global Consulting Group" },
+  { text: "CEO Square gave me the connections and clarity I needed to scale beyond what I thought was possible.", name: "Vikram S.", role: "Founder & CEO, Series D Venture" },
+  { text: "The mentorship inside CEO Square is unlike anything I've experienced — direct, elite, and genuinely transformative.", name: "Ananya R.", role: "Co-Founder, Global Fintech Group" },
+  { text: "This community doesn't just open doors — it builds them where none existed before.", name: "Rohan M.", role: "CEO, International Consulting Group" },
 ];
+
 const communityBenefits = [
-  { id: "01", eyebrow: "Clarity & Direction", headline: "The Architecture\nof Precision.", sub: "Isolate high-signal vectors from systemic noise.", detail: "As a leader, your ultimate leverage is decision accuracy. This collective acts as an unvarnished sounding board, allowing you to stress-test global strategies and map market variables with absolute optical clarity.", tags: ["Signal Isolation", "Strategic Map", "Peer Calibration"], stat: { value: "100%", label: "High-signal alignment among vetted contemporary operators." }, accent: "Radical focus drives non-linear returns." },
-  { id: "02", eyebrow: "Access & Momentum", headline: "The Network\nMultiplied.", sub: "Direct velocity injection through high-integrity velocity loops.", detail: "Bypass standard transaction friction. Access sovereign wealth corridors, pre-vetted execution partners, and rare structural knowledge held exclusively by sitting chief executives who manage parallel scales.", tags: ["Velocity Loops", "Sovereign Access", "Frictionless Exchange"], stat: { value: "14.2x", label: "Average relational velocity acceleration versus traditional networks." }, accent: "Proximity alters the horizon of the possible." },
-  { id: "03", eyebrow: "Execution & Growth", headline: "The Mandate\nof Scale.", sub: "Institutionalize excellence, protect your downside, and expand territory.", detail: "Confront governance evolution, capital stack optimization, and ultimate legacy preservation alongside founders who have unlocked multi-generational value creation pipelines. Execute at your absolute zenith.", tags: ["Scale Architecture", "Risk Shielding", "Legacy Preservation"], stat: { value: "$4.2B+", label: "Collective enterprise value held within immediate peer cohort." }, accent: "The standard is permanent, relentless optimization." },
+  { id: "01", eyebrow: "Network & Influence", headline: "The Architecture\nof Connection.", sub: "Forge relationships that reshape markets and redefine industries.", detail: "At CEO Square, influence is not inherited — it is cultivated. Our elite global network connects you directly with the entrepreneurs, investors, and executives who are actively shaping the future. Every introduction is intentional. Every relationship, transformative.", tags: ["Elite Introductions", "Global Community", "Industry Pioneers"], stat: { value: "180+", label: "Countries represented within the CEO Square global network." }, accent: "Your network is your most valuable asset." },
+  { id: "02", eyebrow: "Mentorship & Growth", headline: "The Mentor\nAdvantage.", sub: "Access wisdom that compresses decades into decisive moments.", detail: "Stop navigating alone. CEO Square pairs you with battle-tested leaders and executive mentors who offer personalized coaching, strategic guidance, and mastermind-driven sessions. The insight you need to break through your next ceiling is already inside our community.", tags: ["Personalized Coaching", "Mastermind Groups", "Executive Access"], stat: { value: "500+", label: "Elite founders and CEOs actively engaged in mentorship programs." }, accent: "Proximity to greatness accelerates everything." },
+  { id: "03", eyebrow: "Summits & Innovation", headline: "The Mandate\nof Leadership.", sub: "Attend exclusive gatherings where tomorrow's business landscape is decided.", detail: "CEO Square summits and retreats are not conferences — they are catalysts. Gather with visionary leaders at invitation-only forums, absorb future-focused keynotes, and walk away with the strategies, relationships, and inspiration to lead at your absolute highest level.", tags: ["Invite-Only Summits", "Global Retreats", "Innovation Forums"], stat: { value: "50+", label: "Annual executive summits and leadership retreats across key global cities." }, accent: "The room you're in determines the future you build." },
 ];
 
 // ---------------------------------------------------------------------------
@@ -222,11 +231,11 @@ function Eyebrow({ children, style = {} }) {
 function Section1Hero() {
   return (
     <ResponsiveHeroBanner
-      badgeLabel="New" badgeText="First Commercial Flight to Mars 2026"
-      title="Journey Beyond Earth" titleLine2="Into the Cosmos"
-      description="Experience the cosmos like never before. Our advanced spacecraft and cutting-edge technology make interplanetary travel accessible, safe, and unforgettable."
-      primaryButtonText="Book Your Journey" primaryButtonHref="#"
-      secondaryButtonText="Watch Launch" secondaryButtonHref="#"
+      badgeLabel="Coming Soon" badgeText="CEO Square Arriving in Dubai — Join the Waitlist"
+      title="Where Visionary Leaders" titleLine2="Build Legacy"
+      description="A global entrepreneurial community empowering CEOs, founders, and innovators through elite networking, executive mentorship, strategic growth opportunities, and transformative leadership experiences."
+      primaryButtonText="Join CEO Square" primaryButtonHref="#"
+      secondaryButtonText="Learn More" secondaryButtonHref="#"
       backgroundImageUrl="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/0e2dbea0-c0a9-413f-a57b-af279633c0df_3840w.jpg"
     />
   );
@@ -557,56 +566,56 @@ function Section3Statement() {
 
         <motion.div className="home-statement-main" style={{ maxWidth: 1200, width: "100%", margin: "0 auto", position: "absolute", zIndex: 1, y: sectionLift, opacity: textOpacity, scale: textScale, filter: textBlur, willChange: "transform, opacity, filter" }}>
           <motion.div style={{ x: x1 }}>
-            <p style={poppins(800, "clamp(42px,7vw,96px)", "rgba(245,240,232,0.04)", { lineHeight: 1.05, textAlign: "left", whiteSpace: "nowrap", letterSpacing: "-0.02em" })}>EXCELLENCE – PRIVILEGE – PRESTIGE – POWER</p>
+            <p style={poppins(800, "clamp(42px,7vw,96px)", "rgba(245,240,232,0.04)", { lineHeight: 1.05, textAlign: "left", whiteSpace: "nowrap", letterSpacing: "-0.02em" })}>NETWORK – MENTORSHIP – INFLUENCE – LEGACY</p>
           </motion.div>
           <div className="home-statement-headline" style={{ padding: "44px 0", textAlign: "center", position: "relative", zIndex: 2 }}>
             <Reveal>
               <h2 style={poppins(200, "clamp(28px,4vw,52px)", TEXT, { lineHeight: 1.4, maxWidth: 800, margin: "0 auto" })}>
-                Not every CEO gets treated like one.<br /><span className="gold-gradient" style={{ fontWeight: 600 }}>You will.</span>
+                Not every leader gets a community built for them.<br /><span className="gold-gradient" style={{ fontWeight: 600 }}>At CEO Square, you do.</span>
               </h2>
             </Reveal>
           </div>
           <motion.div style={{ x: x2 }}>
-            <p style={poppins(800, "clamp(42px,7vw,96px)", "rgba(201,168,76,0.04)", { lineHeight: 1.05, textAlign: "right", whiteSpace: "nowrap", letterSpacing: "-0.02em" })}>WEALTH – LUXURY – LEGACY – AUTHORITY</p>
+            <p style={poppins(800, "clamp(42px,7vw,96px)", "rgba(201,168,76,0.04)", { lineHeight: 1.05, textAlign: "right", whiteSpace: "nowrap", letterSpacing: "-0.02em" })}>GROWTH – SUMMITS – INVESTMENT – IMPACT</p>
           </motion.div>
         </motion.div>
 
         <div className="home-statement-cards" style={{ position: "absolute", inset: 0, zIndex: 10, pointerEvents: "none", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <motion.div className="home-statement-card" style={miniCard({ width: 230, height: 155, background: "linear-gradient(145deg,rgba(30,30,30,0.9),rgba(15,15,15,0.9))", border: "1px solid rgba(255,255,255,0.05)", boxShadow: "0 20px 40px rgba(0,0,0,0.5)", x: c5X, y: c5Y, rotate: c5Rot, opacity: c5Opacity, zIndex: 7 })}>
-            <p style={poppins(undefined, 11, "#888", { letterSpacing: 1 })}>GLOBAL ACCESS</p>
-            <h4 style={poppins(400, 16, TEXT, { marginTop: 6 })}>Borderless Limits</h4>
+            <p style={poppins(undefined, 11, "#888", { letterSpacing: 1 })}>GLOBAL REACH</p>
+            <h4 style={poppins(400, 16, TEXT, { marginTop: 6 })}>180+ Countries</h4>
           </motion.div>
           <motion.div className="home-statement-card" style={miniCard({ width: 250, height: 185, background: "linear-gradient(135deg,rgba(201,168,76,0.08),rgba(10,10,10,0.8))", border: "1px solid rgba(201,168,76,0.15)", x: c4X, y: c4Y, rotate: c4Rot, opacity: c4Opacity, zIndex: 4 })}>
-            <p style={poppins(undefined, 11, "rgba(201,168,76,0.8)", { letterSpacing: 1 })}>PRIVATE EQUITY</p>
-            <h4 style={poppins(300, 18, TEXT, { marginTop: 6 })}>Exclusive Portfolios</h4>
+            <p style={poppins(undefined, 11, "rgba(201,168,76,0.8)", { letterSpacing: 1 })}>INVESTMENT ACCESS</p>
+            <h4 style={poppins(300, 18, TEXT, { marginTop: 6 })}>Curated Deal Flow</h4>
           </motion.div>
           <motion.div className="home-statement-card" style={miniCard({ width: 280, height: 170, background: "linear-gradient(145deg,rgba(20,20,20,0.8),rgba(5,5,5,0.9))", border: "1px solid rgba(255,255,255,0.08)", x: c3X, y: c3Y, rotate: c3Rot, opacity: c3Opacity, zIndex: 6 })}>
-            <p style={poppins(undefined, 11, "#888", { letterSpacing: 1 })}>LIQUIDITY</p>
-            <h4 style={poppins(300, 19, TEXT, { marginTop: 6 })}>Instant Settlements</h4>
+            <p style={poppins(undefined, 11, "#888", { letterSpacing: 1 })}>LEADERSHIP</p>
+            <h4 style={poppins(300, 19, TEXT, { marginTop: 6 })}>Executive Summits</h4>
           </motion.div>
           <motion.div className="home-statement-card" style={miniCard({ width: 310, height: 210, background: "rgba(25,25,25,0.6)", border: "1px solid rgba(255,255,255,0.06)", boxShadow: "0 30px 60px rgba(0,0,0,0.6)", x: c2X, y: c2Y, rotate: c2Rot, opacity: c2Opacity, zIndex: 5, display: "flex", flexDirection: "column" })}>
-            <p style={poppins(undefined, 11, "#aaa", { letterSpacing: 1 })}>CORPORATE</p>
-            <h4 style={poppins(300, 19, TEXT, { marginTop: 6 })}>Multi-currency IBAN</h4>
+            <p style={poppins(undefined, 11, "#aaa", { letterSpacing: 1 })}>MENTORSHIP</p>
+            <h4 style={poppins(300, 19, TEXT, { marginTop: 6 })}>1-on-1 Executive Coaching</h4>
             <div style={{ marginTop: "auto", paddingTop: 20 }}>
               <div style={{ height: 1, background: "rgba(255,255,255,0.1)", width: "100%" }} />
-              <p style={poppins(undefined, 11, "#666", { marginTop: 10 })}>Blockchain Secured</p>
+              <p style={poppins(undefined, 11, "#666", { marginTop: 10 })}>Vetted & Curated</p>
             </div>
           </motion.div>
           <motion.div style={{ position: "absolute", width: "min(90vw,440px)", height: 290, borderRadius: 24, background: "linear-gradient(145deg,rgba(201,168,76,0.15),rgba(15,15,15,1))", border: "1px solid rgba(201,168,76,0.3)", backdropFilter: "blur(24px)", boxShadow: "0 40px 80px rgba(0,0,0,0.8),inset 0 1px 0 rgba(255,255,255,0.1)", padding: 32, display: "flex", flexDirection: "column", justifyContent: "space-between", y: c1Y, scale: c1Scale, opacity: c1Opacity, zIndex: 20, pointerEvents: "auto", transformStyle: "preserve-3d", backfaceVisibility: "hidden", willChange: "transform, opacity" }}>
             <div style={{ position: "relative", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
               <div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <p style={poppins(600, 12, "rgba(201,168,76,0.9)", { letterSpacing: 1.5 })}>PREMIUM ACCOUNT</p>
+                  <p style={poppins(600, 12, "rgba(201,168,76,0.9)", { letterSpacing: 1.5 })}>CEO SQUARE · DUBAI</p>
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="rgba(201,168,76,0.8)" /></svg>
                 </div>
                 <div style={{ position: "relative", marginTop: 16 }}>
-                  <motion.h3 style={{ ...poppins(300, 32, TEXT, { lineHeight: 1.2 }), position: "absolute", top: 0, left: 0, width: "100%", opacity: finalCardText1Opacity }}>Global Wealth Management</motion.h3>
-                  <motion.h3 style={{ ...poppins(300, 32, TEXT, { lineHeight: 1.2 }), position: "relative", opacity: finalCardText2Opacity }}>The Future Of Sovereign Finance</motion.h3>
+                  <motion.h3 style={{ ...poppins(300, 32, TEXT, { lineHeight: 1.2 }), position: "absolute", top: 0, left: 0, width: "100%", opacity: finalCardText1Opacity }}>Elite Leadership Community</motion.h3>
+                  <motion.h3 style={{ ...poppins(300, 32, TEXT, { lineHeight: 1.2 }), position: "relative", opacity: finalCardText2Opacity }}>Where Visionaries Shape the Future</motion.h3>
                 </div>
               </div>
               <div>
-                <p style={poppins(undefined, 13, "#aaa")}>Available Balance</p>
-                <p style={poppins(500, 28, TEXT, { marginTop: 4 })}>$2,840,000.00</p>
+                <p style={poppins(undefined, 13, "#aaa")}>Global Members</p>
+                <p style={poppins(500, 28, TEXT, { marginTop: 4 })}>500+ CEOs & Founders</p>
               </div>
             </div>
           </motion.div>
@@ -693,7 +702,7 @@ function Section5Stats() {
     <section ref={ref} style={{ padding: "120px 24px", position: "relative", overflow: "hidden" }}>
       <motion.div style={{ position: "absolute", inset: 0, y: bgY, backgroundImage: "linear-gradient(rgba(201,168,76,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.03) 1px,transparent 1px)", backgroundSize: "80px 80px", pointerEvents: "none" }} />
       <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative", zIndex: 2 }}>
-        <Reveal><Eyebrow style={{ textAlign: "center", marginBottom: 56 }}>By the numbers</Eyebrow></Reveal>
+        <Reveal><Eyebrow style={{ textAlign: "center", marginBottom: 56 }}>CEO Square by the numbers</Eyebrow></Reveal>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 2, background: "rgba(201,168,76,0.05)" }}>
           {stats.map((stat, i) => (
             <Reveal key={stat.label} delay={i * 0.12}>
@@ -718,7 +727,7 @@ function Section6Story() {
     <section style={{ padding: "96px 24px 120px", position: "relative" }}>
       <div style={{ maxWidth: 1280, margin: "0 auto" }}>
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 1.6, ease: EASE }} style={{ marginBottom: 60 }}>
-          <h2 style={poppins(700, "clamp(36px,6vw,72px)", TEXT, { textAlign: "center", borderBottom: "1px solid rgba(201,168,76,0.1)", paddingBottom: 40, textTransform: "uppercase", letterSpacing: "0.05em" })}>Selected Work</h2>
+          <h2 style={poppins(700, "clamp(36px,6vw,72px)", TEXT, { textAlign: "center", borderBottom: "1px solid rgba(201,168,76,0.1)", paddingBottom: 40, textTransform: "uppercase", letterSpacing: "0.05em" })}>The CEO Square Difference</h2>
         </motion.div>
         {stories.map((story, i) => {
           const isLeft = story.align === "left";
@@ -738,7 +747,7 @@ function Section6Story() {
                 <motion.p custom={1.3} variants={storyVariants} style={poppins(300, 17, "rgba(245,240,232,0.45)", { lineHeight: 1.9, marginBottom: 24, maxWidth: 480 })}>{story.body}</motion.p>
                 <motion.div custom={1.5} variants={storyVariants}>
                   <p style={poppins(500, 15, GOLD, { letterSpacing: "0.05em", display: "inline-block" })}>— {story.accent}</p>
-                  <span style={{ marginLeft: 32, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.1em", borderBottom: "1px solid rgba(201,168,76,0.4)", paddingBottom: 4, cursor: "pointer", color: TEXT }}>View Case Study →</span>
+                  <span style={{ marginLeft: 32, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.1em", borderBottom: "1px solid rgba(201,168,76,0.4)", paddingBottom: 4, cursor: "pointer", color: TEXT }}>Explore More →</span>
                 </motion.div>
               </div>
               <motion.div variants={imageVariants} style={{ order: isLeft ? 1 : 0, position: "relative" }}>
@@ -775,7 +784,7 @@ function Section7Quotes() {
     <section style={{ padding: "100px 24px", position: "relative", borderTop: "1px solid rgba(201,168,76,0.06)" }}>
       <div style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", width: 1, height: "100%", background: "rgba(201,168,76,0.06)" }} />
       <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
-        <Reveal><Eyebrow style={{ marginBottom: 56 }}>Voices of authority</Eyebrow></Reveal>
+        <Reveal><Eyebrow style={{ marginBottom: 56 }}>Voices from the community</Eyebrow></Reveal>
         <div style={{ position: "relative", minHeight: 160 }}>
           <AnimatePresence mode="wait">
             <motion.div key={active} initial={{ opacity: 0, y: 30, filter: "blur(10px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0, y: -30, filter: "blur(10px)" }} transition={{ duration: 0.7, ease: EASE }}>
@@ -817,25 +826,25 @@ function Section8CallToAction() {
             <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: "80%", height: "80%", borderRadius: "50%", background: "radial-gradient(ellipse,rgba(201,168,76,0.08),transparent 70%)", pointerEvents: "none" }} />
             <CornerAccents inset={32} size={50} />
             <div style={{ textAlign: "center", position: "relative", zIndex: 2 }}>
-              <Reveal><Eyebrow style={{ marginBottom: 32 }}>The Beginning</Eyebrow></Reveal>
-              <Reveal delay={0.15}><h2 style={poppins(200, "clamp(36px,6vw,80px)", TEXT, { lineHeight: 1.15, marginBottom: 12 })}>You belong</h2></Reveal>
-              <Reveal delay={0.25}><h2 style={{ fontFamily: "Poppins", fontWeight: 700, fontSize: "clamp(36px,6vw,80px)", lineHeight: 1.15, marginBottom: 40 }}><span className="shimmer-text">at the top.</span></h2></Reveal>
-              <Reveal delay={0.35}><p style={poppins(300, 18, "rgba(245,240,232,0.45)", { maxWidth: 560, margin: "0 auto 60px", lineHeight: 1.8 })}>Join an exclusive network of leaders who refuse to settle. Apply for your invitation today.</p></Reveal>
+              <Reveal><Eyebrow style={{ marginBottom: 32 }}>Coming Soon · Dubai</Eyebrow></Reveal>
+              <Reveal delay={0.15}><h2 style={poppins(200, "clamp(36px,6vw,80px)", TEXT, { lineHeight: 1.15, marginBottom: 12 })}>A new era of</h2></Reveal>
+              <Reveal delay={0.25}><h2 style={{ fontFamily: "Poppins", fontWeight: 700, fontSize: "clamp(36px,6vw,80px)", lineHeight: 1.15, marginBottom: 40 }}><span className="shimmer-text">leadership begins.</span></h2></Reveal>
+              <Reveal delay={0.35}><p style={poppins(300, 18, "rgba(245,240,232,0.45)", { maxWidth: 600, margin: "0 auto 60px", lineHeight: 1.8 })}>CEO Square is arriving in Dubai. Join a global community of visionary leaders, founders, and innovators building influence, connections, and lasting legacies together.</p></Reveal>
               <Reveal delay={0.45}>
                 <div style={{ display: "flex", gap: 20, justifyContent: "center", flexWrap: "wrap" }}>
                   <motion.button whileHover={{ scale: 1.05, boxShadow: "0 0 60px rgba(201,168,76,0.5)" }} whileTap={{ scale: 0.97 }} style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 14, letterSpacing: "0.12em", textTransform: "uppercase", padding: "22px 64px", borderRadius: 2, cursor: "pointer", border: "none", background: "linear-gradient(135deg,#c9a84c 0%,#f0d080 50%,#b8882a 100%)", color: BG }}>
-                    Request Invitation
+                    Join the Waitlist
                   </motion.button>
                 </div>
               </Reveal>
-              <Reveal delay={0.55}><p style={poppins(300, 12, "rgba(245,240,232,0.2)", { letterSpacing: "0.1em", marginTop: 20, textTransform: "uppercase" })}>Invite-only · Limited availability · CEO verified</p></Reveal>
+              <Reveal delay={0.55}><p style={poppins(300, 12, "rgba(245,240,232,0.2)", { letterSpacing: "0.1em", marginTop: 20, textTransform: "uppercase" })}>Invite-only · Limited seats · CEO verified</p></Reveal>
             </div>
           </div>
         </TiltCard>
       </motion.div>
       <div style={{ textAlign: "center", marginTop: 100 }}>
         <div style={{ width: 1, height: 60, background: "linear-gradient(to bottom,rgba(201,168,76,0.4),transparent)", margin: "0 auto 32px" }} />
-        <p style={poppins(300, 11, "rgba(245,240,232,0.2)", { letterSpacing: "0.3em", textTransform: "uppercase" })}>© 2025 · Crafted for those who lead</p>
+        <p style={poppins(300, 11, "rgba(245,240,232,0.2)", { letterSpacing: "0.3em", textTransform: "uppercase" })}>© 2025 CEO Square · Empowering Visionary Leaders Worldwide</p>
       </div>
     </section>
   );
@@ -863,7 +872,7 @@ function HomePageSections() {
 export default function Home() {
   return (
     <>
-      <Head><title>CEO2 | Home</title></Head>
+      <Head><title>CEO Square | Where Visionary Leaders Build Legacy</title></Head>
       <GlobalStyle />
       <div className="noise-overlay" />
       <Particles />
