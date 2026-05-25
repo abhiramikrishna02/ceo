@@ -87,63 +87,61 @@ function ResponsiveHeroBanner({
       </svg>
       <div className="pointer-events-none absolute inset-0 ring-1 ring-black/30" />
 
-      <div className="relative z-10">
-        <div className="relative mx-auto min-h-screen max-w-7xl px-6">
-          <div className="absolute inset-x-0 top-1/2 flex -translate-y-1/2 justify-center px-6">
-            <div className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
-              <div className="animate-fade-slide-in-1 mb-6 inline-flex items-center gap-3 rounded-full bg-white/10 px-2.5 py-2 ring-1 ring-white/15 backdrop-blur">
-                <span className="inline-flex items-center rounded-full bg-white/90 px-2 py-0.5 font-sans text-xs font-medium text-neutral-900">
-                  {badgeLabel}
-                </span>
-                <span className="font-sans text-sm font-medium text-white/90">
-                  {badgeText}
-                </span>
-              </div>
+      <div className="relative z-10 min-h-screen">
+        <div className="absolute inset-0 flex items-center justify-center px-6">
+          <div className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
+            <div className="animate-fade-slide-in-1 mb-6 inline-flex items-center gap-3 rounded-full bg-white/10 px-2.5 py-2 ring-1 ring-white/15 backdrop-blur">
+              <span className="inline-flex items-center rounded-full bg-white/90 px-2 py-0.5 font-sans text-xs font-medium text-neutral-900">
+                {badgeLabel}
+              </span>
+              <span className="font-sans text-sm font-medium text-white/90">
+                {badgeText}
+              </span>
+            </div>
 
-              <h1 className="animate-fade-slide-in-2 mx-auto max-w-5xl font-serif text-4xl font-normal leading-tight tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
-                {title}
-                <br className="hidden sm:block" />
-                {titleLine2}
-              </h1>
+            <h1 className="animate-fade-slide-in-2 mx-auto max-w-5xl font-serif text-4xl font-normal leading-tight tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+              {title}
+              <br className="hidden sm:block" />
+              {titleLine2}
+            </h1>
 
-              <p className="animate-fade-slide-in-3 mx-auto mt-6 max-w-2xl text-base text-white/80 sm:text-lg">
-                {description}
-              </p>
+            <p className="animate-fade-slide-in-3 mx-auto mt-6 max-w-2xl text-base text-white/80 sm:text-lg">
+              {description}
+            </p>
 
-              <div className="animate-fade-slide-in-4 mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
-                <a
-                  href={primaryButtonHref}
-                  className="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-3 font-sans text-sm font-medium text-white ring-1 ring-white/15 transition-colors hover:bg-white/15"
-                >
-                  {primaryButtonText}
-                  <ArrowRight className="h-4 w-4" />
-                </a>
-                <a
-                  href={secondaryButtonHref}
-                  className="inline-flex items-center gap-2 rounded-full bg-transparent px-5 py-3 font-sans text-sm font-medium text-white/90 transition-colors hover:text-white"
-                >
-                  {secondaryButtonText}
-                  <Play className="h-4 w-4" />
-                </a>
-              </div>
+            <div className="animate-fade-slide-in-4 mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+              <a
+                href={primaryButtonHref}
+                className="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-3 font-sans text-sm font-medium text-white ring-1 ring-white/15 transition-colors hover:bg-white/15"
+              >
+                {primaryButtonText}
+                <ArrowRight className="h-4 w-4" />
+              </a>
+              <a
+                href={secondaryButtonHref}
+                className="inline-flex items-center gap-2 rounded-full bg-transparent px-5 py-3 font-sans text-sm font-medium text-white/90 transition-colors hover:text-white"
+              >
+                {secondaryButtonText}
+                <Play className="h-4 w-4" />
+              </a>
             </div>
           </div>
+        </div>
 
-          <div className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-5xl px-6 pb-12 sm:pb-14">
-            <p className="animate-fade-slide-in-1 text-center text-sm text-white/70">
-              {partnersTitle}
-            </p>
-            <div className="animate-fade-slide-in-2 mt-6 grid grid-cols-2 items-center justify-items-center gap-4 text-white/70 sm:grid-cols-3 md:grid-cols-5">
-              {partners.map((partner, index) => (
-                <a
-                  key={`${partner.logoUrl}-${index}`}
-                  href={partner.href}
-                  aria-label={`Partner ${index + 1}`}
-                  className="inline-flex h-9 w-[120px] items-center justify-center rounded-full bg-cover bg-center opacity-80 transition-opacity hover:opacity-100"
-                  style={{ backgroundImage: `url(${partner.logoUrl})` }}
-                />
-              ))}
-            </div>
+        <div className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-5xl px-6 pb-12 sm:pb-14">
+          <p className="animate-fade-slide-in-1 text-center text-sm text-white/70">
+            {partnersTitle}
+          </p>
+          <div className="animate-fade-slide-in-2 mt-6 grid grid-cols-2 items-center justify-items-center gap-4 text-white/70 sm:grid-cols-3 md:grid-cols-5">
+            {partners.map((partner, index) => (
+              <a
+                key={`${partner.logoUrl}-${index}`}
+                href={partner.href}
+                aria-label={`Partner ${index + 1}`}
+                className="inline-flex h-9 w-[120px] items-center justify-center rounded-full bg-cover bg-center opacity-80 transition-opacity hover:opacity-100"
+                style={{ backgroundImage: `url(${partner.logoUrl})` }}
+              />
+            ))}
           </div>
         </div>
       </div>
