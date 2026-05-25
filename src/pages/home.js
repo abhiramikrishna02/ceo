@@ -109,8 +109,42 @@ function GlobalStyle() {
       .card-tilt{transform-style:preserve-3d;transition:transform 0.4s cubic-bezier(0.23,1,0.32,1),box-shadow 0.4s ease}
       .card-tilt:hover{box-shadow:0 30px 80px rgba(201,168,76,0.15),0 0 0 1px rgba(201,168,76,0.2)}
       .shimmer-text{background:linear-gradient(90deg,#c9a84c 0%,#f0d080 25%,#fff8e7 50%,#f0d080 75%,#c9a84c 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 4s linear infinite}
-      @media(max-width:768px){.story-grid{grid-template-columns:1fr!important;gap:40px!important;padding:80px 0!important}.story-grid>div:nth-child(2){order:-1!important}.cb-panel{grid-template-columns:1fr!important;gap:48px!important;min-height:auto!important;padding:72px 24px!important}.cb-panel-visual{height:260px!important;min-height:260px!important}}
-      @media(max-width:980px){.community-benefits-block{display:block!important;height:auto!important;min-height:100vh;padding:88px 0}.community-benefits-block__axis{display:none!important}.community-benefits-block__scenes{position:relative!important;height:auto!important;display:flex!important;flex-direction:column!important;gap:80px!important;padding:0 24px!important}.community-benefits-block__scene{position:absolute!important;inset:auto!important;width:100%!important;opacity:1!important;visibility:visible!important;transform:none!important}.community-benefits-block__canvas-wrap{display:none!important}}
+      @media(max-width:768px){
+        .story-grid{grid-template-columns:1fr!important;gap:36px!important;padding:72px 0!important}
+        .story-grid>div:nth-child(2){order:-1!important}
+        .story-grid h3{font-size:clamp(26px,7vw,42px)!important}
+        .story-grid p{font-size:15px!important;line-height:1.75!important}
+        .story-grid span[style*="fontSize: 24px"]{font-size:18px!important;margin-right:10px!important}
+        .home-statement-section{height:auto!important;margin-top:0!important}
+        .home-statement-stage{position:relative!important;top:auto!important;height:auto!important;min-height:auto!important;display:block!important;padding:72px 20px!important;overflow:visible!important}
+        .home-statement-main{position:relative!important;max-width:100%!important;opacity:1!important;transform:none!important;filter:none!important;margin:0 auto}
+        .home-statement-main p{white-space:normal!important;letter-spacing:-0.01em!important;text-align:center!important}
+        .home-statement-headline{padding:28px 0!important}
+        .home-statement-cards{position:relative!important;inset:auto!important;display:grid!important;grid-template-columns:1fr!important;gap:16px!important;pointer-events:auto!important}
+        .home-statement-card{position:relative!important;width:100%!important;height:auto!important;min-height:unset!important;padding:18px!important;transform:none!important;opacity:1!important}
+        .home-statement-card h4{font-size:16px!important}
+        .home-statement-card p{font-size:12px!important}
+        .home-benefits-grid{height:auto!important;min-height:auto!important}
+        .home-benefits-slide{position:relative!important;display:grid!important;grid-template-columns:1fr!important;height:auto!important;min-height:auto!important;z-index:auto!important;margin-bottom:56px!important}
+        .home-benefits-image{width:100%!important;height:240px!important}
+        .home-benefits-content{width:100%!important;padding:24px 0 0!important}
+        .home-benefits-giant{position:relative!important;left:auto!important;bottom:auto!important;transform:none!important;justify-content:flex-start!important;margin-top:18px!important;font-size:clamp(34px,10vw,68px)!important}
+        .home-stats-section{padding:88px 20px!important}
+        .home-story-section{padding:80px 20px 96px!important}
+        .home-quotes-section{padding:84px 20px!important}
+        .home-cta-section{padding:72px 20px 120px!important}
+        .home-cta-section h2{font-size:clamp(32px,9vw,64px)!important}
+        .home-cta-section button{width:100%!important;max-width:360px!important}
+        .community-benefits-block{display:block!important;height:auto!important;min-height:100vh;padding:72px 0}
+        .community-benefits-block__axis{display:none!important}
+        .community-benefits-block__text,.community-benefits-block__visual{width:100%!important}
+        .community-benefits-block__text{padding:0 20px 24px!important}
+        .community-benefits-block__scenes{position:relative!important;height:auto!important;display:flex!important;flex-direction:column!important;gap:56px!important;padding:0 20px!important}
+        .community-benefits-block__scene{position:relative!important;top:auto!important;left:auto!important;right:auto!important;inset:auto!important;width:100%!important;opacity:1!important;visibility:visible!important;transform:none!important}
+        .community-benefits-block__visual{display:none!important;min-height:0!important}
+        .community-benefits-block__canvas-wrap{display:none!important}
+      }
+      @media(max-width:980px){.community-benefits-block{display:block!important;height:auto!important;min-height:100vh;padding:88px 0}.community-benefits-block__axis{display:none!important}.community-benefits-block__scenes{position:relative!important;height:auto!important;display:flex!important;flex-direction:column!important;gap:80px!important;padding:0 24px!important}.community-benefits-block__scene{position:relative!important;top:auto!important;left:auto!important;right:auto!important;inset:auto!important;width:100%!important;opacity:1!important;visibility:visible!important;transform:none!important}.community-benefits-block__canvas-wrap{display:none!important}}
     `}</style>
   );
 }
@@ -516,16 +550,16 @@ function Section3Statement() {
   const miniCard = (extra) => ({ position: "absolute", borderRadius: 24, backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", padding: 24, transformStyle: "preserve-3d", backfaceVisibility: "hidden", willChange: "transform, opacity", ...extra });
 
   return (
-    <section ref={ref} style={{ height: "400vh", marginTop: "-10vh", position: "relative", borderTop: "1px solid rgba(201,168,76,0.06)", borderBottom: "1px solid rgba(201,168,76,0.06)", zIndex: 1, willChange: "transform" }}>
-      <div style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 24px" }}>
+    <section ref={ref} className="home-statement-section" style={{ height: "400vh", marginTop: "-10vh", position: "relative", borderTop: "1px solid rgba(201,168,76,0.06)", borderBottom: "1px solid rgba(201,168,76,0.06)", zIndex: 1, willChange: "transform" }}>
+      <div className="home-statement-stage" style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 24px" }}>
         <motion.div aria-hidden="true" style={{ position: "absolute", top: -140, left: "50%", width: "min(980px,92vw)", height: 280, transform: "translateX(-50%)", borderRadius: "50%", background: "radial-gradient(ellipse,rgba(201,168,76,0.08) 0%,rgba(10,10,10,0) 72%)", filter: "blur(10px)", opacity: handoffGlow, pointerEvents: "none" }} />
         <motion.div aria-hidden="true" style={{ position: "absolute", inset: "0 0 auto 0", height: 240, background: "linear-gradient(180deg,rgba(10,10,10,0.96) 0%,rgba(10,10,10,0.72) 42%,rgba(10,10,10,0) 100%)", opacity: handoffGlow, pointerEvents: "none" }} />
 
-        <motion.div style={{ maxWidth: 1200, width: "100%", margin: "0 auto", position: "absolute", zIndex: 1, y: sectionLift, opacity: textOpacity, scale: textScale, filter: textBlur, willChange: "transform, opacity, filter" }}>
+        <motion.div className="home-statement-main" style={{ maxWidth: 1200, width: "100%", margin: "0 auto", position: "absolute", zIndex: 1, y: sectionLift, opacity: textOpacity, scale: textScale, filter: textBlur, willChange: "transform, opacity, filter" }}>
           <motion.div style={{ x: x1 }}>
             <p style={poppins(800, "clamp(42px,7vw,96px)", "rgba(245,240,232,0.04)", { lineHeight: 1.05, textAlign: "left", whiteSpace: "nowrap", letterSpacing: "-0.02em" })}>EXCELLENCE – PRIVILEGE – PRESTIGE – POWER</p>
           </motion.div>
-          <div style={{ padding: "44px 0", textAlign: "center", position: "relative", zIndex: 2 }}>
+          <div className="home-statement-headline" style={{ padding: "44px 0", textAlign: "center", position: "relative", zIndex: 2 }}>
             <Reveal>
               <h2 style={poppins(200, "clamp(28px,4vw,52px)", TEXT, { lineHeight: 1.4, maxWidth: 800, margin: "0 auto" })}>
                 Not every CEO gets treated like one.<br /><span className="gold-gradient" style={{ fontWeight: 600 }}>You will.</span>
@@ -537,20 +571,20 @@ function Section3Statement() {
           </motion.div>
         </motion.div>
 
-        <div style={{ position: "absolute", inset: 0, zIndex: 10, pointerEvents: "none", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <motion.div style={miniCard({ width: 230, height: 155, background: "linear-gradient(145deg,rgba(30,30,30,0.9),rgba(15,15,15,0.9))", border: "1px solid rgba(255,255,255,0.05)", boxShadow: "0 20px 40px rgba(0,0,0,0.5)", x: c5X, y: c5Y, rotate: c5Rot, opacity: c5Opacity, zIndex: 7 })}>
+        <div className="home-statement-cards" style={{ position: "absolute", inset: 0, zIndex: 10, pointerEvents: "none", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <motion.div className="home-statement-card" style={miniCard({ width: 230, height: 155, background: "linear-gradient(145deg,rgba(30,30,30,0.9),rgba(15,15,15,0.9))", border: "1px solid rgba(255,255,255,0.05)", boxShadow: "0 20px 40px rgba(0,0,0,0.5)", x: c5X, y: c5Y, rotate: c5Rot, opacity: c5Opacity, zIndex: 7 })}>
             <p style={poppins(undefined, 11, "#888", { letterSpacing: 1 })}>GLOBAL ACCESS</p>
             <h4 style={poppins(400, 16, TEXT, { marginTop: 6 })}>Borderless Limits</h4>
           </motion.div>
-          <motion.div style={miniCard({ width: 250, height: 185, background: "linear-gradient(135deg,rgba(201,168,76,0.08),rgba(10,10,10,0.8))", border: "1px solid rgba(201,168,76,0.15)", x: c4X, y: c4Y, rotate: c4Rot, opacity: c4Opacity, zIndex: 4 })}>
+          <motion.div className="home-statement-card" style={miniCard({ width: 250, height: 185, background: "linear-gradient(135deg,rgba(201,168,76,0.08),rgba(10,10,10,0.8))", border: "1px solid rgba(201,168,76,0.15)", x: c4X, y: c4Y, rotate: c4Rot, opacity: c4Opacity, zIndex: 4 })}>
             <p style={poppins(undefined, 11, "rgba(201,168,76,0.8)", { letterSpacing: 1 })}>PRIVATE EQUITY</p>
             <h4 style={poppins(300, 18, TEXT, { marginTop: 6 })}>Exclusive Portfolios</h4>
           </motion.div>
-          <motion.div style={miniCard({ width: 280, height: 170, background: "linear-gradient(145deg,rgba(20,20,20,0.8),rgba(5,5,5,0.9))", border: "1px solid rgba(255,255,255,0.08)", x: c3X, y: c3Y, rotate: c3Rot, opacity: c3Opacity, zIndex: 6 })}>
+          <motion.div className="home-statement-card" style={miniCard({ width: 280, height: 170, background: "linear-gradient(145deg,rgba(20,20,20,0.8),rgba(5,5,5,0.9))", border: "1px solid rgba(255,255,255,0.08)", x: c3X, y: c3Y, rotate: c3Rot, opacity: c3Opacity, zIndex: 6 })}>
             <p style={poppins(undefined, 11, "#888", { letterSpacing: 1 })}>LIQUIDITY</p>
             <h4 style={poppins(300, 19, TEXT, { marginTop: 6 })}>Instant Settlements</h4>
           </motion.div>
-          <motion.div style={miniCard({ width: 310, height: 210, background: "rgba(25,25,25,0.6)", border: "1px solid rgba(255,255,255,0.06)", boxShadow: "0 30px 60px rgba(0,0,0,0.6)", x: c2X, y: c2Y, rotate: c2Rot, opacity: c2Opacity, zIndex: 5, display: "flex", flexDirection: "column" })}>
+          <motion.div className="home-statement-card" style={miniCard({ width: 310, height: 210, background: "rgba(25,25,25,0.6)", border: "1px solid rgba(255,255,255,0.06)", boxShadow: "0 30px 60px rgba(0,0,0,0.6)", x: c2X, y: c2Y, rotate: c2Rot, opacity: c2Opacity, zIndex: 5, display: "flex", flexDirection: "column" })}>
             <p style={poppins(undefined, 11, "#aaa", { letterSpacing: 1 })}>CORPORATE</p>
             <h4 style={poppins(300, 19, TEXT, { marginTop: 6 })}>Multi-currency IBAN</h4>
             <div style={{ marginTop: "auto", paddingTop: 20 }}>

@@ -1,71 +1,126 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
 
-import { DottedSurface } from "@/components/ui/dotted-surface";
-
-const footerLinks = [
+const exploreLinks = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Benefits", href: "/benefits" },
   { label: "Contact", href: "/contact" },
 ];
 
+const socialLinks = [
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/ceo.square.official?igsh=ajF4cTM0eHFlenFv",
+  },
+  {
+    label: "YouTube",
+    href: "https://youtube.com/@ceosquare-bangalore?si=oukFHFUySAm2OiYo",
+  },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/company/ceo-square/",
+  },
+  {
+    label: "X",
+    href: "https://x.com/ceosquare60011?s=21",
+  },
+  {
+    label: "Threads",
+    href: "https://www.threads.com/@ceo.square.official?invite=0",
+  },
+];
+
+const policyLinks = [
+  { label: "Privacy Policy", href: "/privacy" },
+  { label: "Terms of Service", href: "/terms" },
+];
+
 export default function Footer() {
   return (
-    <footer className="relative isolate mt-16 min-h-[520px] overflow-hidden border-t border-white/10 bg-black px-6 py-14 sm:px-10 sm:py-16">
-      <DottedSurface
-        className="opacity-90"
-        style={{
-          inset: "-15% -10% -20% -10%",
-          transform: "scale(1.16)",
-          transformOrigin: "center",
-        }}
-      />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(201,168,76,0.22)_0%,rgba(201,168,76,0.1)_24%,transparent_64%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0)_0%,rgba(0,0,0,0.22)_30%,rgba(0,0,0,0.78)_100%)]" />
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#c9a84c]/45 to-transparent" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black/95 to-transparent" />
+    <footer className="relative isolate mt-16 overflow-hidden bg-[#050505] px-6 pt-14 text-[#f5f0e8] sm:px-10 sm:pt-16 lg:px-20 lg:pt-16">
+      {/* High-end Ambient Background Lights */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[600px] w-full bg-[radial-gradient(50%_50%_at_50%_0%,rgba(201,168,76,0.06)_0%,transparent_100%)]" />
+      <div className="pointer-events-none absolute inset-0 opacity-[0.03] [background-image:radial-gradient(rgba(245,240,232,0.9)_1px,transparent_1px)] [background-size:24px_24px]" />
+      
+      {/* Subtle Gold Accent Line */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#c9a84c]/40 to-transparent" />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col justify-between gap-10">
-        <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
-          <div className="max-w-2xl">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.45em] text-[#c9a84c]/75">CEO Studio</p>
-            <h2 className="mt-4 font-serif text-3xl font-normal leading-tight text-[#f5f0e8] sm:text-4xl">
-              A cleaner ending for a serious home.
-            </h2>
-            <p className="mt-4 max-w-xl text-sm leading-7 text-[#f5f0e8]/58 sm:text-base">
-              Calm, premium, and easier to navigate. The footer stays present without competing with the page.
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-5 lg:items-end">
-            <nav className="flex flex-wrap justify-start gap-x-6 gap-y-3 lg:justify-end">
-              {footerLinks.map((link) => (
+      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col">
+        <div className="grid grid-cols-1 gap-10 border-t border-white/5 pt-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-16 lg:pt-12">
+          <div className="flex flex-col gap-6">
+            <h3 className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#f5f0e8]/30">
+              Explore
+            </h3>
+            <nav className="flex flex-col gap-4">
+              {exploreLinks.map((link) => (
                 <Link
                   key={link.label}
                   href={link.href}
-                  className="text-sm text-[#f5f0e8]/72 transition-colors hover:text-[#f5f0e8]"
+                  className="group flex w-fit items-center text-[14px] leading-relaxed text-[#f5f0e8]/60 transition-all duration-300 ease-out hover:translate-x-1 hover:text-[#c9a84c] focus-visible:outline-none"
                 >
                   {link.label}
                 </Link>
               ))}
             </nav>
+          </div>
 
-            <Link
-              href="/contact"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-[#c9a84c]/22 bg-[#c9a84c]/12 px-5 py-3 text-sm font-medium text-[#f5f0e8] transition-all hover:border-[#c9a84c]/45 hover:bg-[#c9a84c]/18"
-            >
-              Book a conversation
-              <ArrowUpRight className="h-4 w-4" />
-            </Link>
+          <div className="flex flex-col gap-6">
+            <h3 className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#f5f0e8]/30">
+              Social
+            </h3>
+            <nav className="flex flex-col gap-4">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex w-fit items-center text-[14px] leading-relaxed text-[#f5f0e8]/60 transition-all duration-300 ease-out hover:translate-x-1 hover:text-[#c9a84c] focus-visible:outline-none"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </nav>
+          </div>
+
+          <div className="flex flex-col gap-6">
+            <h3 className="text-[10px] font-semibold uppercase tracking-[0.28em] text-[#f5f0e8]/30">
+              Contact
+            </h3>
+            <div className="flex flex-col gap-4 text-[14px] leading-relaxed text-[#f5f0e8]/60">
+              <a
+                href="mailto:ceosquareofficial@gmail.com"
+                className="group flex w-fit transition-all duration-300 ease-out hover:translate-x-1 hover:text-[#c9a84c] focus-visible:outline-none"
+              >
+                ceosquareofficial@gmail.com
+              </a>
+              <a
+                href="tel:+918660894623"
+                className="group flex w-fit transition-all duration-300 ease-out hover:translate-x-1 hover:text-[#c9a84c] focus-visible:outline-none"
+              >
+                +91 86608 94623
+              </a>
+            </div>
           </div>
         </div>
 
-        <div className="grid gap-4 border-t border-white/10 pt-5 text-xs text-[#f5f0e8]/35 sm:grid-cols-[1fr_auto] sm:items-center">
-          <p>© 2026 CEO Studio</p>
-          <p className="sm:text-right">Designed for leaders who prefer clarity over clutter.</p>
+        <div className="mt-12 flex flex-col justify-between gap-4 pb-8 sm:flex-row sm:items-center lg:mt-16">
+          <p className="text-[12px] text-[#f5f0e8]/40">
+            &copy; {new Date().getFullYear()} CEO Square. All rights reserved.
+          </p>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+            {policyLinks.map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="text-[12px] text-[#f5f0e8]/40 transition-colors duration-300 hover:text-[#c9a84c] focus-visible:outline-none"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </footer>
