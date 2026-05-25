@@ -1,18 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import Head from "next/head";
-import { Check, CircleDot } from "lucide-react";
-import {
-  AnimatePresence,
-  motion,
-  useInView,
-  useScroll,
-  useSpring,
-  useTransform,
-} from "framer-motion";
+import { AnimatePresence, motion, useInView, useScroll, useSpring, useTransform } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
 import SiteNavbar from "@/components/layout/site-navbar";
+import Footer from "@/components/layout/footer";
 import { DottedSurface } from "@/components/ui/dotted-surface";
 import ResponsiveHeroBanner from "@/components/ui/responsive-hero-banner";
 import { cn } from "@/lib/utils";
@@ -27,23 +19,7 @@ const BG = "#0a0a0a";
 const TEXT = "#f5f0e8";
 const EASE = [0.16, 1, 0.3, 1];
 
-const homeOfferServices = [
-  "Homepage narrative and section strategy",
-  "Responsive interface design direction",
-  "Conversion-focused contact path",
-  "Motion and visual polish for premium pacing",
-];
-const homeOfferMetrics = [
-  { value: "05", label: "Focused sections" },
-  { value: "01", label: "Clear next action" },
-  { value: "24/7", label: "Always-on first impression" },
-];
-const stats = [
-  { value: "₹50Cr+", label: "Credit Limit", note: "Dynamic" },
-  { value: "1,400+", label: "Airport Lounges", note: "Worldwide" },
-  { value: "180", label: "Countries", note: "Zero FX" },
-  { value: "24/7", label: "Concierge", note: "Dedicated" },
-];
+const stats = [{ value: "₹50Cr+", label: "Credit Limit", note: "Dynamic" },{ value: "1,400+", label: "Airport Lounges", note: "Worldwide" },{ value: "180", label: "Countries", note: "Zero FX" },{ value: "24/7", label: "Concierge", note: "Dedicated" }];
 const stories = [
   { eyebrow: "Power", title: "Command your finances from anywhere on Earth.", body: "Real-time portfolio overview. Instant transfers. One-tap settlements. Your financial empire, governed from the palm of your hand.", accent: "Total control. Zero compromise.", align: "left" },
   { eyebrow: "Prestige", title: "Access that money can't buy. Only earn.", body: "Invitations to curated events, private dinners with industry leaders, and first-look access to luxury launches – reserved for those who qualify.", accent: "Not available. Only obtainable.", align: "right" },
@@ -61,25 +37,29 @@ const quotes = [
   { text: "I stopped counting the number of times the concierge saved a deal.", name: "Ananya R.", role: "Founder, VC-backed fintech" },
   { text: "The platform treats me the way I treat my clients. With absolute priority.", name: "Rohan M.", role: "CEO, Global Consulting Group" },
 ];
+const communityBenefits = [
+  { id: "01", eyebrow: "Clarity & Direction", headline: "The Architecture\nof Precision.", sub: "Isolate high-signal vectors from systemic noise.", detail: "As a leader, your ultimate leverage is decision accuracy. This collective acts as an unvarnished sounding board, allowing you to stress-test global strategies and map market variables with absolute optical clarity.", tags: ["Signal Isolation", "Strategic Map", "Peer Calibration"], stat: { value: "100%", label: "High-signal alignment among vetted contemporary operators." }, accent: "Radical focus drives non-linear returns." },
+  { id: "02", eyebrow: "Access & Momentum", headline: "The Network\nMultiplied.", sub: "Direct velocity injection through high-integrity velocity loops.", detail: "Bypass standard transaction friction. Access sovereign wealth corridors, pre-vetted execution partners, and rare structural knowledge held exclusively by sitting chief executives who manage parallel scales.", tags: ["Velocity Loops", "Sovereign Access", "Frictionless Exchange"], stat: { value: "14.2x", label: "Average relational velocity acceleration versus traditional networks." }, accent: "Proximity alters the horizon of the possible." },
+  { id: "03", eyebrow: "Execution & Growth", headline: "The Mandate\nof Scale.", sub: "Institutionalize excellence, protect your downside, and expand territory.", detail: "Confront governance evolution, capital stack optimization, and ultimate legacy preservation alongside founders who have unlocked multi-generational value creation pipelines. Execute at your absolute zenith.", tags: ["Scale Architecture", "Risk Shielding", "Legacy Preservation"], stat: { value: "$4.2B+", label: "Collective enterprise value held within immediate peer cohort." }, accent: "The standard is permanent, relentless optimization." },
+];
 
 // ---------------------------------------------------------------------------
-// Shared animation variants
+// Shared style helpers
 // ---------------------------------------------------------------------------
+const eyebrowStyle = { fontFamily: "Poppins", fontSize: 11, fontWeight: 300, color: GOLD, letterSpacing: "0.4em", textTransform: "uppercase", marginBottom: 24 };
+const poppins = (weight, size, color, extra = {}) => ({ fontFamily: "Poppins", fontWeight: weight, fontSize: size, color, ...extra });
 const listVariants = { hidden: {}, show: { transition: { staggerChildren: 0.1, delayChildren: 0.08 } } };
 const itemVariants = { hidden: { opacity: 0, y: 18, x: -10, filter: "blur(6px)" }, show: { opacity: 1, y: 0, x: 0, filter: "blur(0px)", transition: { duration: 0.55, ease: "easeOut" } } };
 const metricVariants = { hidden: { opacity: 0, y: 22, scale: 0.96 }, show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: "easeOut" } } };
 const storyVariants = { hidden: { opacity: 0, y: 30 }, visible: (delay) => ({ opacity: 1, y: 0, transition: { duration: 1.0, delay, ease: EASE } }) };
-
-// Shared inline style objects
-const eyebrowStyle = { fontFamily: "Poppins", fontSize: 11, fontWeight: 300, color: GOLD, letterSpacing: "0.4em", textTransform: "uppercase", marginBottom: 24 };
-const poppins = (weight, size, color, extra = {}) => ({ fontFamily: "Poppins", fontWeight: weight, fontSize: size, color, ...extra });
+const revealStyle = (visible, delay = 0) => ({ opacity: visible ? 1 : 0, transform: visible ? "translate3d(0,0,0)" : "translate3d(0,24px,0)", transition: `opacity 820ms ease ${delay}ms, transform 820ms ease ${delay}ms` });
 
 // ---------------------------------------------------------------------------
 // Utilities
 // ---------------------------------------------------------------------------
 const createParticle = (index) => {
   const seed = (index + 1) * 9973;
-  const rand = (offset) => { const v = Math.sin(seed + offset) * 10000; return v - Math.floor(v); };
+  const rand = (o) => { const v = Math.sin(seed + o) * 10000; return v - Math.floor(v); };
   return { id: index, left: `${rand(1) * 100}%`, delay: `${rand(2) * 12}s`, duration: `${8 + rand(3) * 12}s`, size: `${1 + rand(4) * 3}px`, drift: `${(rand(5) - 0.5) * 200}px` };
 };
 
@@ -96,12 +76,6 @@ function useReveal(threshold = 0.22) {
   return [ref, visible];
 }
 
-const revealStyle = (visible, delay = 0) => ({
-  opacity: visible ? 1 : 0,
-  transform: visible ? "translate3d(0, 0, 0)" : "translate3d(0, 24px, 0)",
-  transition: `opacity 820ms ease ${delay}ms, transform 820ms ease ${delay}ms`,
-});
-
 function splitTextToSpans(text) {
   return text.split("").map((char, i) => (
     <span key={i} className="char" style={{ display: "inline-block", willChange: "transform, opacity", transformOrigin: "50% 50% -20px" }}>
@@ -111,36 +85,32 @@ function splitTextToSpans(text) {
 }
 
 // ---------------------------------------------------------------------------
-// Global style & particles
+// Global style & Particles
 // ---------------------------------------------------------------------------
 function GlobalStyle() {
   return (
     <style>{`
       @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&display=swap');
-      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-      html { scroll-behavior: smooth; }
-      body, #root { font-family: 'Poppins', sans-serif; background: #0a0a0a; color: #f5f0e8; overflow-x: hidden; }
-      ::-webkit-scrollbar { width: 3px; } ::-webkit-scrollbar-track { background: #0a0a0a; } ::-webkit-scrollbar-thumb { background: #c9a84c; border-radius: 2px; }
-      ::selection { background: rgba(201,168,76,0.3); color: #f5f0e8; }
-      .gold { color: #c9a84c; }
-      .gold-gradient { background: linear-gradient(135deg,#c9a84c 0%,#f0d080 40%,#b8882a 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-      .glass { background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(201,168,76,0.12); }
-      .noise-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.035; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
-      @keyframes glowPulse { 0%,100%{box-shadow:0 0 20px rgba(201,168,76,0.2),0 0 60px rgba(201,168,76,0.05)} 50%{box-shadow:0 0 40px rgba(201,168,76,0.4),0 0 100px rgba(201,168,76,0.15)} }
-      @keyframes shimmer { 0%{background-position:-200% center} 100%{background-position:200% center} }
-      @keyframes spin-slow { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-      @keyframes spin-reverse { from{transform:rotate(360deg)} to{transform:rotate(0deg)} }
-      @keyframes particle-drift { 0%{transform:translateY(100vh) translateX(0) scale(0);opacity:0} 10%{opacity:1} 90%{opacity:0.6} 100%{transform:translateY(-100px) translateX(var(--drift)) scale(1);opacity:0} }
-      @keyframes borderShimmer { 0%,100%{border-color:rgba(201,168,76,0.1)} 50%{border-color:rgba(201,168,76,0.4)} }
-      .card-tilt { transform-style:preserve-3d; transition:transform 0.4s cubic-bezier(0.23,1,0.32,1),box-shadow 0.4s ease; }
-      .card-tilt:hover { box-shadow:0 30px 80px rgba(201,168,76,0.15),0 0 0 1px rgba(201,168,76,0.2); }
-      .shimmer-text { background:linear-gradient(90deg,#c9a84c 0%,#f0d080 25%,#fff8e7 50%,#f0d080 75%,#c9a84c 100%); background-size:200% auto; -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; animation:shimmer 4s linear infinite; }
-      @media (max-width:768px) {
-        .story-grid{grid-template-columns:1fr!important;gap:40px!important;padding:80px 0!important}
-        .story-grid>div:nth-child(2){order:-1!important}
-        .cb-panel{grid-template-columns:1fr!important;gap:48px!important;min-height:auto!important;padding:72px 24px!important}
-        .cb-panel-visual{height:260px!important;min-height:260px!important}
-      }
+      *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+      html{scroll-behavior:smooth}
+      body,#root{font-family:'Poppins',sans-serif;background:#0a0a0a;color:#f5f0e8;overflow-x:hidden}
+      ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:#0a0a0a}::-webkit-scrollbar-thumb{background:#c9a84c;border-radius:2px}
+      ::selection{background:rgba(201,168,76,0.3);color:#f5f0e8}
+      .gold{color:#c9a84c}
+      .gold-gradient{background:linear-gradient(135deg,#c9a84c 0%,#f0d080 40%,#b8882a 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+      .glass{background:rgba(255,255,255,0.03);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(201,168,76,0.12)}
+      .noise-overlay{position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:0.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+      @keyframes glowPulse{0%,100%{box-shadow:0 0 20px rgba(201,168,76,0.2),0 0 60px rgba(201,168,76,0.05)}50%{box-shadow:0 0 40px rgba(201,168,76,0.4),0 0 100px rgba(201,168,76,0.15)}}
+      @keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+      @keyframes spin-slow{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+      @keyframes spin-reverse{from{transform:rotate(360deg)}to{transform:rotate(0deg)}}
+      @keyframes particle-drift{0%{transform:translateY(100vh) translateX(0) scale(0);opacity:0}10%{opacity:1}90%{opacity:0.6}100%{transform:translateY(-100px) translateX(var(--drift)) scale(1);opacity:0}}
+      @keyframes borderShimmer{0%,100%{border-color:rgba(201,168,76,0.1)}50%{border-color:rgba(201,168,76,0.4)}}
+      .card-tilt{transform-style:preserve-3d;transition:transform 0.4s cubic-bezier(0.23,1,0.32,1),box-shadow 0.4s ease}
+      .card-tilt:hover{box-shadow:0 30px 80px rgba(201,168,76,0.15),0 0 0 1px rgba(201,168,76,0.2)}
+      .shimmer-text{background:linear-gradient(90deg,#c9a84c 0%,#f0d080 25%,#fff8e7 50%,#f0d080 75%,#c9a84c 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 4s linear infinite}
+      @media(max-width:768px){.story-grid{grid-template-columns:1fr!important;gap:40px!important;padding:80px 0!important}.story-grid>div:nth-child(2){order:-1!important}.cb-panel{grid-template-columns:1fr!important;gap:48px!important;min-height:auto!important;padding:72px 24px!important}.cb-panel-visual{height:260px!important;min-height:260px!important}}
+      @media(max-width:980px){.community-benefits-block{display:block!important;height:auto!important;min-height:100vh;padding:88px 0}.community-benefits-block__axis{display:none!important}.community-benefits-block__scenes{position:relative!important;height:auto!important;display:flex!important;flex-direction:column!important;gap:80px!important;padding:0 24px!important}.community-benefits-block__scene{position:absolute!important;inset:auto!important;width:100%!important;opacity:1!important;visibility:visible!important;transform:none!important}.community-benefits-block__canvas-wrap{display:none!important}}
     `}</style>
   );
 }
@@ -156,7 +126,7 @@ function Particles() {
 }
 
 // ---------------------------------------------------------------------------
-// Shared UI components
+// Shared UI Components
 // ---------------------------------------------------------------------------
 function Reveal({ children, delay = 0, y = 60 }) {
   const ref = useRef(null);
@@ -201,7 +171,7 @@ function TiltCard({ children, style = {}, className = "" }) {
 function CornerAccents({ color = "rgba(201,168,76,0.4)", inset = 20, size = 20 }) {
   return (
     <>
-      {[["top", "left"], ["top", "right"], ["bottom", "left"], ["bottom", "right"]].map(([v, h]) => (
+      {[["top","left"],["top","right"],["bottom","left"],["bottom","right"]].map(([v, h]) => (
         <div key={`${v}${h}`} style={{ position: "absolute", [v]: inset, [h]: inset, width: size, height: size, borderTop: v === "top" ? `1px solid ${color}` : "none", borderBottom: v === "bottom" ? `1px solid ${color}` : "none", borderLeft: h === "left" ? `1px solid ${color}` : "none", borderRight: h === "right" ? `1px solid ${color}` : "none" }} />
       ))}
     </>
@@ -229,100 +199,8 @@ function Section1Hero() {
 }
 
 // ---------------------------------------------------------------------------
-// Section 1: Hero End
-// ---------------------------------------------------------------------------
-
-// ---------------------------------------------------------------------------
 // Section 2: Community Benefits
 // ---------------------------------------------------------------------------
-
-
-const communityBenefits = [
-  {
-    id: "01",
-    eyebrow: "Clarity & Direction",
-    headline: "The Architecture\nof Precision.",
-    sub: "Isolate high-signal vectors from systemic noise.",
-    detail:
-      "As a leader, your ultimate leverage is decision accuracy. This collective acts as an unvarnished sounding board, allowing you to stress-test global strategies and map market variables with absolute optical clarity.",
-    tags: ["Signal Isolation", "Strategic Map", "Peer Calibration"],
-    stat: {
-      value: "100%",
-      label: "High-signal alignment among vetted contemporary operators.",
-    },
-    accent: "Radical focus drives non-linear returns.",
-  },
-  {
-    id: "02",
-    eyebrow: "Access & Momentum",
-    headline: "The Network\nMultiplied.",
-    sub: "Direct velocity injection through high-integrity velocity loops.",
-    detail:
-      "Bypass standard transaction friction. Access sovereign wealth corridors, pre-vetted execution partners, and rare structural knowledge held exclusively by sitting chief executives who manage parallel scales.",
-    tags: ["Velocity Loops", "Sovereign Access", "Frictionless Exchange"],
-    stat: {
-      value: "14.2x",
-      label: "Average relational velocity acceleration versus traditional networks.",
-    },
-    accent: "Proximity alters the horizon of the possible.",
-  },
-  {
-    id: "03",
-    eyebrow: "Execution & Growth",
-    headline: "The Mandate\nof Scale.",
-    sub: "Institutionalize excellence, protect your downside, and expand territory.",
-    detail:
-      "Confront governance evolution, capital stack optimization, and ultimate legacy preservation alongside founders who have unlocked multi-generational value creation pipelines. Execute at your absolute zenith.",
-    tags: ["Scale Architecture", "Risk Shielding", "Legacy Preservation"],
-    stat: {
-      value: "$4.2B+",
-      label: "Collective enterprise value held within immediate peer cohort.",
-    },
-    accent: "The standard is permanent, relentless optimization.",
-  },
-];
-
-function CommunityBenefitsResponsiveStyle() {
-  return (
-    <style jsx global>{`
-      @media (max-width: 980px) {
-        .community-benefits-block {
-          display: block !important;
-          height: auto !important;
-          min-height: 100vh;
-          padding: 88px 0;
-        }
-
-        .community-benefits-block__axis {
-          display: none !important;
-        }
-
-        .community-benefits-block__scenes {
-          position: relative !important;
-          height: auto !important;
-          display: flex !important;
-          flex-direction: column !important;
-          gap: 80px !important;
-          padding: 0 24px !important;
-        }
-
-        .community-benefits-block__scene {
-          position: relative !important;
-          inset: auto !important;
-          width: 100% !important;
-          opacity: 1 !important;
-          visibility: visible !important;
-          transform: none !important;
-        }
-
-        .community-benefits-block__canvas-wrap {
-          display: none !important;
-        }
-      }
-    `}</style>
-  );
-}
-
 export const CommunityBenefitsBlock = () => {
   const wrapperRef = useRef(null);
   const canvasRef = useRef(null);
@@ -335,10 +213,8 @@ export const CommunityBenefitsBlock = () => {
     const canvas = canvasRef.current;
     if (!wrapper || !canvas) return undefined;
     if (window.matchMedia("(max-width: 980px)").matches) return undefined;
-
     const ctx = canvas.getContext("2d");
     if (!ctx) return undefined;
-
     let animationFrameId;
 
     const resizeCanvas = () => {
@@ -350,100 +226,49 @@ export const CommunityBenefitsBlock = () => {
       ctx.scale(dpr, dpr);
     };
 
-    // Advanced Hyper-Readable Sculptural Geometries
-    // Centers geometry locally at 0,0,0 so translations and rotations apply cleanly.
     const getFormationCoords = (index, total, phaseIndex, width, height) => {
       const baseScale = Math.min(width, height) * 0.28;
       let x = 0, y = 0, z = 0;
-
       if (phaseIndex === 0) {
-        // PHASE 1: CLARITY & DIRECTION (Soft Glowing Globe)
-        const goldenRatio = 1 + Math.sqrt(5); // Golden angle for even sphere distribution
-
+        const goldenRatio = 1 + Math.sqrt(5);
         if (index < total * 0.75) {
-          // Outer Luminous Shell
-          const count = total * 0.75;
-          const i = index;
-          const phi = Math.acos(1 - 2 * (i + 0.5) / count);
-          const theta = Math.PI * goldenRatio * i;
+          const count = total * 0.75, i = index;
+          const phi = Math.acos(1 - 2 * (i + 0.5) / count), theta = Math.PI * goldenRatio * i;
           const radius = baseScale * 1.1;
-
-          x = Math.cos(theta) * Math.sin(phi) * radius;
-          y = Math.cos(phi) * radius;
-          z = Math.sin(theta) * Math.sin(phi) * radius;
+          x = Math.cos(theta) * Math.sin(phi) * radius; y = Math.cos(phi) * radius; z = Math.sin(theta) * Math.sin(phi) * radius;
         } else {
-          // Inner Dense Glowing Core
-          const count = total * 0.25;
-          const i = index - total * 0.75;
-          const phi = Math.acos(1 - 2 * (i + 0.5) / count);
-          const theta = Math.PI * goldenRatio * i;
+          const count = total * 0.25, i = index - total * 0.75;
+          const phi = Math.acos(1 - 2 * (i + 0.5) / count), theta = Math.PI * goldenRatio * i;
           const radius = baseScale * 0.45;
-
-          x = Math.cos(theta) * Math.sin(phi) * radius;
-          y = Math.cos(phi) * radius;
-          z = Math.sin(theta) * Math.sin(phi) * radius;
+          x = Math.cos(theta) * Math.sin(phi) * radius; y = Math.cos(phi) * radius; z = Math.sin(theta) * Math.sin(phi) * radius;
         }
-      } 
-      else if (phaseIndex === 1) {
-        // PHASE 2: ACCESS & MOMENTUM (Flowing Diagonal Network / Twisted Lattice)
-        const rows = 28;
-        const cols = Math.floor(total / rows);
-        const r = index % rows;
-        const c = Math.floor(index / rows);
-
-        const lengthRatio = c / cols;
-        const radRatio = r / rows;
-
-        const tubeLength = baseScale * 3.2;
-        const tubeRadius = baseScale * 0.65;
-
-        // Base structural cylinder along Y axis
+      } else if (phaseIndex === 1) {
+        const rows = 28, cols = Math.floor(total / rows);
+        const r = index % rows, c = Math.floor(index / rows);
+        const lengthRatio = c / cols, radRatio = r / rows;
+        const tubeLength = baseScale * 3.2, tubeRadius = baseScale * 0.65;
         const cy = (lengthRatio - 0.5) * tubeLength;
-        // Twist angle creates the flowing lattice mesh
         const angle = radRatio * Math.PI * 2 + (lengthRatio * Math.PI * 2.5);
-
-        const cx = Math.cos(angle) * tubeRadius;
-        const cz = Math.sin(angle) * tubeRadius;
-
-        // Tilt diagonally across the viewport (Rotate around Z)
-        const tilt = -Math.PI / 4; 
-        x = cx * Math.cos(tilt) - cy * Math.sin(tilt);
-        y = cx * Math.sin(tilt) + cy * Math.cos(tilt);
-        z = cz;
-      } 
-      else if (phaseIndex === 2) {
-        // PHASE 3: EXECUTION & GROWTH (Ascending Structured Tower)
+        const cx = Math.cos(angle) * tubeRadius, cz = Math.sin(angle) * tubeRadius;
+        const tilt = -Math.PI / 4;
+        x = cx * Math.cos(tilt) - cy * Math.sin(tilt); y = cx * Math.sin(tilt) + cy * Math.cos(tilt); z = cz;
+      } else if (phaseIndex === 2) {
         const floors = 9;
         if (index < total * 0.75) {
-          // Stacked horizontal architectural grids (floors)
-          const c = total * 0.75;
-          const floorIndex = index % floors;
-          const i = Math.floor(index / floors);
-          const perFloor = c / floors;
-
+          const c = total * 0.75, floorIndex = index % floors, i = Math.floor(index / floors), perFloor = c / floors;
           y = ((floorIndex / (floors - 1)) - 0.5) * baseScale * 2.6;
-
           const a = (i / perFloor) * Math.PI * 2;
-          // Shape into a strict structural octagon
           const radius = baseScale * 0.75 * (0.85 + 0.15 * Math.cos(a * 4));
-          x = Math.cos(a) * radius;
-          z = Math.sin(a) * radius;
+          x = Math.cos(a) * radius; z = Math.sin(a) * radius;
         } else {
-          // Strong vertical structural pillars binding the floors
-          const i = index - total * 0.75;
-          const c = total * 0.25;
-          const struts = 4;
-          const strutIndex = i % struts;
-          const heightRatio = Math.floor(i / struts) / (c / struts);
-
-          y = (heightRatio - 0.5) * baseScale * 2.8; 
+          const i = index - total * 0.75, c = total * 0.25, struts = 4;
+          const strutIndex = i % struts, heightRatio = Math.floor(i / struts) / (c / struts);
+          y = (heightRatio - 0.5) * baseScale * 2.8;
           const a = (strutIndex / struts) * Math.PI * 2 + (Math.PI / 4);
           const radius = baseScale * 0.75;
-          x = Math.cos(a) * radius;
-          z = Math.sin(a) * radius;
+          x = Math.cos(a) * radius; z = Math.sin(a) * radius;
         }
       }
-
       return { x, y, z };
     };
 
@@ -455,62 +280,30 @@ export const CommunityBenefitsBlock = () => {
       const angle = Math.random() * Math.PI * 2;
       const sweepAngle = angle + (Math.random() - 0.5) * 0.6;
       const forceDistance = Math.random() * 0.8 + 0.2;
-      return {
-        seed: Math.random() * 120,
-        size: Math.random() * 1.8 + 0.8,
-        alpha: Math.random() * 0.5 + 0.45,
-        blastX: Math.cos(sweepAngle) * forceDistance,
-        blastY: Math.sin(sweepAngle) * forceDistance,
-        blastZ: (Math.random() - 0.5) * 2.5,
-        currentX: 0,
-        currentY: 0,
-        currentZ: 0,
-      };
+      return { seed: Math.random() * 120, size: Math.random() * 1.8 + 0.8, alpha: Math.random() * 0.5 + 0.45, blastX: Math.cos(sweepAngle) * forceDistance, blastY: Math.sin(sweepAngle) * forceDistance, blastZ: (Math.random() - 0.5) * 2.5, currentX: 0, currentY: 0, currentZ: 0 };
     });
-
-    const ambientCount = 120;
-    const ambientParticles = Array.from({ length: ambientCount }, () => ({
-      x: Math.random(),
-      y: Math.random(),
-      size: Math.random() * 1.0 + 0.4,
-      alpha: Math.random() * 0.25 + 0.1,
-      speedX: (Math.random() - 0.5) * 0.0004,
-      speedY: (Math.random() - 0.5) * 0.0002,
-      seed: Math.random() * Math.PI,
-    }));
-
+    const ambientParticles = Array.from({ length: 120 }, () => ({ x: Math.random(), y: Math.random(), size: Math.random() * 1.0 + 0.4, alpha: Math.random() * 0.25 + 0.1, speedX: (Math.random() - 0.5) * 0.0004, speedY: (Math.random() - 0.5) * 0.0002, seed: Math.random() * Math.PI }));
     const engineState = { progress: 0, blastFactor: 0, rotation: 0 };
 
     const renderEngine = () => {
       const dpr = window.devicePixelRatio || 1;
-      const width = canvas.width / dpr;
-      const height = canvas.height / dpr;
+      const width = canvas.width / dpr, height = canvas.height / dpr;
       ctx.clearRect(0, 0, width, height);
-
       const time = Date.now() * 0.001;
       const baseScale = Math.min(width, height) * 0.28;
 
-      // Render Ambient Dust Cloud Atmosphere Layer
       ambientParticles.forEach((p) => {
-        p.x += p.speedX;
-        p.y += p.speedY;
+        p.x += p.speedX; p.y += p.speedY;
         if (p.x < 0) p.x = 1; if (p.x > 1) p.x = 0;
         if (p.y < 0) p.y = 1; if (p.y > 1) p.y = 0;
-
-        const ax = p.x * width + Math.sin(time * 0.5 + p.seed) * 8;
-        const ay = p.y * height + Math.cos(time * 0.3 + p.seed) * 5;
-
         ctx.fillStyle = GOLD;
         ctx.globalAlpha = p.alpha * (0.4 + Math.sin(time + p.seed) * 0.3);
         ctx.beginPath();
-        ctx.arc(ax, ay, p.size, 0, Math.PI * 2);
+        ctx.arc(p.x * width + Math.sin(time * 0.5 + p.seed) * 8, p.y * height + Math.cos(time * 0.3 + p.seed) * 5, p.size, 0, Math.PI * 2);
         ctx.fill();
       });
 
-      // Technical Geometric Alignment Matrix Lines
-      ctx.strokeStyle = "rgba(201,168,76,0.015)";
-      ctx.lineWidth = 0.5;
-      ctx.beginPath();
+      ctx.strokeStyle = "rgba(201,168,76,0.015)"; ctx.lineWidth = 0.5; ctx.beginPath();
       for (let x = 0; x < width; x += 100) { ctx.moveTo(x, 0); ctx.lineTo(x, height); }
       for (let y = 0; y < height; y += 100) { ctx.moveTo(0, y); ctx.lineTo(width, y); }
       ctx.stroke();
@@ -518,33 +311,18 @@ export const CommunityBenefitsBlock = () => {
       const currentPhase = Math.floor(engineState.progress);
       const phaseRatio = engineState.progress % 1;
       const nextPhase = Math.min(currentPhase + 1, communityBenefits.length - 1);
-
-      const getTargetCenter = (phaseIndex) => {
-        if (phaseIndex === 0) return width * 0.74; // Scene 1 visual on right
-        if (phaseIndex === 1) return width * 0.26; // Scene 2 visual on left
-        return width * 0.74; // Scene 3 visual on right
-      };
-
-      const startCenterX = getTargetCenter(currentPhase);
-      const endCenterX = getTargetCenter(nextPhase);
-      const activeCenterX = startCenterX + (endCenterX - startCenterX) * phaseRatio;
+      const getTargetCenter = (p) => p === 0 ? width * 0.74 : p === 1 ? width * 0.26 : width * 0.74;
+      const activeCenterX = getTargetCenter(currentPhase) + (getTargetCenter(nextPhase) - getTargetCenter(currentPhase)) * phaseRatio;
       const activeCenterY = height * 0.5;
 
-      // Draw connections when nodes are tight and formed (especially in phase 1 network)
       if (engineState.blastFactor < 0.2) {
-        ctx.strokeStyle = `rgba(201,168,76, ${0.08 * (1 - engineState.blastFactor / 0.2)})`;
-        ctx.lineWidth = 0.5;
-        ctx.beginPath();
-        const connectionStep = currentPhase === 1 ? 8 : 15; 
-        for (let i = 0; i < particles.length; i += connectionStep) {
+        ctx.strokeStyle = `rgba(201,168,76,${0.08 * (1 - engineState.blastFactor / 0.2)})`; ctx.lineWidth = 0.5; ctx.beginPath();
+        const step = currentPhase === 1 ? 8 : 15;
+        for (let i = 0; i < particles.length; i += step) {
           for (let j = i + 1; j < i + 4; j++) {
             if (j >= particles.length) break;
-            const dx = particles[i].finalX - particles[j].finalX;
-            const dy = particles[i].finalY - particles[j].finalY;
-            if (dx * dx + dy * dy < 8500) {
-              ctx.moveTo(particles[i].finalX, particles[i].finalY);
-              ctx.lineTo(particles[j].finalX, particles[j].finalY);
-            }
+            const dx = particles[i].finalX - particles[j].finalX, dy = particles[i].finalY - particles[j].finalY;
+            if (dx * dx + dy * dy < 8500) { ctx.moveTo(particles[i].finalX, particles[i].finalY); ctx.lineTo(particles[j].finalX, particles[j].finalY); }
           }
         }
         ctx.stroke();
@@ -553,57 +331,25 @@ export const CommunityBenefitsBlock = () => {
       particles.forEach((particle, index) => {
         const p1 = getFormationCoords(index, particleCount, currentPhase, width, height);
         const p2 = getFormationCoords(index, particleCount, nextPhase, width, height);
-
-        // Morph strictly between the local 0,0,0 coordinate shapes
-        let targetX = p1.x + (p2.x - p1.x) * phaseRatio;
-        let targetY = p1.y + (p2.y - p1.y) * phaseRatio;
-        let targetZ = p1.z + (p2.z - p1.z) * phaseRatio;
-
-        // Controlled cinematic blast scattering during transitions
-        targetX += particle.blastX * engineState.blastFactor * (baseScale * 2.2);
-        targetY += particle.blastY * engineState.blastFactor * (baseScale * 2.2);
-        targetZ += particle.blastZ * engineState.blastFactor * (baseScale * 2.2);
-
-        // Fluid organic ambient floating
-        targetX += Math.sin(time * 1.2 + particle.seed) * 3;
-        targetY += Math.cos(time * 0.9 + particle.seed) * 3;
-
-        // Smooth kinematics approach
+        let targetX = p1.x + (p2.x - p1.x) * phaseRatio + particle.blastX * engineState.blastFactor * (baseScale * 2.2) + Math.sin(time * 1.2 + particle.seed) * 3;
+        let targetY = p1.y + (p2.y - p1.y) * phaseRatio + particle.blastY * engineState.blastFactor * (baseScale * 2.2) + Math.cos(time * 0.9 + particle.seed) * 3;
+        let targetZ = p1.z + (p2.z - p1.z) * phaseRatio + particle.blastZ * engineState.blastFactor * (baseScale * 2.2);
         particle.currentX += (targetX - particle.currentX) * 0.12;
         particle.currentY += (targetY - particle.currentY) * 0.12;
         particle.currentZ += (targetZ - particle.currentZ) * 0.12;
-
-        // Local 3D Rotations (so the shape spins beautifully on its own axis)
-        const rotY = engineState.rotation + time * 0.1;
-        const rotX = Math.sin(time * 0.15) * 0.08;
-
-        let rx = particle.currentX;
-        let ry = particle.currentY;
-        let rz = particle.currentZ;
-
-        // Y-axis Rotation
-        const cosY = Math.cos(rotY); const sinY = Math.sin(rotY);
-        let nx = rx * cosY - rz * sinY;
-        let nz = rx * sinY + rz * cosY;
-
-        // X-axis Rotation
-        const cosX = Math.cos(rotX); const sinX = Math.sin(rotX);
-        let ny = ry * cosX - nz * sinX;
-        nz = ry * sinX + nz * cosX;
-
-        // Finally, translate the locally rotated coordinates to the active screen center
-        particle.finalX = nx + activeCenterX;
-        particle.finalY = ny + activeCenterY;
-        particle.finalZ = nz;
-
-        // Depth perspective & rendering
+        const rotY = engineState.rotation + time * 0.1, rotX = Math.sin(time * 0.15) * 0.08;
+        const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+        let nx = particle.currentX * cosY - particle.currentZ * sinY;
+        let nz = particle.currentX * sinY + particle.currentZ * cosY;
+        const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+        let ny = particle.currentY * cosX - nz * sinX;
+        nz = particle.currentY * sinX + nz * cosX;
+        particle.finalX = nx + activeCenterX; particle.finalY = ny + activeCenterY; particle.finalZ = nz;
         const perspective = (particle.finalZ + 400) / 800;
         ctx.fillStyle = index % 12 === 0 ? "#ffffff" : GOLD;
         ctx.globalAlpha = Math.max(0.05, particle.alpha * (perspective + 0.3));
-        
         ctx.beginPath();
-        const renderRadius = Math.max(0.35, particle.size * (perspective + 0.5));
-        ctx.arc(particle.finalX, particle.finalY, renderRadius, 0, Math.PI * 2);
+        ctx.arc(particle.finalX, particle.finalY, Math.max(0.35, particle.size * (perspective + 0.5)), 0, Math.PI * 2);
         ctx.fill();
       });
 
@@ -615,7 +361,6 @@ export const CommunityBenefitsBlock = () => {
 
     const timelineContext = gsap.context(() => {
       const scenes = sceneTextRefs.current.filter(Boolean);
-
       scenes.forEach((scene) => {
         gsap.set(scene, { opacity: 0, visibility: "hidden" });
         gsap.set(scene.querySelector(".scene-eyebrow"), { opacity: 0, y: 15, letterSpacing: "0.2em" });
@@ -627,112 +372,37 @@ export const CommunityBenefitsBlock = () => {
         gsap.set(scene.querySelector(".scene-accent"), { opacity: 0, x: 10 });
       });
 
-      const masterTimeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: wrapper,
-          start: "top top",
-          end: "+=380%",
-          pin: true,
-          scrub: 1.2,
-          anticipatePin: 1,
-        },
-      });
-
-      // Programmatic Continuity Scroll Drive Engine
-      masterTimeline.to(engineState, {
-        progress: 2,
-        rotation: Math.PI * 2.2,
-        ease: "none",
-        duration: 3,
-      }, 0);
-
-      // Elegant, controlled blast/regroup sequences at transition points
-      masterTimeline.to(engineState, {
-        keyframes: [
-          { blastFactor: 0.75, duration: 0.35, ease: "power3.out" },
-          { blastFactor: 0.08, duration: 0.35, ease: "power2.inOut" },
-          { blastFactor: 0, duration: 0.3, ease: "power2.out" },
-          { blastFactor: 0, duration: 1.0 }, 
-          { blastFactor: 0.75, duration: 0.35, ease: "power3.out" },
-          { blastFactor: 0.08, duration: 0.35, ease: "power2.inOut" },
-          { blastFactor: 0, duration: 0.3, ease: "power2.out" },
-        ],
-        duration: 3,
-        ease: "none",
-      }, 0);
-
-      if (progressLineRef.current) {
-        masterTimeline.to(progressLineRef.current, {
-          scaleY: 1,
-          ease: "none",
-          duration: 3,
-        }, 0);
-      }
-
+      const masterTimeline = gsap.timeline({ scrollTrigger: { trigger: wrapper, start: "top top", end: "+=380%", pin: true, scrub: 1.2, anticipatePin: 1 } });
+      masterTimeline.to(engineState, { progress: 2, rotation: Math.PI * 2.2, ease: "none", duration: 3 }, 0);
+      masterTimeline.to(engineState, { keyframes: [{ blastFactor: 0.75, duration: 0.35, ease: "power3.out" },{ blastFactor: 0.08, duration: 0.35, ease: "power2.inOut" },{ blastFactor: 0, duration: 0.3, ease: "power2.out" },{ blastFactor: 0, duration: 1.0 },{ blastFactor: 0.75, duration: 0.35, ease: "power3.out" },{ blastFactor: 0.08, duration: 0.35, ease: "power2.inOut" },{ blastFactor: 0, duration: 0.3, ease: "power2.out" }], duration: 3, ease: "none" }, 0);
+      if (progressLineRef.current) masterTimeline.to(progressLineRef.current, { scaleY: 1, ease: "none", duration: 3 }, 0);
       progressDotsRef.current.forEach((dot, index) => {
         if (!dot) return;
-        if (index === 0) {
-          gsap.set(dot, { background: GOLD, boxShadow: `0 0 16px ${GOLD}`, scale: 1.3 });
-          return;
-        }
-        masterTimeline.to(dot, {
-          background: GOLD,
-          boxShadow: `0 0 18px ${GOLD}`,
-          scale: 1.3,
-          duration: 0.3,
-          ease: "power2.out",
-        }, (index * 1.5) - 0.5);
+        if (index === 0) { gsap.set(dot, { background: GOLD, boxShadow: `0 0 16px ${GOLD}`, scale: 1.3 }); return; }
+        masterTimeline.to(dot, { background: GOLD, boxShadow: `0 0 18px ${GOLD}`, scale: 1.3, duration: 0.3, ease: "power2.out" }, (index * 1.5) - 0.5);
       });
 
       const buildSceneEntrance = (tl, scene, startTime) => {
-        const eyebrow = scene.querySelector(".scene-eyebrow");
-        const chars = scene.querySelectorAll(".char-item");
-        const sub = scene.querySelector(".scene-sub");
-        const detail = scene.querySelector(".scene-detail");
-        const tags = scene.querySelectorAll(".scene-tag-node");
-        const stat = scene.querySelector(".scene-stat");
-        const accent = scene.querySelector(".scene-accent");
-
         tl.to(scene, { opacity: 1, visibility: "visible", duration: 0.05 }, startTime)
-          .to(eyebrow, { opacity: 1, y: 0, letterSpacing: "0.45em", duration: 0.4, ease: "power2.out" }, startTime + 0.05)
-          .to(chars, { opacity: 1, y: 0, filter: "blur(0px)", scale: 1, rotateX: 0, stagger: 0.015, duration: 0.55, ease: "power3.out" }, startTime + 0.1)
-          .to(sub, { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.45, ease: "power2.out" }, startTime + 0.25)
-          .to(detail, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.5, ease: "power2.out" }, startTime + 0.35)
-          .to(tags, { opacity: 1, y: 0, scale: 1, stagger: 0.04, duration: 0.4, ease: "back.out(1.4)" }, startTime + 0.4)
-          .to(stat, { opacity: 1, y: 0, filter: "blur(0px)", scale: 1, duration: 0.5, ease: "power3.out" }, startTime + 0.45)
-          .to(accent, { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" }, startTime + 0.55);
+          .to(scene.querySelector(".scene-eyebrow"), { opacity: 1, y: 0, letterSpacing: "0.45em", duration: 0.4, ease: "power2.out" }, startTime + 0.05)
+          .to(scene.querySelectorAll(".char-item"), { opacity: 1, y: 0, filter: "blur(0px)", scale: 1, rotateX: 0, stagger: 0.015, duration: 0.55, ease: "power3.out" }, startTime + 0.1)
+          .to(scene.querySelector(".scene-sub"), { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.45, ease: "power2.out" }, startTime + 0.25)
+          .to(scene.querySelector(".scene-detail"), { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.5, ease: "power2.out" }, startTime + 0.35)
+          .to(scene.querySelectorAll(".scene-tag-node"), { opacity: 1, y: 0, scale: 1, stagger: 0.04, duration: 0.4, ease: "back.out(1.4)" }, startTime + 0.4)
+          .to(scene.querySelector(".scene-stat"), { opacity: 1, y: 0, filter: "blur(0px)", scale: 1, duration: 0.5, ease: "power3.out" }, startTime + 0.45)
+          .to(scene.querySelector(".scene-accent"), { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" }, startTime + 0.55);
       };
 
       const buildSceneExit = (tl, scene, exitTime) => {
-        const elements = [
-          scene.querySelector(".scene-eyebrow"),
-          scene.querySelectorAll(".char-item"),
-          scene.querySelector(".scene-sub"),
-          scene.querySelector(".scene-detail"),
-          scene.querySelectorAll(".scene-tag-node"),
-          scene.querySelector(".scene-stat"),
-          scene.querySelector(".scene-accent")
-        ];
-        
-        tl.to(elements, {
-          opacity: 0,
-          y: -40,
-          filter: "blur(12px)",
-          stagger: 0.01,
-          duration: 0.45,
-          ease: "power2.in",
-        }, exitTime)
-        .to(scene, { opacity: 0, visibility: "hidden", duration: 0.05 }, exitTime + 0.45);
+        tl.to([scene.querySelector(".scene-eyebrow"),scene.querySelectorAll(".char-item"),scene.querySelector(".scene-sub"),scene.querySelector(".scene-detail"),scene.querySelectorAll(".scene-tag-node"),scene.querySelector(".scene-stat"),scene.querySelector(".scene-accent")], { opacity: 0, y: -40, filter: "blur(12px)", stagger: 0.01, duration: 0.45, ease: "power2.in" }, exitTime)
+          .to(scene, { opacity: 0, visibility: "hidden", duration: 0.05 }, exitTime + 0.45);
       };
 
       buildSceneEntrance(masterTimeline, scenes[0], 0.0);
       buildSceneExit(masterTimeline, scenes[0], 0.9);
-
       buildSceneEntrance(masterTimeline, scenes[1], 1.4);
       buildSceneExit(masterTimeline, scenes[1], 2.3);
-
       buildSceneEntrance(masterTimeline, scenes[2], 2.7);
-
     }, wrapper);
 
     return () => {
@@ -743,197 +413,67 @@ export const CommunityBenefitsBlock = () => {
   }, []);
 
   return (
-    <>
-      <CommunityBenefitsResponsiveStyle />
-      <section
-        ref={wrapperRef}
-        className="community-benefits-block"
-        style={{
-          height: "100vh",
-          position: "relative",
-          backgroundColor: BG,
-          overflow: "hidden",
-        }}
-      >
-        {/* Editorial Cinematic Atmospheric Gradients */}
-        <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 50%, rgba(201,168,76,0.03) 0%, transparent 75%)", pointerEvents: "none", zIndex: 1 }} />
-        <div style={{ position: "absolute", left: 0, top: 0, height: "100%", width: "220px", background: `linear-gradient(90deg, ${BG} 35%, transparent 100%)`, pointerEvents: "none", zIndex: 3 }} />
-        <div style={{ position: "absolute", right: 0, top: 0, height: "100%", width: "220px", background: `linear-gradient(-90deg, ${BG} 35%, transparent 100%)`, pointerEvents: "none", zIndex: 3 }} />
+    <section ref={wrapperRef} className="community-benefits-block" style={{ height: "100vh", position: "relative", backgroundColor: BG, overflow: "hidden" }}>
+      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 50%,rgba(201,168,76,0.03) 0%,transparent 75%)", pointerEvents: "none", zIndex: 1 }} />
+      <div style={{ position: "absolute", left: 0, top: 0, height: "100%", width: "220px", background: `linear-gradient(90deg,${BG} 35%,transparent 100%)`, pointerEvents: "none", zIndex: 3 }} />
+      <div style={{ position: "absolute", right: 0, top: 0, height: "100%", width: "220px", background: `linear-gradient(-90deg,${BG} 35%,transparent 100%)`, pointerEvents: "none", zIndex: 3 }} />
 
-        {/* Storytelling Continuity Timeline Axis Line */}
-        <div
-          className="community-benefits-block__axis"
-          style={{
-            position: "absolute",
-            left: 60,
-            top: "50%",
-            transform: "translateY(-50%)",
-            height: "300px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            zIndex: 10,
-            pointerEvents: "none",
-          }}
-        >
-          <div style={{ position: "relative", width: 1, height: "100%", backgroundColor: "rgba(201,168,76,0.12)" }}>
-            <div
-              ref={progressLineRef}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                background: `linear-gradient(to bottom, ${GOLD}, #ffffff)`,
-                transformOrigin: "top center",
-                transform: "scaleY(0)",
-              }}
-            />
-          </div>
-
-          {communityBenefits.map((benefit, index) => (
-            <div
-              key={benefit.id}
-              ref={(element) => {
-                progressDotsRef.current[index] = element;
-              }}
-              style={{
-                position: "absolute",
-                top: `${(index / (communityBenefits.length - 1)) * 100}%`,
-                transform: "translateY(-50%) translateX(-3.5px)",
-                width: 8,
-                height: 8,
-                borderRadius: "50%",
-                backgroundColor: "#0d0d0d",
-                border: "1px solid rgba(201,168,76,0.55)",
-                transition: "background 0.5s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.5s ease",
-              }}
-            />
-          ))}
+      <div className="community-benefits-block__axis" style={{ position: "absolute", left: 60, top: "50%", transform: "translateY(-50%)", height: "300px", display: "flex", flexDirection: "column", alignItems: "center", zIndex: 10, pointerEvents: "none" }}>
+        <div style={{ position: "relative", width: 1, height: "100%", backgroundColor: "rgba(201,168,76,0.12)" }}>
+          <div ref={progressLineRef} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", background: `linear-gradient(to bottom,${GOLD},#ffffff)`, transformOrigin: "top center", transform: "scaleY(0)" }} />
         </div>
+        {communityBenefits.map((benefit, index) => (
+          <div key={benefit.id} ref={(el) => { progressDotsRef.current[index] = el; }} style={{ position: "absolute", top: `${(index / (communityBenefits.length - 1)) * 100}%`, transform: "translateY(-50%) translateX(-3.5px)", width: 8, height: 8, borderRadius: "50%", backgroundColor: "#0d0d0d", border: "1px solid rgba(201,168,76,0.55)", transition: "background 0.5s cubic-bezier(0.25,1,0.5,1),box-shadow 0.5s ease" }} />
+        ))}
+      </div>
 
-        {/* Living Sculptural Viewport Engine Canvas */}
-        <div className="community-benefits-block__canvas-wrap" style={{ position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none" }}>
-          <canvas ref={canvasRef} style={{ width: "100%", height: "100%", display: "block" }} />
-        </div>
+      <div className="community-benefits-block__canvas-wrap" style={{ position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none" }}>
+        <canvas ref={canvasRef} style={{ width: "100%", height: "100%", display: "block" }} />
+      </div>
 
-        {/* Alternating Viewport Editorial Content Panels */}
-        <div className="community-benefits-block__scenes" style={{ position: "absolute", inset: 0, zIndex: 5, pointerEvents: "none" }}>
-          {communityBenefits.map((benefit, index) => {
-            const isLeft = index % 2 === 0;
-            return (
-              <div
-                key={benefit.id}
-                ref={(element) => {
-                  sceneTextRefs.current[index] = element;
-                }}
-                className="community-benefits-block__scene"
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: isLeft ? "12%" : "auto",
-                  right: isLeft ? "auto" : "12%",
-                  width: "42%",
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  pointerEvents: "auto",
-                  perspective: 1000,
-                  willChange: "transform, opacity",
-                }}
-              >
-                {/* 1. Phase Label Eyebrow */}
-                <div style={{ marginBottom: 22 }}>
-                  <span className="scene-eyebrow" style={poppins(500, 11, GOLD, { letterSpacing: "0.2em", textTransform: "uppercase", display: "inline-block" })}>
-                    CHAPTER {benefit.id} · {benefit.eyebrow}
-                  </span>
-                </div>
-                
-                {/* 2. Main Drawn Title */}
-                <h2 style={poppins(300, "clamp(36px, 3.8vw, 56px)", TEXT, { lineHeight: 1.12, letterSpacing: "-0.02em", marginBottom: 32 })}>
-                  {benefit.headline.split("\n").map((line, lineIndex) => (
-                    <span key={`${benefit.id}-${lineIndex}`} style={{ display: "block", overflow: "hidden", paddingBottom: "8px" }}>
-                      {line.split("").map((char, charIndex) => (
-                        <span
-                          key={`${benefit.id}-${lineIndex}-${charIndex}`}
-                          className="char-item"
-                          style={{
-                            display: "inline-block",
-                            whiteSpace: char === " " ? "pre" : "normal",
-                            willChange: "transform, opacity, filter",
-                            backgroundImage: lineIndex === 1 ? "linear-gradient(135deg, #c9a84c 0%, #ffffff 100%)" : "none",
-                            WebkitBackgroundClip: lineIndex === 1 ? "text" : "initial",
-                            WebkitTextFillColor: lineIndex === 1 ? "transparent" : "initial",
-                            backgroundClip: lineIndex === 1 ? "text" : "initial",
-                          }}
-                        >
-                          {char}
-                        </span>
-                      ))}
-                    </span>
-                  ))}
-                </h2>
-
-                {/* 3. Subtitle */}
-                <p className="scene-sub" style={poppins(400, 18, "rgba(245,240,232,0.95)", { lineHeight: 1.6, marginBottom: 24, maxWidth: 520 })}>
-                  {benefit.sub}
-                </p>
-                
-                {/* 4. Detailed Description */}
-                <p className="scene-detail" style={poppins(300, 14, "rgba(245,240,232,0.52)", { lineHeight: 1.8, marginBottom: 32, maxWidth: 480 })}>
-                  {benefit.detail}
-                </p>
-
-                {/* 5. Tags */}
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: 40 }}>
-                  {benefit.tags.map((tag, i) => (
-                    <span
-                      key={i}
-                      className="scene-tag-node"
-                      style={{
-                        padding: "6px 14px",
-                        borderRadius: "20px",
-                        border: "1px solid rgba(201,168,76,0.25)",
-                        backgroundColor: "rgba(201,168,76,0.05)",
-                        ...poppins(400, 11, GOLD, { letterSpacing: "0.05em", textTransform: "uppercase" })
-                      }}
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                {/* 6. Stat Block */}
-                <div className="scene-stat" style={{ borderLeft: `2px solid ${GOLD}`, paddingLeft: 20, marginBottom: 32 }}>
-                  <h3 style={poppins(300, 42, TEXT, { lineHeight: 1, marginBottom: 8 })}>
-                    {benefit.stat.value}
-                  </h3>
-                  <p style={poppins(300, 12, "rgba(245,240,232,0.6)", { maxWidth: 280, lineHeight: 1.5 })}>
-                    {benefit.stat.label}
-                  </p>
-                </div>
-
-                {/* 7. Accent */}
-                <div className="scene-accent" style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <div style={{ width: 24, height: 1, backgroundColor: GOLD }} />
-                  <span style={poppins(400, 12, GOLD, { letterSpacing: "0.05em" })}>
-                    {benefit.accent}
-                  </span>
-                </div>
-
+      <div className="community-benefits-block__scenes" style={{ position: "absolute", inset: 0, zIndex: 5, pointerEvents: "none" }}>
+        {communityBenefits.map((benefit, index) => {
+          const isLeft = index % 2 === 0;
+          return (
+            <div key={benefit.id} ref={(el) => { sceneTextRefs.current[index] = el; }} className="community-benefits-block__scene" style={{ position: "absolute", top: 0, left: isLeft ? "12%" : "auto", right: isLeft ? "auto" : "12%", width: "42%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", pointerEvents: "auto", perspective: 1000, willChange: "transform, opacity" }}>
+              <div style={{ marginBottom: 22 }}>
+                <span className="scene-eyebrow" style={poppins(500, 11, GOLD, { letterSpacing: "0.2em", textTransform: "uppercase", display: "inline-block" })}>
+                  CHAPTER {benefit.id} · {benefit.eyebrow}
+                </span>
               </div>
-            );
-          })}
-        </div>
-      </section>
-    </>
+              <h2 style={poppins(300, "clamp(36px,3.8vw,56px)", TEXT, { lineHeight: 1.12, letterSpacing: "-0.02em", marginBottom: 32 })}>
+                {benefit.headline.split("\n").map((line, lineIndex) => (
+                  <span key={`${benefit.id}-${lineIndex}`} style={{ display: "block", overflow: "hidden", paddingBottom: "8px" }}>
+                    {line.split("").map((char, charIndex) => (
+                      <span key={`${benefit.id}-${lineIndex}-${charIndex}`} className="char-item" style={{ display: "inline-block", whiteSpace: char === " " ? "pre" : "normal", willChange: "transform,opacity,filter", backgroundImage: lineIndex === 1 ? "linear-gradient(135deg,#c9a84c 0%,#ffffff 100%)" : "none", WebkitBackgroundClip: lineIndex === 1 ? "text" : "initial", WebkitTextFillColor: lineIndex === 1 ? "transparent" : "initial", backgroundClip: lineIndex === 1 ? "text" : "initial" }}>
+                        {char}
+                      </span>
+                    ))}
+                  </span>
+                ))}
+              </h2>
+              <p className="scene-sub" style={poppins(400, 18, "rgba(245,240,232,0.95)", { lineHeight: 1.6, marginBottom: 24, maxWidth: 520 })}>{benefit.sub}</p>
+              <p className="scene-detail" style={poppins(300, 14, "rgba(245,240,232,0.52)", { lineHeight: 1.8, marginBottom: 32, maxWidth: 480 })}>{benefit.detail}</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: 40 }}>
+                {benefit.tags.map((tag, i) => (
+                  <span key={i} className="scene-tag-node" style={{ padding: "6px 14px", borderRadius: "20px", border: "1px solid rgba(201,168,76,0.25)", backgroundColor: "rgba(201,168,76,0.05)", ...poppins(400, 11, GOLD, { letterSpacing: "0.05em", textTransform: "uppercase" }) }}>{tag}</span>
+                ))}
+              </div>
+              <div className="scene-stat" style={{ borderLeft: `2px solid ${GOLD}`, paddingLeft: 20, marginBottom: 32 }}>
+                <h3 style={poppins(300, 42, TEXT, { lineHeight: 1, marginBottom: 8 })}>{benefit.stat.value}</h3>
+                <p style={poppins(300, 12, "rgba(245,240,232,0.6)", { maxWidth: 280, lineHeight: 1.5 })}>{benefit.stat.label}</p>
+              </div>
+              <div className="scene-accent" style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <div style={{ width: 24, height: 1, backgroundColor: GOLD }} />
+                <span style={poppins(400, 12, GOLD, { letterSpacing: "0.05em" })}>{benefit.accent}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
   );
 };
-// ---------------------------------------------------------------------------
-// Section 2: Community Benefits End
-// ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
 // Section 3: Statement
@@ -953,7 +493,6 @@ function Section3Statement() {
   const finalCardText1Opacity = useTransform(sp, [0, 0.72, 0.82], [1, 1, 0]);
   const finalCardText2Opacity = useTransform(sp, [0, 0.72, 0.82], [0, 0, 1]);
 
-  // Mini-card motion values
   const c1Y = useTransform(sp, [0.3, 0.55, 0.75, 1], [200, 0, 0, 0]);
   const c1Scale = useTransform(sp, [0.3, 0.55, 0.75, 0.95], [0.95, 1, 1, 1.03]);
   const c1Opacity = useTransform(sp, [0, 0.3, 0.4, 1], [0, 0, 1, 1]);
@@ -984,42 +523,33 @@ function Section3Statement() {
 
         <motion.div style={{ maxWidth: 1200, width: "100%", margin: "0 auto", position: "absolute", zIndex: 1, y: sectionLift, opacity: textOpacity, scale: textScale, filter: textBlur, willChange: "transform, opacity, filter" }}>
           <motion.div style={{ x: x1 }}>
-            <p style={poppins(800, "clamp(42px,7vw,96px)", "rgba(245,240,232,0.04)", { lineHeight: 1.05, textAlign: "left", whiteSpace: "nowrap", letterSpacing: "-0.02em" })}>
-              EXCELLENCE – PRIVILEGE – PRESTIGE – POWER
-            </p>
+            <p style={poppins(800, "clamp(42px,7vw,96px)", "rgba(245,240,232,0.04)", { lineHeight: 1.05, textAlign: "left", whiteSpace: "nowrap", letterSpacing: "-0.02em" })}>EXCELLENCE – PRIVILEGE – PRESTIGE – POWER</p>
           </motion.div>
           <div style={{ padding: "44px 0", textAlign: "center", position: "relative", zIndex: 2 }}>
             <Reveal>
               <h2 style={poppins(200, "clamp(28px,4vw,52px)", TEXT, { lineHeight: 1.4, maxWidth: 800, margin: "0 auto" })}>
-                Not every CEO gets treated like one.<br />
-                <span className="gold-gradient" style={{ fontWeight: 600 }}>You will.</span>
+                Not every CEO gets treated like one.<br /><span className="gold-gradient" style={{ fontWeight: 600 }}>You will.</span>
               </h2>
             </Reveal>
           </div>
           <motion.div style={{ x: x2 }}>
-            <p style={poppins(800, "clamp(42px,7vw,96px)", "rgba(201,168,76,0.04)", { lineHeight: 1.05, textAlign: "right", whiteSpace: "nowrap", letterSpacing: "-0.02em" })}>
-              WEALTH – LUXURY – LEGACY – AUTHORITY
-            </p>
+            <p style={poppins(800, "clamp(42px,7vw,96px)", "rgba(201,168,76,0.04)", { lineHeight: 1.05, textAlign: "right", whiteSpace: "nowrap", letterSpacing: "-0.02em" })}>WEALTH – LUXURY – LEGACY – AUTHORITY</p>
           </motion.div>
         </motion.div>
 
         <div style={{ position: "absolute", inset: 0, zIndex: 10, pointerEvents: "none", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          {/* Mini card: Global Access */}
           <motion.div style={miniCard({ width: 230, height: 155, background: "linear-gradient(145deg,rgba(30,30,30,0.9),rgba(15,15,15,0.9))", border: "1px solid rgba(255,255,255,0.05)", boxShadow: "0 20px 40px rgba(0,0,0,0.5)", x: c5X, y: c5Y, rotate: c5Rot, opacity: c5Opacity, zIndex: 7 })}>
             <p style={poppins(undefined, 11, "#888", { letterSpacing: 1 })}>GLOBAL ACCESS</p>
             <h4 style={poppins(400, 16, TEXT, { marginTop: 6 })}>Borderless Limits</h4>
           </motion.div>
-          {/* Mini card: Private Equity */}
           <motion.div style={miniCard({ width: 250, height: 185, background: "linear-gradient(135deg,rgba(201,168,76,0.08),rgba(10,10,10,0.8))", border: "1px solid rgba(201,168,76,0.15)", x: c4X, y: c4Y, rotate: c4Rot, opacity: c4Opacity, zIndex: 4 })}>
             <p style={poppins(undefined, 11, "rgba(201,168,76,0.8)", { letterSpacing: 1 })}>PRIVATE EQUITY</p>
             <h4 style={poppins(300, 18, TEXT, { marginTop: 6 })}>Exclusive Portfolios</h4>
           </motion.div>
-          {/* Mini card: Liquidity */}
           <motion.div style={miniCard({ width: 280, height: 170, background: "linear-gradient(145deg,rgba(20,20,20,0.8),rgba(5,5,5,0.9))", border: "1px solid rgba(255,255,255,0.08)", x: c3X, y: c3Y, rotate: c3Rot, opacity: c3Opacity, zIndex: 6 })}>
             <p style={poppins(undefined, 11, "#888", { letterSpacing: 1 })}>LIQUIDITY</p>
             <h4 style={poppins(300, 19, TEXT, { marginTop: 6 })}>Instant Settlements</h4>
           </motion.div>
-          {/* Mini card: Corporate */}
           <motion.div style={miniCard({ width: 310, height: 210, background: "rgba(25,25,25,0.6)", border: "1px solid rgba(255,255,255,0.06)", boxShadow: "0 30px 60px rgba(0,0,0,0.6)", x: c2X, y: c2Y, rotate: c2Rot, opacity: c2Opacity, zIndex: 5, display: "flex", flexDirection: "column" })}>
             <p style={poppins(undefined, 11, "#aaa", { letterSpacing: 1 })}>CORPORATE</p>
             <h4 style={poppins(300, 19, TEXT, { marginTop: 6 })}>Multi-currency IBAN</h4>
@@ -1028,7 +558,6 @@ function Section3Statement() {
               <p style={poppins(undefined, 11, "#666", { marginTop: 10 })}>Blockchain Secured</p>
             </div>
           </motion.div>
-          {/* Main premium card */}
           <motion.div style={{ position: "absolute", width: "min(90vw,440px)", height: 290, borderRadius: 24, background: "linear-gradient(145deg,rgba(201,168,76,0.15),rgba(15,15,15,1))", border: "1px solid rgba(201,168,76,0.3)", backdropFilter: "blur(24px)", boxShadow: "0 40px 80px rgba(0,0,0,0.8),inset 0 1px 0 rgba(255,255,255,0.1)", padding: 32, display: "flex", flexDirection: "column", justifyContent: "space-between", y: c1Y, scale: c1Scale, opacity: c1Opacity, zIndex: 20, pointerEvents: "auto", transformStyle: "preserve-3d", backfaceVisibility: "hidden", willChange: "transform, opacity" }}>
             <div style={{ position: "relative", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
               <div>
@@ -1054,10 +583,6 @@ function Section3Statement() {
 }
 
 // ---------------------------------------------------------------------------
-// Section 3: Statement End
-// ---------------------------------------------------------------------------
-
-// ---------------------------------------------------------------------------
 // Section 4: Benefits Grid
 // ---------------------------------------------------------------------------
 function Section4BenefitsGrid() {
@@ -1071,13 +596,11 @@ function Section4BenefitsGrid() {
     const ctx = gsap.context(() => {
       storySlides.forEach((_, i) => {
         if (i === 0) return;
-        if (imageRefs.current[i]) gsap.set(imageRefs.current[i], { clipPath: "polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)" });
+        if (imageRefs.current[i]) gsap.set(imageRefs.current[i], { clipPath: "polygon(0% 100%,100% 100%,100% 100%,0% 100%)" });
         if (contentRefs.current[i]) gsap.set(contentRefs.current[i], { opacity: 0, y: 60 });
         if (titleRefs.current[i]) gsap.set(titleRefs.current[i].querySelectorAll(".char"), { opacity: 0, y: 80, rotationX: -90 });
       });
-
       const tl = gsap.timeline({ scrollTrigger: { trigger: sectionRef.current, start: "top top", end: `+=${storySlides.length * 100}%`, pin: true, scrub: 1, anticipatePin: 1 } });
-
       storySlides.forEach((_, i) => {
         if (i === 0) return;
         const step = gsap.timeline();
@@ -1085,7 +608,7 @@ function Section4BenefitsGrid() {
         const cur = { image: imageRefs.current[i], content: contentRefs.current[i], chars: titleRefs.current[i]?.querySelectorAll(".char") };
         if (prev.content) step.to(prev.content, { opacity: 0, y: -60, duration: 1 }, 0);
         if (prev.chars?.length) step.to(prev.chars, { opacity: 0, y: -80, rotationX: 90, stagger: 0.02, duration: 0.8 }, 0);
-        if (cur.image) step.to(cur.image, { clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)", duration: 1.5, ease: "power2.inOut" }, 0);
+        if (cur.image) step.to(cur.image, { clipPath: "polygon(0% 0%,100% 0%,100% 100%,0% 100%)", duration: 1.5, ease: "power2.inOut" }, 0);
         if (cur.content) step.to(cur.content, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, 0.5);
         if (cur.chars?.length) step.to(cur.chars, { opacity: 1, y: 0, rotationX: 0, stagger: 0.03, duration: 1, ease: "back.out(1.5)" }, 0.5);
         tl.add(step);
@@ -1116,7 +639,7 @@ function Section4BenefitsGrid() {
               </ul>
             </div>
           </div>
-          <div ref={(el) => { titleRefs.current[i] = el; }} style={{ position: "absolute", bottom: "7%", left: "50%", transform: "translateX(-50%)", zIndex: 1, width: "100%", pointerEvents: "none", display: "flex", justifyContent: "center", alignItems: "flex-end", fontFamily: "Poppins, sans-serif", fontWeight: 300, fontSize: "clamp(46px,8.5vw,120px)", color: "rgba(255,255,255,0.58)", letterSpacing: "0.08em", lineHeight: 0.92, mixBlendMode: "overlay", textShadow: "0px 12px 36px rgba(0,0,0,0.55)", filter: "drop-shadow(0 0 18px rgba(201,168,76,0.12))", perspective: "1000px" }}>
+          <div ref={(el) => { titleRefs.current[i] = el; }} style={{ position: "absolute", bottom: "7%", left: "50%", transform: "translateX(-50%)", zIndex: 1, width: "100%", pointerEvents: "none", display: "flex", justifyContent: "center", alignItems: "flex-end", fontFamily: "Poppins,sans-serif", fontWeight: 300, fontSize: "clamp(46px,8.5vw,120px)", color: "rgba(255,255,255,0.58)", letterSpacing: "0.08em", lineHeight: 0.92, mixBlendMode: "overlay", textShadow: "0px 12px 36px rgba(0,0,0,0.55)", filter: "drop-shadow(0 0 18px rgba(201,168,76,0.12))", perspective: "1000px" }}>
             {splitTextToSpans(slide.giantText)}
           </div>
         </div>
@@ -1124,10 +647,6 @@ function Section4BenefitsGrid() {
     </section>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Section 4: Benefits Grid End
-// ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
 // Section 5: Stats
@@ -1156,10 +675,6 @@ function Section5Stats() {
     </section>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Section 5: Stats End
-// ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
 // Section 6: Story
@@ -1214,10 +729,6 @@ function Section6Story() {
 }
 
 // ---------------------------------------------------------------------------
-// Section 6: Story End
-// ---------------------------------------------------------------------------
-
-// ---------------------------------------------------------------------------
 // Section 7: Quotes
 // ---------------------------------------------------------------------------
 function Section7Quotes() {
@@ -1255,10 +766,6 @@ function Section7Quotes() {
     </section>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Section 7: Quotes End
-// ---------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------
 // Section 8: Call To Action
@@ -1301,75 +808,6 @@ function Section8CallToAction() {
 }
 
 // ---------------------------------------------------------------------------
-// Section 8: Call To Action End
-// ---------------------------------------------------------------------------
-
-// ---------------------------------------------------------------------------
-// Section 9: Home Offer
-// ---------------------------------------------------------------------------
-function Section9HomeOffer() {
-  const [sectionRef, sectionVisible] = useReveal(0.24);
-  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
-
-  const titleY = useTransform(scrollYProgress, [0, 0.35, 1], [70, 0, -20]);
-  const titleX = useTransform(scrollYProgress, [0, 0.5, 1], [-18, 0, 10]);
-  const titleRotate = useTransform(scrollYProgress, [0, 1], [0.7, -0.4]);
-  const cardY = useTransform(scrollYProgress, [0, 0.45, 1], [110, 0, -70]);
-  const cardX = useTransform(scrollYProgress, [0, 0.45, 1], [28, 0, -18]);
-  const cardRotate = useTransform(scrollYProgress, [0, 0.45, 1], [4, 0, -3]);
-  const metricsY = useTransform(scrollYProgress, [0, 0.45, 1], [140, 10, -45]);
-  const metricsX = useTransform(scrollYProgress, [0, 0.45, 1], [18, 0, -12]);
-  const glowY = useTransform(scrollYProgress, [0, 1], [-30, 120]);
-  const glowScale = useTransform(scrollYProgress, [0, 1], [1, 1.18]);
-
-  return (
-    <section ref={sectionRef} className="relative isolate overflow-hidden border-t border-white/10 bg-black px-6 py-28 sm:px-10 sm:py-32 lg:min-h-[820px] lg:px-12 lg:py-36">
-      <DottedSurface className="opacity-45" />
-      <motion.div aria-hidden="true" style={{ y: glowY, scale: glowScale }} className={cn("pointer-events-none absolute -top-20 left-1/2 z-[1] h-[620px] w-[620px] -translate-x-1/2 rounded-full", "bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.12),transparent_58%)]", "blur-[30px]")} />
-      <div className="relative z-10 mx-auto grid w-full max-w-7xl gap-16 lg:grid-cols-[0.95fr_1.05fr] lg:items-center lg:gap-20">
-        <div style={revealStyle(sectionVisible)}>
-          <motion.div style={{ y: titleY, x: titleX, rotate: titleRotate }} className="max-w-2xl will-change-transform">
-            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#c9a84c]/70">What Gets Built</p>
-            <h2 className="mt-5 bg-[linear-gradient(135deg,#fff6dc_0%,#f0d080_38%,#c9a84c_72%,#fff1bf_100%)] bg-clip-text text-4xl font-semibold leading-tight text-transparent sm:text-6xl">
-              A homepage system, not just another screen.
-            </h2>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-[#f2e7c8]/72">Each section has a job: establish authority, explain the process, prove the value, and move the right visitor toward a conversation.</p>
-          </motion.div>
-        </div>
-        <div className="grid gap-8" style={revealStyle(sectionVisible, 160)}>
-          <motion.div style={{ y: cardY, x: cardX, rotate: cardRotate }} className="rounded-lg border border-white/10 bg-black/60 p-7 backdrop-blur-xl will-change-transform sm:p-8">
-            <div className="flex items-center gap-3">
-              <CircleDot className="h-5 w-5 text-[#d8b766]/85" />
-              <h3 className="text-xl font-semibold text-[#f3e5bd]">Core Deliverables</h3>
-            </div>
-            <motion.div className="mt-7 grid gap-4" variants={listVariants} initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.35 }}>
-              {homeOfferServices.map((service) => (
-                <motion.div key={service} variants={itemVariants} className="flex items-start gap-3 border-t border-white/10 pt-4 first:border-t-0 first:pt-0">
-                  <Check className="mt-0.5 h-4 w-4 shrink-0 text-[#d8b766]/80" />
-                  <p className="leading-7 text-[#f2e7c8]/78">{service}</p>
-                </motion.div>
-              ))}
-            </motion.div>
-          </motion.div>
-          <motion.div style={{ y: metricsY, x: metricsX }} className="grid gap-5 sm:grid-cols-3 will-change-transform">
-            {homeOfferMetrics.map((metric, i) => (
-              <motion.div key={metric.label} variants={metricVariants} initial="hidden" whileInView="show" viewport={{ once: false, amount: 0.45 }} transition={{ delay: i * 0.08 }} className="rounded-lg border border-white/10 bg-black/60 p-6 backdrop-blur-xl">
-                <p className="text-3xl font-semibold text-[#f0d080]">{metric.value}</p>
-                <p className="mt-2 text-sm leading-6 text-[#eadcb4]/68">{metric.label}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Section 9: Home Offer End
-// ---------------------------------------------------------------------------
-
-// ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
 function HomePageSections() {
@@ -1383,14 +821,10 @@ function HomePageSections() {
       <Section6Story />
       <Section7Quotes />
       <Section8CallToAction />
-      <Section9HomeOffer />
+      <Footer />
     </>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Page Section List End
-// ---------------------------------------------------------------------------
 
 export default function Home() {
   return (
@@ -1406,7 +840,3 @@ export default function Home() {
     </>
   );
 }
-
-// ---------------------------------------------------------------------------
-// Page End
-// ---------------------------------------------------------------------------
