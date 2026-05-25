@@ -14,14 +14,6 @@ function ResponsiveHeroBanner({
   primaryButtonHref = "#",
   secondaryButtonText = "Watch Launch",
   secondaryButtonHref = "#",
-  partnersTitle = "Partnering with leading space agencies worldwide",
-  partners = [
-    { logoUrl: "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/f7466370-2832-4fdd-84c2-0932bb0dd850_800w.png", href: "#" },
-    { logoUrl: "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/0a9a71ec-268b-4689-a510-56f57e9d4f13_1600w.png", href: "#" },
-    { logoUrl: "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/a9ed4369-748a-49f8-9995-55d6c876bbff_1600w.png", href: "#" },
-    { logoUrl: "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/0d8966a4-8525-4e11-9d5d-2d7390b2c798_1600w.png", href: "#" },
-    { logoUrl: "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/2ed33c8b-b8b2-4176-967f-3d785fed07d8_1600w.png", href: "#" },
-  ],
 }) {
   return (
     <section className="relative isolate min-h-screen w-full overflow-hidden bg-black">
@@ -125,23 +117,6 @@ function ResponsiveHeroBanner({
                 <Play className="h-4 w-4" />
               </a>
             </div>
-          </div>
-        </div>
-
-        <div className="absolute inset-x-0 bottom-0 mx-auto w-full max-w-5xl px-6 pb-12 sm:pb-14">
-          <p className="animate-fade-slide-in-1 text-center text-sm text-white/70">
-            {partnersTitle}
-          </p>
-          <div className="animate-fade-slide-in-2 mt-6 grid grid-cols-2 items-center justify-items-center gap-4 text-white/70 sm:grid-cols-3 md:grid-cols-5">
-            {partners.map((partner, index) => (
-              <a
-                key={`${partner.logoUrl}-${index}`}
-                href={partner.href}
-                aria-label={`Partner ${index + 1}`}
-                className="inline-flex h-9 w-[120px] items-center justify-center rounded-full bg-cover bg-center opacity-80 transition-opacity hover:opacity-100"
-                style={{ backgroundImage: `url(${partner.logoUrl})` }}
-              />
-            ))}
           </div>
         </div>
       </div>
