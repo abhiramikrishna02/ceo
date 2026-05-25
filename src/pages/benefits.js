@@ -1056,8 +1056,8 @@ export default function Benefits() {
       <GlobalStyle />
       <div className="noise-overlay" />
       <Particles />
+      <SiteNavbar />
       <main style={{ fontFamily:"Poppins, sans-serif", background:BG, color:TEXT, position:"relative", zIndex:2, paddingTop:92 }}>
-        <SiteNavbar />
         <HeroSection />
       </main>
     </>
