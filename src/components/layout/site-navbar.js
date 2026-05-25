@@ -36,7 +36,7 @@ export default function SiteNavbar() {
           href="/home"
           className="whitespace-nowrap text-lg font-semibold tracking-[0.06em] text-white no-underline"
         >
-          CEO Studio
+          CEO Square
         </Link>
 
         <div
