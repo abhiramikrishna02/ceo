@@ -14,26 +14,26 @@ export default function SiteNavbar() {
   const router = useRouter();
 
   return (
-    <nav className="fixed left-0 right-0 top-0 z-[1000] border-b border-white/10 bg-[#0a0a0a]/72 backdrop-blur-xl">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-3 px-6 py-4 sm:px-10 lg:flex-row lg:items-center lg:justify-between lg:px-12">
+    <nav className="fixed left-0 right-0 top-0 z-[1000] border-b border-[#c9a84c]/15 bg-[#0a0a0a]/72 backdrop-blur-[18px]">
+      <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-6 px-6 py-4 sm:px-10 lg:px-12">
         <Link
           href="/home"
-          className="text-lg font-semibold tracking-[0.06em] text-white no-underline whitespace-nowrap"
+          className="whitespace-nowrap text-lg font-semibold tracking-[0.06em] text-white no-underline"
         >
           CEO Studio
         </Link>
 
-        <div className="flex flex-wrap items-center justify-start gap-2 lg:justify-center">
+        <div className="flex flex-wrap items-center justify-center gap-2">
           {NAV_ITEMS.map((item) => {
             const isActive = router.pathname === item.href;
             return (
               <Link
                 key={item.label}
                 href={item.href}
-                className={`rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.08em] transition-colors whitespace-nowrap ${
+                className={`whitespace-nowrap rounded-full border px-4 py-2 text-xs font-semibold uppercase tracking-[0.08em] transition-colors ${
                   isActive
-                    ? "border-[#c9a84c]/35 bg-[#c9a84c] text-[#0a0a0a]"
-                    : "border-[#c9a84c]/12 bg-white/5 text-white hover:bg-white/10"
+                    ? "border-[#c9a84c]/14 bg-[#c9a84c] text-[#0a0a0a]"
+                    : "border-[#c9a84c]/14 bg-white/[0.04] text-white hover:bg-white/[0.08]"
                 }`}
               >
                 {item.label}
