@@ -1,5 +1,6 @@
 import Head from "next/head";
-import Link from "next/link";
+
+import SiteNavbar from "@/components/layout/site-navbar";
 
 export default function Contact() {
   return (
@@ -7,16 +8,9 @@ export default function Contact() {
       <Head>
         <title>Contact</title>
       </Head>
-      <main className="min-h-screen bg-[#161616] text-white">
+      <SiteNavbar />
+      <main className="min-h-screen bg-[#161616] pt-24 text-white">
         <section className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 py-8 sm:px-10 lg:px-12">
-          <nav className="flex items-center justify-between border-b border-white/15 pb-5">
-            <Link href="/home" className="text-xl font-semibold tracking-tight">
-              CEO Studio
-            </Link>
-            <Link className="text-sm font-semibold text-white/80 hover:text-white" href="/home">
-              Home
-            </Link>
-          </nav>
 
           <div className="grid flex-1 items-center gap-12 py-20 lg:grid-cols-[0.9fr_1.1fr]">
             <div>

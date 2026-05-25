@@ -1,9 +1,18 @@
 import Head from "next/head";
-import HomeAuthoritySection from "@/components/home/home-authority-section";
-import HomeClosingSection from "@/components/home/home-closing-section";
 import HomeHeroSection from "@/components/home/home-hero-section";
 import HomeOfferSection from "@/components/home/home-offer-section";
-import HomeOrbitalSection from "@/components/home/home-orbital-section";
+import SiteNavbar from "@/components/layout/site-navbar";
+import {
+  BenefitsGridSection,
+  CommunityBenefitsBlock,
+  CTASection,
+  GlobalStyle,
+  Particles,
+  QuotesSection,
+  StatsSection,
+  StatementSection,
+  StorySection,
+} from "@/pages/benefits";
 
 export default function Home() {
   return (
@@ -12,12 +21,21 @@ export default function Home() {
         <title>CEO2 | Home</title>
       </Head>
 
-      <main className="bg-black text-white">
+      <GlobalStyle />
+      <div className="noise-overlay" />
+      <Particles />
+      <SiteNavbar />
+
+      <main className="relative z-10 bg-black text-white">
         <HomeHeroSection />
-        <HomeOrbitalSection />
-        <HomeAuthoritySection />
         <HomeOfferSection />
-        <HomeClosingSection />
+        <CommunityBenefitsBlock />
+        <StatementSection />
+        <BenefitsGridSection />
+        <StatsSection />
+        <StorySection />
+        <QuotesSection />
+        <CTASection />
       </main>
     </>
   );

@@ -6,6 +6,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Check, CircleDot } from "lucide-react";
 
+import SiteNavbar from "@/components/layout/site-navbar";
 import { cn } from "@/lib/utils";
 
 const SCENES = [
@@ -425,14 +426,7 @@ export default function About() {
     <div ref={rootRef} className="ceo-page">
       <style>{STYLES}</style>
 
-      <nav className="ceo-nav">
-        <Link href="/home" className="ceo-logo">
-          CEO Studio
-        </Link>
-        <Link href="/home" className="ceo-navlink">
-          Home
-        </Link>
-      </nav>
+      <SiteNavbar />
 
       <div ref={progressRef} className="ceo-progress" />
 

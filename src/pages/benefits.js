@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { motion, useScroll, useTransform, useInView, AnimatePresence, useSpring } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+import SiteNavbar from "@/components/layout/site-navbar";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -11,13 +12,6 @@ const GOLD = "#c9a84c";
 const BG = "#0a0a0a";
 const TEXT = "#f5f0e8";
 const EASE = [0.16, 1, 0.3, 1];
-
-const navItems = [
-  { label: "Home", href: "/home" },
-  { label: "About", href: "/about" },
-  { label: "Benefits", href: "/benefits" },
-  { label: "Contact", href: "/contact" },
-];
 
 const stats = [
   { value: "₹50Cr+", label: "Credit Limit", note: "Dynamic" },
@@ -87,7 +81,7 @@ const communityBenefits = [
 ];
 
 // ─── Global Styles ────────────────────────────────────────────────────────────
-const GlobalStyle = () => (
+export const GlobalStyle = () => (
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&display=swap');
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -119,7 +113,7 @@ const GlobalStyle = () => (
 );
 
 // ─── Reusable Primitives ──────────────────────────────────────────────────────
-const Particles = () => {
+export const Particles = () => {
   const particles = Array.from({ length: 25 }, (_, i) => createParticle(i));
   return (
     <div style={{ position:"fixed", inset:0, pointerEvents:"none", zIndex:1, overflow:"hidden" }}>
@@ -190,7 +184,7 @@ const splitTextToSpans = (text) =>
   ));
 
 // ─── Section 1: Hero ──────────────────────────────────────────────────────────
-const HeroSection = () => {
+export const HeroSection = () => {
   const { scrollY } = useScroll();
   const rotateX = useTransform(scrollY, [0,1000], [0,60]);
   const rotateY = useTransform(scrollY, [0,1000], [0,-4]);
@@ -248,7 +242,7 @@ const HeroSection = () => {
 // Each panel is a full-height scene pinned via GSAP ScrollTrigger,
 // with a shared vertical progress line and staggered text/visual reveals.
 
-const CommunityBenefitsBlock = () => {
+export const CommunityBenefitsBlock = () => {
   const wrapperRef = useRef(null);
   const canvasRef = useRef(null);
   const sceneTextRefs = useRef([]);
@@ -745,7 +739,7 @@ const CommunityBenefitsBlock = () => {
 };
 
 // ─── Section (original 2): Statement ─────────────────────────────────────────
-const StatementSection = () => {
+export const StatementSection = () => {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const smoothProgress = useSpring(scrollYProgress, { stiffness:70, damping:24, mass:0.35 });
@@ -845,7 +839,7 @@ const StatementSection = () => {
 };
 
 // ─── Benefits Grid (GSAP Pinned) ──────────────────────────────────────────────
-const BenefitsGridSection = () => {
+export const BenefitsGridSection = () => {
   const sectionRef = useRef(null);
   const slideRefs = useRef([]);
   const imageRefs = useRef([]);
@@ -909,7 +903,7 @@ const BenefitsGridSection = () => {
 };
 
 // ─── Stats ────────────────────────────────────────────────────────────────────
-const StatsSection = () => {
+export const StatsSection = () => {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target:ref, offset:["start end","end start"] });
   const bgY = useTransform(scrollYProgress, [0,1], ["-10%","10%"]);
@@ -940,7 +934,7 @@ const storyVariants = {
   visible: (d) => ({ opacity:1, y:0, transition:{ duration:1.0, delay:d, ease:EASE } }),
 };
 
-const StorySection = () => (
+export const StorySection = () => (
   <section style={{ padding:"96px 24px 120px", position:"relative" }}>
     <div style={{ maxWidth:1280, margin:"0 auto" }}>
       <motion.div initial={{ opacity:0, y:30 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true, margin:"-100px" }} transition={{ duration:1.6, ease:EASE }} style={{ marginBottom:60 }}>
@@ -988,7 +982,7 @@ const StorySection = () => (
 );
 
 // ─── Quotes ───────────────────────────────────────────────────────────────────
-const QuotesSection = () => {
+export const QuotesSection = () => {
   const [active, setActive] = useState(0);
   useEffect(() => { const t = setInterval(() => setActive((a) => (a+1) % quotes.length), 5000); return () => clearInterval(t); }, []);
   return (
@@ -1020,7 +1014,7 @@ const QuotesSection = () => {
 };
 
 // ─── CTA ──────────────────────────────────────────────────────────────────────
-const CTASection = () => {
+export const CTASection = () => {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target:ref, offset:["start end","end start"] });
   const scale = useTransform(scrollYProgress, [0,0.5], [0.9,1]);
@@ -1057,32 +1051,14 @@ const CTASection = () => {
 
 // ─── Root Export ──────────────────────────────────────────────────────────────
 export default function Benefits() {
-  const router = useRouter();
   return (
     <>
       <GlobalStyle />
       <div className="noise-overlay" />
       <Particles />
       <main style={{ fontFamily:"Poppins, sans-serif", background:BG, color:TEXT, position:"relative", zIndex:2, paddingTop:92 }}>
-        <nav style={{ position:"fixed", top:0, left:0, right:0, zIndex:1000, display:"flex", alignItems:"center", justifyContent:"space-between", gap:24, padding:"16px 24px", background:"rgba(10,10,10,0.72)", backdropFilter:"blur(18px)", borderBottom:"1px solid rgba(201,168,76,0.14)" }}>
-          <Link href="/home" style={{ fontSize:18, fontWeight:600, letterSpacing:"0.06em", color:TEXT, textDecoration:"none", whiteSpace:"nowrap" }}>CEO Studio</Link>
-          <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:8, flexWrap:"wrap" }}>
-            {navItems.map((item) => {
-              const isActive = router.pathname === item.href;
-              return (
-                <Link key={item.label} href={item.href} style={{ padding:"10px 16px", borderRadius:999, textDecoration:"none", fontSize:13, fontWeight:600, letterSpacing:"0.08em", textTransform:"uppercase", color:isActive?BG:TEXT, background:isActive?GOLD:"rgba(255,255,255,0.04)", border:"1px solid rgba(201,168,76,0.14)", transition:"transform 0.2s ease,background 0.2s ease,color 0.2s ease", whiteSpace:"nowrap" }}>{item.label}</Link>
-              );
-            })}
-          </div>
-        </nav>
+        <SiteNavbar />
         <HeroSection />
-        <CommunityBenefitsBlock />
-        <StatementSection />
-        <BenefitsGridSection />
-        <StatsSection />
-        <StorySection />
-        <QuotesSection />
-        <CTASection />
       </main>
     </>
   );

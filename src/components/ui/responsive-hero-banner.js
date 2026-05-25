@@ -1,21 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
-import { ArrowRight, ArrowUpRight, Menu, Play, X } from "lucide-react";
+import { ArrowRight, Play } from "lucide-react";
 
 function ResponsiveHeroBanner({
-  logoUrl = "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/febf2421-4a9a-42d6-871d-ff4f9518021c_1600w.png",
   backgroundImageUrl = "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/0e2dbea0-c0a9-413f-a57b-af279633c0df_3840w.jpg",
-  navLinks = [
-    { label: "Home", href: "#", isActive: true },
-    { label: "Missions", href: "#" },
-    { label: "Destinations", href: "#" },
-    { label: "Technology", href: "#" },
-    { label: "Book Flight", href: "#" },
-  ],
-  ctaButtonText = "Reserve Seat",
-  ctaButtonHref = "#",
   badgeLabel = "New",
   badgeText = "First Commercial Flight to Mars 2026",
   title = "Journey Beyond Earth",
@@ -34,8 +23,6 @@ function ResponsiveHeroBanner({
     { logoUrl: "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/2ed33c8b-b8b2-4176-967f-3d785fed07d8_1600w.png", href: "#" },
   ],
 }) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   return (
     <section className="relative isolate min-h-screen w-full overflow-hidden bg-black">
       {/* The animate-reveal-cosmos class triggers the diagonal wipe animation 
@@ -99,83 +86,6 @@ function ResponsiveHeroBanner({
         />
       </svg>
       <div className="pointer-events-none absolute inset-0 ring-1 ring-black/30" />
-
-      <header className="relative z-10 xl:top-4">
-        <div className="mx-6">
-          <div className="flex items-center justify-between pt-4">
-            <a
-              href="#"
-              aria-label="Home"
-              className="inline-flex h-10 w-[100px] items-center justify-center rounded bg-cover bg-center"
-              style={{ backgroundImage: `url(${logoUrl})` }}
-            />
-
-            <nav className="hidden items-center gap-2 md:flex">
-              <div className="flex items-center gap-1 rounded-full bg-white/5 px-1 py-1 ring-1 ring-white/10 backdrop-blur">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    className={`px-3 py-2 font-sans text-sm font-medium transition-colors hover:text-white ${
-                      link.isActive ? "text-white/90" : "text-white/80"
-                    }`}
-                  >
-                    {link.label}
-                  </a>
-                ))}
-                {ctaButtonText && ctaButtonHref ? (
-                  <a
-                    href={ctaButtonHref}
-                    className="ml-1 inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-2 font-sans text-sm font-medium text-neutral-900 transition-colors hover:bg-white/90"
-                  >
-                    {ctaButtonText}
-                    <ArrowUpRight className="h-4 w-4" />
-                  </a>
-                ) : null}
-              </div>
-            </nav>
-
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen((open) => !open)}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/15 backdrop-blur md:hidden"
-              aria-expanded={mobileMenuOpen}
-              aria-label="Toggle menu"
-            >
-              {mobileMenuOpen ? (
-                <X className="h-5 w-5 text-white/90" />
-              ) : (
-                <Menu className="h-5 w-5 text-white/90" />
-              )}
-            </button>
-          </div>
-
-          {mobileMenuOpen ? (
-            <div className="mt-4 rounded-3xl bg-black/45 p-3 ring-1 ring-white/10 backdrop-blur-xl md:hidden">
-              <div className="grid gap-1">
-                {navLinks.map((link) => (
-                  <a
-                    key={link.label}
-                    href={link.href}
-                    className="rounded-2xl px-4 py-3 text-sm font-medium text-white/82 hover:bg-white/10"
-                  >
-                    {link.label}
-                  </a>
-                ))}
-                {ctaButtonText && ctaButtonHref ? (
-                  <a
-                    href={ctaButtonHref}
-                    className="mt-2 inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-neutral-950"
-                  >
-                    {ctaButtonText}
-                    <ArrowUpRight className="h-4 w-4" />
-                  </a>
-                ) : null}
-              </div>
-            </div>
-          ) : null}
-        </div>
-      </header>
 
       <div className="relative z-10">
         <div className="mx-auto max-w-7xl px-6 pb-16 pt-28 sm:pt-28 md:pt-32 lg:pt-40">
