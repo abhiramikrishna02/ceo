@@ -49,16 +49,16 @@ export default function Footer() {
 
       <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col">
         <div className="grid grid-cols-1 gap-12 border-t border-white/5 pt-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-24 lg:pt-14 lg:justify-items-center">
-          <div className="flex flex-col items-center gap-7 text-center lg:items-center">
+          <div className="flex flex-col items-center gap-7 text-center sm:items-start sm:text-left lg:items-center lg:text-center">
             <h3 className="font-serif text-[15px] font-semibold uppercase tracking-[0.42em] text-[#e0be62] sm:text-[16px]">
               Explore
             </h3>
-            <nav className="flex flex-col items-center gap-4">
+            <nav className="flex flex-col items-center gap-4 sm:items-start">
               {exploreLinks.map((link) => (
                 <Link
                   key={link.label}
                   href={link.href}
-                  className="group flex w-fit items-center text-[17px] leading-relaxed text-[#f5f0e8]/74 transition-all duration-300 ease-out hover:translate-x-1 hover:text-[#f3dfae] focus-visible:outline-none sm:text-[18px]"
+                  className="group flex w-fit items-center text-[16px] leading-relaxed text-[#f5f0e8]/74 transition-all duration-300 ease-out hover:translate-x-1 hover:text-[#f3dfae] focus-visible:outline-none sm:text-[17px] md:text-[18px]"
                 >
                   {link.label}
                 </Link>
@@ -66,18 +66,18 @@ export default function Footer() {
             </nav>
           </div>
 
-          <div className="flex flex-col items-center gap-7 text-center lg:items-center">
+          <div className="flex flex-col items-center gap-7 text-center sm:items-start sm:text-left lg:items-center lg:text-center">
             <h3 className="font-serif text-[15px] font-semibold uppercase tracking-[0.42em] text-[#e0be62] sm:text-[16px]">
               Social
             </h3>
-            <nav className="flex flex-col items-center gap-4">
+            <nav className="flex flex-col items-center gap-4 sm:items-start">
               {socialLinks.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex w-fit items-center text-[17px] leading-relaxed text-[#f5f0e8]/74 transition-all duration-300 ease-out hover:translate-x-1 hover:text-[#f3dfae] focus-visible:outline-none sm:text-[18px]"
+                  className="group flex w-fit items-center text-[16px] leading-relaxed text-[#f5f0e8]/74 transition-all duration-300 ease-out hover:translate-x-1 hover:text-[#f3dfae] focus-visible:outline-none sm:text-[17px] md:text-[18px]"
                 >
                   {link.label}
                 </a>
@@ -85,11 +85,11 @@ export default function Footer() {
             </nav>
           </div>
 
-          <div className="flex flex-col items-center gap-7 text-center lg:items-center">
+          <div className="flex flex-col items-center gap-7 text-center sm:items-start sm:text-left lg:items-center lg:text-center">
             <h3 className="font-serif text-[15px] font-semibold uppercase tracking-[0.42em] text-[#e0be62] sm:text-[16px]">
               Contact
             </h3>
-            <div className="flex flex-col items-center gap-4 text-[17px] leading-relaxed text-[#f5f0e8]/74 sm:text-[18px]">
+            <div className="flex flex-col items-center gap-4 text-[16px] leading-relaxed text-[#f5f0e8]/74 sm:items-start sm:text-left sm:text-[17px] md:text-[18px]">
               <a
                 href="mailto:ceosquareofficial@gmail.com"
                 className="group flex w-fit transition-all duration-300 ease-out hover:translate-x-1 hover:text-[#f3dfae] focus-visible:outline-none"
@@ -107,7 +107,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-14 flex flex-col justify-between gap-4 pb-8 sm:flex-row sm:items-center lg:mt-16">
-          <p className="text-[12px] text-[#f5f0e8]/45">
+          <p className="text-[11px] leading-relaxed text-[#f5f0e8]/45 sm:text-[12px]">
             &copy; {new Date().getFullYear()} CEO Square. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
@@ -115,7 +115,7 @@ export default function Footer() {
               <Link
                 key={link.label}
                 href={link.href}
-                className="text-[12px] text-[#f5f0e8]/45 transition-colors duration-300 hover:text-[#f3dfae] focus-visible:outline-none"
+                className="text-[11px] text-[#f5f0e8]/45 transition-colors duration-300 hover:text-[#f3dfae] focus-visible:outline-none sm:text-[12px]"
               >
                 {link.label}
               </Link>

@@ -16,7 +16,7 @@ function ResponsiveHeroBanner({
   secondaryButtonHref = "#",
 }) {
   return (
-    <section className="relative isolate min-h-screen w-full overflow-hidden bg-black">
+    <section className="hero-banner-shell relative isolate min-h-[100svh] w-full overflow-hidden bg-black">
       {/* The animate-reveal-cosmos class triggers the diagonal wipe animation 
         originating from the top left corner.
       */}
@@ -79,10 +79,10 @@ function ResponsiveHeroBanner({
       </svg>
       <div className="pointer-events-none absolute inset-0 ring-1 ring-black/30" />
 
-      <div className="relative z-10 min-h-screen">
-        <div className="absolute inset-0 flex items-center justify-center px-6">
+      <div className="hero-banner-inner relative z-10 min-h-[100svh]">
+        <div className="absolute inset-0 flex items-center justify-center px-4 sm:px-6 lg:px-8">
           <div className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
-            <div className="animate-fade-slide-in-1 mb-6 inline-flex items-center gap-3 rounded-full bg-white/10 px-2.5 py-2 ring-1 ring-white/15 backdrop-blur">
+            <div className="hero-banner-badge animate-fade-slide-in-1 mb-6 inline-flex max-w-[92vw] items-center gap-3 rounded-full bg-white/10 px-3 py-2 ring-1 ring-white/15 backdrop-blur sm:px-4">
               <span className="inline-flex items-center rounded-full bg-white/90 px-2 py-0.5 font-sans text-xs font-medium text-neutral-900">
                 {badgeLabel}
               </span>
@@ -91,27 +91,27 @@ function ResponsiveHeroBanner({
               </span>
             </div>
 
-            <h1 className="animate-fade-slide-in-2 mx-auto max-w-5xl font-serif text-4xl font-normal leading-tight tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+            <h1 className="hero-banner-title animate-fade-slide-in-2 mx-auto max-w-5xl font-serif text-[clamp(2.5rem,8vw,5.5rem)] font-normal leading-[1.02] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
               {title}
               <br className="hidden sm:block" />
               {titleLine2}
             </h1>
 
-            <p className="animate-fade-slide-in-3 mx-auto mt-6 max-w-2xl text-base text-white/80 sm:text-lg">
+            <p className="hero-banner-description animate-fade-slide-in-3 mx-auto mt-5 max-w-2xl text-base text-white/80 sm:mt-6 sm:text-lg">
               {description}
             </p>
 
-            <div className="animate-fade-slide-in-4 mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+            <div className="hero-banner-actions animate-fade-slide-in-4 mt-8 flex w-full flex-col items-center justify-center gap-3 sm:mt-10 sm:flex-row sm:gap-4">
               <a
                 href={primaryButtonHref}
-                className="inline-flex items-center gap-2 rounded-full bg-white/10 px-5 py-3 font-sans text-sm font-medium text-white ring-1 ring-white/15 transition-colors hover:bg-white/15"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-white/10 px-5 py-3 font-sans text-sm font-medium text-white ring-1 ring-white/15 transition-colors hover:bg-white/15"
               >
                 {primaryButtonText}
                 <ArrowRight className="h-4 w-4" />
               </a>
               <a
                 href={secondaryButtonHref}
-                className="inline-flex items-center gap-2 rounded-full bg-transparent px-5 py-3 font-sans text-sm font-medium text-white/90 transition-colors hover:text-white"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-transparent px-5 py-3 font-sans text-sm font-medium text-white/90 transition-colors hover:text-white"
               >
                 {secondaryButtonText}
                 <Play className="h-4 w-4" />
