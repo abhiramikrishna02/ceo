@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SiteNavbar from "@/components/layout/site-navbar";
 import ResponsiveHeroBanner from "@/components/ui/responsive-hero-banner";
+import { ResponsiveStyles, getCommunityBenefitsResponsiveMotion, useMediaQuery } from "@/components/responsive";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -66,24 +67,12 @@ function splitTextToSpans(text) {
     </span>
   ));
 }
-function useMediaQuery(query) {
-  const [matches,setMatches]=useState(false);
-  useEffect(()=>{
-    if(typeof window==="undefined") return undefined;
-    const mq=window.matchMedia(query);
-    const update=()=>setMatches(mq.matches);
-    update();
-    if(mq.addEventListener){ mq.addEventListener("change",update); return()=>mq.removeEventListener("change",update); }
-    mq.addListener(update); return()=>mq.removeListener(update);
-  },[query]);
-  return matches;
-}
-
 // ---------------------------------------------------------------------------
 // Global styles & Particles
 // ---------------------------------------------------------------------------
 function GlobalStyle() {
   return (
+    <>
     <style>{`
       @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&display=swap');
       *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -104,135 +93,9 @@ function GlobalStyle() {
       .card-tilt{transform-style:preserve-3d;transition:transform 0.4s cubic-bezier(0.23,1,0.32,1),box-shadow 0.4s ease}
       .card-tilt:hover{box-shadow:0 30px 80px rgba(201,168,76,0.15),0 0 0 1px rgba(201,168,76,0.2)}
       .shimmer-text{background:linear-gradient(90deg,#c9a84c 0%,#f0d080 25%,#fff8e7 50%,#f0d080 75%,#c9a84c 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 4s linear infinite}
-      @media(max-width:768px){
-        .story-grid{grid-template-columns:1fr!important;gap:36px!important;padding:72px 0!important}
-        .story-grid>div:nth-child(2){order:-1!important}
-        .story-grid h3{font-size:clamp(26px,7vw,42px)!important}
-        .story-grid p{font-size:15px!important;line-height:1.75!important}
-        .story-grid span[style*="fontSize: 24px"]{font-size:18px!important;margin-right:10px!important}
-        .home-statement-section{height:auto!important;margin-top:0!important}
-        .home-statement-stage{position:relative!important;top:auto!important;height:auto!important;min-height:auto!important;display:block!important;padding:72px 20px!important;overflow:visible!important}
-        .home-statement-main{position:relative!important;max-width:100%!important;opacity:1!important;transform:none!important;filter:none!important;margin:0 auto}
-        .home-statement-main p{white-space:normal!important;letter-spacing:-0.01em!important;text-align:center!important}
-        .home-statement-headline{padding:28px 0!important}
-        .home-statement-cards{position:relative!important;inset:auto!important;display:grid!important;grid-template-columns:1fr!important;gap:16px!important;pointer-events:auto!important}
-        .home-statement-card{position:relative!important;width:100%!important;height:auto!important;min-height:unset!important;padding:18px!important;transform:none!important;opacity:1!important}
-        .home-statement-card h4{font-size:16px!important}
-        .home-statement-card p{font-size:12px!important}
-        .home-benefits-grid{height:auto!important;min-height:auto!important}
-        .home-benefits-slide{position:relative!important;display:grid!important;grid-template-columns:1fr!important;height:auto!important;min-height:auto!important;z-index:auto!important;margin-bottom:56px!important}
-        .home-benefits-image{width:100%!important;height:240px!important}
-        .home-benefits-content{width:100%!important;padding:24px 0 0!important}
-        .home-benefits-giant{position:relative!important;left:auto!important;bottom:auto!important;transform:none!important;justify-content:flex-start!important;margin-top:18px!important;font-size:clamp(34px,10vw,68px)!important}
-        .home-stats-section{padding:88px 20px!important}
-        .home-story-section{padding:80px 20px 96px!important}
-        .home-quotes-section{padding:84px 20px!important}
-        .home-cta-section{padding:72px 20px 120px!important}
-        .home-cta-section h2{font-size:clamp(32px,9vw,64px)!important}
-        .home-cta-section button{width:100%!important;max-width:360px!important}
-        .community-benefits-block{display:block!important;height:auto!important;min-height:100vh;padding:72px 0;overflow-x:hidden!important;overflow-y:visible!important}
-        .community-benefits-block__axis{display:none!important}
-        .community-benefits-block__text,.community-benefits-block__visual{width:100%!important}
-        .community-benefits-block__text{padding:0 20px 24px!important}
-        .community-benefits-block__scenes{position:relative!important;height:auto!important;display:flex!important;flex-direction:column!important;gap:56px!important;padding:0 20px!important}
-        .community-benefits-block__scene{position:relative!important;top:auto!important;left:auto!important;right:auto!important;inset:auto!important;width:100%!important}
-        .community-benefits-block__visual{display:none!important;min-height:0!important}
-        .community-benefits-block__canvas-wrap{position:sticky!important;top:0!important;height:100vh!important;margin-bottom:-100vh!important;display:block!important;opacity:1!important;mix-blend-mode:screen!important}
-      }
-      @media(max-width:980px){
-        .community-benefits-block{display:block!important;height:auto!important;min-height:100vh;padding:88px 0;overflow-x:hidden!important;overflow-y:visible!important}
-        .community-benefits-block__axis{display:none!important}
-        .community-benefits-block__scenes{position:relative!important;height:auto!important;display:flex!important;flex-direction:column!important;gap:80px!important;padding:0 24px!important}
-        .community-benefits-block__scene{position:relative!important;top:auto!important;left:auto!important;right:auto!important;inset:auto!important;width:100%!important}
-        .community-benefits-block__canvas-wrap{position:sticky!important;top:0!important;height:100vh!important;margin-bottom:-100vh!important;display:block!important;opacity:1!important;mix-blend-mode:screen!important}
-      }
-      @media(max-width:1024px){
-        html,body{overflow-x:hidden;max-width:100vw}
-        .community-benefits-block__scene{background:transparent!important;border-color:rgba(201,168,76,0.12)!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
-        .community-benefits-block__scene h2,.community-benefits-block__scene .scene-eyebrow,.community-benefits-block__scene .scene-sub,.community-benefits-block__scene .scene-detail,.community-benefits-block__scene .scene-stat h3,.community-benefits-block__scene .scene-stat p{text-shadow:0 2px 18px rgba(0,0,0,0.32)}
-        .benefits-grid-section{height:auto!important;overflow:visible!important}
-        .benefits-slide-wrapper{position:relative!important;display:flex!important;flex-direction:column!important;width:100%!important;height:auto!important;z-index:auto!important;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px!important;margin-bottom:24px!important}
-        .benefits-slide-wrapper:last-child{margin-bottom:0!important}
-        .benefits-slide-image{width:100%!important;height:56vw!important;min-height:220px!important;max-height:380px!important;flex-shrink:0}
-        .benefits-slide-content{width:100%!important;padding:28px 20px 24px!important}
-        .benefits-slide-content h3{font-size:clamp(24px,6vw,36px)!important;line-height:1.15!important;margin-bottom:16px!important}
-        .benefits-slide-content p{font-size:14px!important;line-height:1.7!important;margin-bottom:28px!important}
-        .benefits-slide-content li{font-size:13px!important}
-        .benefits-slide-giant{position:relative!important;bottom:auto!important;left:auto!important;transform:none!important;display:block!important;font-size:clamp(32px,9vw,64px)!important;text-align:left!important;padding:0 20px 24px!important;opacity:0.25!important;pointer-events:none;overflow:hidden;white-space:normal!important;overflow-wrap:anywhere!important;word-break:break-word!important}
-        .home-statement-section{height:auto!important;margin-top:0!important}
-        .home-statement-stage{position:relative!important;top:auto!important;height:auto!important;min-height:auto!important;display:flex!important;flex-direction:column!important;align-items:center!important;padding:64px 20px 56px!important;overflow:visible!important;gap:20px!important}
-        .home-statement-main{position:relative!important;max-width:100%!important;opacity:1!important;transform:none!important;filter:none!important;margin:0 auto!important;width:100%!important;display:flex!important;flex-direction:column!important;align-items:center!important;gap:12px!important}
-        .home-statement-mobile-stack{display:flex!important}
-        .home-statement-cards{display:none!important}
-        .home-statement-main>div{width:100%!important;transform:none!important}
-        .home-statement-main p{white-space:normal!important;letter-spacing:-0.01em!important;text-align:center!important;font-size:clamp(18px,5vw,30px)!important;line-height:1.08!important}
-        .home-statement-headline{padding:22px 0 28px!important;text-align:center!important}
-        .home-statement-headline h2{font-size:clamp(22px,5.5vw,34px)!important;line-height:1.35!important}
-        .home-statement-cards{position:relative!important;inset:auto!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:14px!important;pointer-events:auto!important;width:100%!important;max-width:520px!important;margin:0 auto!important;padding:0!important}
-        .home-statement-card{position:relative!important;width:100%!important;height:auto!important;min-height:unset!important;padding:18px 20px!important;transform:none!important;opacity:1!important;border-radius:16px!important}
-        .home-statement-card h4{font-size:16px!important;margin-top:6px!important}
-        .home-statement-card p{font-size:12px!important}
-        .home-stats-section{padding:72px 20px!important}
-        .stats-grid{grid-template-columns:1fr 1fr!important;gap:2px!important}
-        .stat-cell{padding:36px 20px!important}
-        .stat-value{font-size:clamp(34px,9vw,54px)!important}
-        .home-story-section{padding:64px 20px 80px!important}
-        .story-section-heading{font-size:clamp(26px,7vw,52px)!important;text-align:center!important}
-        .story-grid{grid-template-columns:1fr!important;gap:32px!important;padding:64px 0!important}
-        .story-text-col{order:1!important}
-        .story-image-col{order:0!important}
-        .story-grid h3{font-size:clamp(24px,6.5vw,38px)!important;line-height:1.25!important}
-        .story-grid p{font-size:15px!important;line-height:1.75!important}
-        .home-quotes-section{padding:72px 20px 80px!important}
-        .quotes-text{font-size:clamp(19px,5vw,32px)!important;line-height:1.55!important}
-        .quotes-dots{gap:10px!important;margin-top:28px!important}
-        .home-cta-section{padding:56px 16px 100px!important}
-        .cta-inner{padding:clamp(40px,8vw,72px) clamp(24px,5vw,56px)!important}
-        .cta-heading-large{font-size:clamp(30px,8vw,56px)!important;line-height:1.2!important}
-        .cta-sub{font-size:16px!important;margin-bottom:40px!important}
-        .cta-buttons{flex-direction:column!important;align-items:center!important;gap:14px!important}
-        .cta-btn-primary{width:100%!important;max-width:360px!important;padding:20px 32px!important}
-        .community-benefits-block__scene h2{font-size:clamp(30px,6vw,48px)!important}
-        .community-benefits-block__scene p{font-size:15px!important}
-        .community-benefits-block{height:auto!important;min-height:100vh!important;padding:72px 0 64px!important;overflow-x:hidden!important;overflow-y:visible!important}
-        .community-benefits-block__axis{display:none!important}
-        .community-benefits-block__canvas-wrap{position:sticky!important;top:0!important;height:100vh!important;margin-bottom:-100vh!important;display:block!important;opacity:1!important;mix-blend-mode:screen!important}
-        .community-benefits-block__scenes{position:relative!important;inset:auto!important;display:flex!important;flex-direction:column!important;gap:18px!important;padding:0 20px!important}
-        .community-benefits-block__scene{position:relative!important;top:auto!important;left:auto!important;right:auto!important;inset:auto!important;width:100%!important;height:auto!important;padding:24px 18px 28px!important;border-radius:24px!important;background:linear-gradient(180deg,rgba(15,15,15,0.82),rgba(10,10,10,0.56))!important;border:1px solid rgba(201,168,76,0.1)!important;box-shadow:0 20px 60px rgba(0,0,0,0.35)!important}
-        .community-benefits-block__scene h2{font-size:clamp(30px,8vw,44px)!important;line-height:1.15!important;margin-bottom:22px!important}
-        .community-benefits-block__scene .scene-eyebrow{letter-spacing:0.18em!important}
-        .community-benefits-block__scene .scene-sub{font-size:16px!important;line-height:1.6!important;margin-bottom:18px!important}
-        .community-benefits-block__scene .scene-detail{font-size:13px!important;line-height:1.8!important;margin-bottom:24px!important}
-        .community-benefits-block__scene .scene-stat{margin-bottom:24px!important}
-        .community-benefits-block__scene .scene-stat h3{font-size:34px!important}
-      }
-      @media(max-width:640px){
-        .home-statement-headline h2{font-size:clamp(20px,6vw,28px)!important}
-        .stats-grid{grid-template-columns:1fr 1fr!important}
-        .stat-cell{padding:28px 14px!important}
-        .stat-value{font-size:clamp(30px,10vw,46px)!important}
-        .story-grid{gap:24px!important;padding:48px 0!important}
-        .benefits-slide-image{height:62vw!important}
-        .benefits-slide-content{padding:22px 16px 18px!important}
-        .benefits-slide-content h3{font-size:clamp(22px,7vw,30px)!important;margin-bottom:14px!important}
-        .benefits-slide-content p{font-size:13px!important;margin-bottom:24px!important}
-        .benefits-slide-content li{font-size:12px!important}
-        .benefits-slide-giant{font-size:clamp(28px,10vw,48px)!important;padding:0 16px 20px!important}
-        .home-cta-section{padding:44px 14px 80px!important}
-        .cta-inner{padding:32px 20px!important}
-        .community-benefits-block{padding:56px 0!important}
-        .community-benefits-block__scenes{gap:48px!important;padding:0 16px!important}
-        .community-benefits-block__scene h2{font-size:clamp(26px,8vw,40px)!important}
-        .home-quotes-section{padding:56px 16px 64px!important}
-        .quotes-text{font-size:clamp(18px,5.5vw,26px)!important}
-      }
-      @media(min-width:641px) and (max-width:1024px){
-        .stats-grid{grid-template-columns:repeat(2,1fr)!important}
-        .stat-cell{padding:44px 28px!important}
-        .story-grid{grid-template-columns:1fr!important;gap:40px!important;padding:80px 0!important}
-        .benefits-slide-image{height:44vw!important}
-      }
     `}</style>
+    <ResponsiveStyles />
+    </>
   );
 }
 
@@ -407,14 +270,24 @@ export const CommunityBenefitsBlock = () => {
     resizeCanvas();
     window.addEventListener("resize",resizeCanvas);
 
-    const particleCount=850;
+    const particleCount=compactLayout?900:850;
     const particles=Array.from({ length:particleCount },()=>{
       const angle=Math.random()*Math.PI*2;
       const sweepAngle=angle+(Math.random()-0.5)*0.6;
       const forceDistance=Math.random()*0.8+0.2;
-      return { seed:Math.random()*120,size:Math.random()*1.8+0.8,alpha:Math.random()*0.5+0.45,blastX:Math.cos(sweepAngle)*forceDistance,blastY:Math.sin(sweepAngle)*forceDistance,blastZ:(Math.random()-0.5)*2.5,currentX:0,currentY:0,currentZ:0 };
+      return {
+        seed:Math.random()*120,
+        size:compactLayout?Math.random()*1.5+0.65:Math.random()*1.8+0.8,
+        alpha:compactLayout?Math.random()*0.28+0.42:Math.random()*0.5+0.45,
+        blastX:Math.cos(sweepAngle)*forceDistance,
+        blastY:Math.sin(sweepAngle)*forceDistance,
+        blastZ:(Math.random()-0.5)*2.5,
+        currentX:0,
+        currentY:0,
+        currentZ:0
+      };
     });
-    const ambientParticles=Array.from({ length:120 },()=>({ x:Math.random(),y:Math.random(),size:Math.random()*1.0+0.4,alpha:Math.random()*0.25+0.1,speedX:(Math.random()-0.5)*0.0004,speedY:(Math.random()-0.5)*0.0002,seed:Math.random()*Math.PI }));
+    const ambientParticles=Array.from({ length:compactLayout?140:120 },()=>({ x:Math.random(),y:Math.random(),size:compactLayout?Math.random()*1.05+0.45:Math.random()*1.0+0.4,alpha:compactLayout?Math.random()*0.24+0.1:Math.random()*0.25+0.1,speedX:(Math.random()-0.5)*0.0004,speedY:(Math.random()-0.5)*0.0002,seed:Math.random()*Math.PI }));
     const engineState={ progress:0,blastFactor:0,rotation:0 };
 
     const renderEngine=()=>{
@@ -429,13 +302,15 @@ export const CommunityBenefitsBlock = () => {
       const nextPhase=Math.min(currentPhase+1,communityBenefits.length-1);
       let activeCenterX,activeCenterY;
       if(compactLayout){
-        const mobileAnchors=[0.12,0.5,0.88];
+        const mobileAnchors=[0.16,0.52,0.88];
         const currentAnchor=mobileAnchors[Math.min(currentPhase,mobileAnchors.length-1)]??0.5;
         const nextAnchor=mobileAnchors[Math.min(nextPhase,mobileAnchors.length-1)]??currentAnchor;
         const anchorY=currentAnchor+(nextAnchor-currentAnchor)*phaseRatio;
-        const phasePulse=Math.sin(phaseRatio*Math.PI)*Math.min(height*0.16,112);
-        activeCenterX=width*0.5+Math.sin((currentPhase+phaseRatio)*Math.PI)*Math.min(width*0.055,22);
-        activeCenterY=height*anchorY+phasePulse;
+        const phasePulse=Math.sin(phaseRatio*Math.PI)*Math.min(height*0.28,176);
+        const phaseYOffset=[-height*0.05,height*0.08,height*0.2][Math.min(currentPhase,2)]??0;
+        const phaseXOffset=[0,-width*0.055,width*0.06][Math.min(currentPhase,2)]??0;
+        activeCenterX=width*0.5+phaseXOffset+Math.sin((currentPhase+phaseRatio)*Math.PI)*Math.min(width*0.05,18);
+        activeCenterY=height*anchorY+phasePulse+phaseYOffset;
       } else {
         const getTargetCenter=(p)=>p===0?width*0.74:p===1?width*0.26:width*0.74;
         activeCenterX=getTargetCenter(currentPhase)+(getTargetCenter(nextPhase)-getTargetCenter(currentPhase))*phaseRatio;
@@ -447,9 +322,9 @@ export const CommunityBenefitsBlock = () => {
         if(p.x<0) p.x=1; if(p.x>1) p.x=0;
         if(p.y<0) p.y=1; if(p.y>1) p.y=0;
         ctx.fillStyle=GOLD;
-        ctx.globalAlpha=compactLayout?p.alpha*(0.58+Math.sin(time+p.seed)*0.34):p.alpha*(0.4+Math.sin(time+p.seed)*0.3);
+        ctx.globalAlpha=compactLayout?p.alpha*(0.64+Math.sin(time+p.seed)*0.32):p.alpha*(0.4+Math.sin(time+p.seed)*0.3);
         ctx.beginPath();
-        ctx.arc(p.x*width+Math.sin(time*0.5+p.seed)*8,p.y*height+Math.cos(time*0.3+p.seed)*5,p.size,0,Math.PI*2);
+        ctx.arc(p.x*width+Math.sin(time*0.5+p.seed)*(compactLayout?10:8),p.y*height+Math.cos(time*0.3+p.seed)*(compactLayout?6:5),p.size,0,Math.PI*2);
         ctx.fill();
       });
 
@@ -474,8 +349,8 @@ export const CommunityBenefitsBlock = () => {
       particles.forEach((particle,index)=>{
         const p1=getFormationCoords(index,particleCount,currentPhase,width,height);
         const p2=getFormationCoords(index,particleCount,nextPhase,width,height);
-        let targetX=p1.x+(p2.x-p1.x)*phaseRatio+particle.blastX*engineState.blastFactor*(baseScale*2.2)+Math.sin(time*1.2+particle.seed)*(compactLayout?4.5:3);
-        let targetY=p1.y+(p2.y-p1.y)*phaseRatio+particle.blastY*engineState.blastFactor*(baseScale*2.2)+Math.cos(time*0.9+particle.seed)*(compactLayout?4.5:3);
+        let targetX=p1.x+(p2.x-p1.x)*phaseRatio+particle.blastX*engineState.blastFactor*(baseScale*2.35)+Math.sin(time*1.2+particle.seed)*(compactLayout?3:3);
+        let targetY=p1.y+(p2.y-p1.y)*phaseRatio+particle.blastY*engineState.blastFactor*(baseScale*2.35)+Math.cos(time*0.9+particle.seed)*(compactLayout?5.5:3);
         let targetZ=p1.z+(p2.z-p1.z)*phaseRatio+particle.blastZ*engineState.blastFactor*(baseScale*2.2);
         particle.currentX+=(targetX-particle.currentX)*0.12;
         particle.currentY+=(targetY-particle.currentY)*0.12;
@@ -487,17 +362,24 @@ export const CommunityBenefitsBlock = () => {
         const cosX=Math.cos(rotX),sinX=Math.sin(rotX);
         let ny=particle.currentY*cosX-nz*sinX;
         nz=particle.currentY*sinX+nz*cosX;
-        if(compactLayout) ny+=Math.sin(time*0.6+particle.seed)*1.2;
+        if(compactLayout){
+          const phaseLift=[0,1.4,2.4][Math.min(currentPhase,2)]??0;
+          ny*=0.72;
+          ny+=Math.sin(time*0.6+particle.seed)*1.1+phaseLift;
+        }
         particle.finalX=nx+activeCenterX; particle.finalY=ny+activeCenterY; particle.finalZ=nz;
         const perspective=(particle.finalZ+400)/800;
-        ctx.fillStyle=index%12===0?"#ffffff":GOLD;
-        ctx.globalAlpha=Math.max(compactLayout?0.08:0.05,particle.alpha*(perspective+(compactLayout?0.42:0.3)));
+        ctx.fillStyle=index%5===0?"#ffffff":GOLD;
+        ctx.globalAlpha=Math.max(compactLayout?0.1:0.05,particle.alpha*(perspective+(compactLayout?0.55:0.3)));
+        ctx.shadowBlur=compactLayout?12:0;
+        ctx.shadowColor="rgba(201,168,76,0.55)";
         ctx.beginPath();
-        ctx.arc(particle.finalX,particle.finalY,Math.max(0.35,particle.size*(perspective+0.5)),0,Math.PI*2);
+        ctx.arc(particle.finalX,particle.finalY,Math.max(compactLayout?0.65:0.35,particle.size*(perspective+(compactLayout?0.68:0.5))),0,Math.PI*2);
         ctx.fill();
       });
 
       ctx.globalAlpha=1;
+      ctx.shadowBlur=0;
       animationFrameId=window.requestAnimationFrame(renderEngine);
     };
 
@@ -528,14 +410,58 @@ export const CommunityBenefitsBlock = () => {
       };
 
       const blastKeyframes=[{ blastFactor:0.96,duration:0.3,ease:"power3.out" },{ blastFactor:0.14,duration:0.32,ease:"power2.inOut" },{ blastFactor:0,duration:0.26,ease:"power2.out" },{ blastFactor:0,duration:0.82 },{ blastFactor:0.96,duration:0.3,ease:"power3.out" },{ blastFactor:0.14,duration:0.32,ease:"power2.inOut" },{ blastFactor:0,duration:0.26,ease:"power2.out" }];
+      const communityBenefitsMotion=getCommunityBenefitsResponsiveMotion();
 
       if(compactLayout){
-        gsap.to(engineState,{ progress:2,rotation:Math.PI*3.1,ease:"none",scrollTrigger:{ trigger:wrapper,start:"top top",end:"+=320%",scrub:1.2,invalidateOnRefresh:true } });
-        gsap.to(engineState,{ keyframes:blastKeyframes,duration:3,ease:"none",scrollTrigger:{ trigger:wrapper,start:"top top",end:"+=320%",scrub:1.2,invalidateOnRefresh:true } });
-        scenes.forEach((scene)=>{
-          const revealTl=gsap.timeline({ scrollTrigger:{ trigger:scene,start:"top 76%",toggleActions:"play none none reverse",invalidateOnRefresh:true } });
-          revealTl.fromTo(scene,{ y:88,opacity:0 },{ y:0,opacity:1,duration:0.8,ease:"power3.out" },0);
-          buildSceneEntrance(revealTl,scene,0);
+        const revealMobileScene=(scene)=>{
+          gsap.to(scene,{ opacity:1,visibility:"visible",y:0,duration:0.1,ease:"power2.out",overwrite:"auto" });
+          gsap.to(scene.querySelector(".scene-eyebrow"),{ opacity:1,y:0,letterSpacing:"0.45em",duration:0.28,ease:"power2.out",overwrite:"auto" });
+          gsap.to(scene.querySelectorAll(".char-item"),{ opacity:1,y:0,filter:"blur(0px)",scale:1,rotateX:0,stagger:0.01,duration:0.42,ease:"power3.out",overwrite:"auto" });
+          gsap.to(scene.querySelector(".scene-sub"),{ opacity:1,y:0,filter:"blur(0px)",duration:0.3,ease:"power2.out",overwrite:"auto" });
+          gsap.to(scene.querySelector(".scene-detail"),{ opacity:1,x:0,filter:"blur(0px)",duration:0.32,ease:"power2.out",overwrite:"auto" });
+          gsap.to(scene.querySelectorAll(".scene-tag-node"),{ opacity:1,y:0,scale:1,stagger:0.025,duration:0.32,ease:"back.out(1.4)",overwrite:"auto" });
+          gsap.to(scene.querySelector(".scene-stat"),{ opacity:1,y:0,filter:"blur(0px)",scale:1,duration:0.34,ease:"power3.out",overwrite:"auto" });
+          gsap.to(scene.querySelector(".scene-accent"),{ opacity:1,x:0,duration:0.28,ease:"power2.out",overwrite:"auto" });
+        };
+
+        const mobileTimeline=gsap.timeline({ scrollTrigger:{ trigger:wrapper,start:communityBenefitsMotion.mobileTimeline.start,end:communityBenefitsMotion.mobileTimeline.end,scrub:1.2,invalidateOnRefresh:true } });
+        mobileTimeline.to(engineState,{
+          rotation:communityBenefitsMotion.mobileTimeline.rotation,
+          ease:"none",
+          duration:communityBenefitsMotion.mobileTimeline.duration
+        },0);
+        mobileTimeline.to(engineState,{
+          keyframes:blastKeyframes,
+          duration:communityBenefitsMotion.mobileTimeline.duration,
+          ease:"none"
+        },0);
+        scenes.forEach((scene,index)=>{
+          const start=communityBenefitsMotion.mobileSceneTriggers[index]?.start??"top 82%";
+          gsap.set(scene,{ opacity:0,visibility:"hidden",y:36 });
+          if(index===0){
+            revealMobileScene(scene);
+          } else {
+            ScrollTrigger.create({
+              trigger:scene,
+              start,
+              once:true,
+              onEnter:()=>revealMobileScene(scene),
+              onEnterBack:()=>revealMobileScene(scene)
+            });
+          }
+          const [fromPhase,toPhase]=communityBenefitsMotion.mobilePhaseRanges[index];
+          gsap.fromTo(engineState,{ progress:fromPhase },{ 
+            progress:toPhase,
+            ease:"none",
+            overwrite:"auto",
+            scrollTrigger:{
+              trigger:scene,
+              start:index===0?"top 92%":"top 86%",
+              end:"bottom 28%",
+              scrub:1.15,
+              invalidateOnRefresh:true
+            }
+          });
         });
       } else {
         const masterTimeline=gsap.timeline({ scrollTrigger:{ trigger:wrapper,start:"top top",end:"+=380%",pin:true,scrub:1.2,anticipatePin:1 } });
@@ -586,7 +512,7 @@ export const CommunityBenefitsBlock = () => {
         {communityBenefits.map((benefit,index)=>{
           const isLeft=index%2===0;
           return (
-            <div key={benefit.id} ref={(el)=>{ sceneTextRefs.current[index]=el; }} className="community-benefits-block__scene" style={{ position:isCompactLayout?"relative":"absolute",top:isCompactLayout?"auto":0,left:isCompactLayout?"auto":(isLeft?"12%":"auto"),right:isCompactLayout?"auto":(isLeft?"auto":"12%"),width:isCompactLayout?"100%":"42%",maxWidth:isCompactLayout?560:"none",height:isCompactLayout?"auto":"100%",display:"flex",flexDirection:"column",justifyContent:isCompactLayout?"flex-start":"center",pointerEvents:"auto",perspective:1000,willChange:"transform, opacity",padding:isCompactLayout?"24px 18px 28px":0,borderRadius:isCompactLayout?24:0,background:isCompactLayout?"linear-gradient(180deg,rgba(15,15,15,0.52),rgba(10,10,10,0.24))":"transparent",border:isCompactLayout?"1px solid rgba(201,168,76,0.14)":"none",boxShadow:isCompactLayout?"0 20px 60px rgba(0,0,0,0.35)":"none",backdropFilter:isCompactLayout?"blur(12px)":"none",WebkitBackdropFilter:isCompactLayout?"blur(12px)":"none",overflow:"hidden",alignSelf:isCompactLayout?"center":"auto" }}>
+            <div key={benefit.id} ref={(el)=>{ sceneTextRefs.current[index]=el; }} className="community-benefits-block__scene" style={{ position:isCompactLayout?"relative":"absolute",top:isCompactLayout?"auto":0,left:isCompactLayout?"auto":(isLeft?"12%":"auto"),right:isCompactLayout?"auto":(isLeft?"auto":"12%"),width:isCompactLayout?"100%":"42%",maxWidth:isCompactLayout?560:"none",height:isCompactLayout?"auto":"100%",display:"flex",flexDirection:"column",justifyContent:isCompactLayout?"flex-start":"center",pointerEvents:"auto",perspective:1000,willChange:"transform, opacity",padding:isCompactLayout?"22px 16px 10px":0,borderRadius:isCompactLayout?0:0,background:isCompactLayout?"transparent":"transparent",border:isCompactLayout?"none":"none",boxShadow:isCompactLayout?"none":"none",backdropFilter:isCompactLayout?"none":"none",WebkitBackdropFilter:isCompactLayout?"none":"none",overflow:"visible",alignSelf:isCompactLayout?"center":"auto" }}>
               <div style={{ marginBottom:isCompactLayout?18:22 }}>
                 <span className="scene-eyebrow" style={poppins(500,11,GOLD,{ letterSpacing:"0.2em",textTransform:"uppercase",display:"inline-block" })}>
                   CHAPTER {benefit.id} · {benefit.eyebrow}
