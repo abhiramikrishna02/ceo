@@ -91,13 +91,17 @@ function ResponsiveHeroBanner({
               </span>
             </div>
 
-            <h1 className="hero-banner-title animate-fade-slide-in-2 mx-auto max-w-5xl font-serif text-[clamp(2.5rem,8vw,5.5rem)] font-normal leading-[1.02] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+            <h1 className="hero-banner-title animate-fade-slide-in-2 mx-auto max-w-5xl font-serif text-[clamp(2.5rem,8vw,5.5rem)] font-normal leading-[1.06] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
               {title}
-              <br className="hidden sm:block" />
-              {titleLine2}
+              {titleLine2 ? (
+                <>
+                  <br className="hidden sm:block" />
+                  {titleLine2}
+                </>
+              ) : null}
             </h1>
 
-            <p className="hero-banner-description animate-fade-slide-in-3 mx-auto mt-5 max-w-2xl text-base text-white/80 sm:mt-6 sm:text-lg">
+            <p className="hero-banner-description animate-fade-slide-in-3 mx-auto mt-8 max-w-2xl text-base leading-relaxed text-white/80 sm:mt-10 sm:text-lg">
               {description}
             </p>
 
