@@ -156,14 +156,14 @@ function GlobalStyle() {
         .community-benefits-block__scenes{position:relative!important;height:auto!important;display:flex!important;flex-direction:column!important;gap:56px!important;padding:0 20px!important}
         .community-benefits-block__scene{position:relative!important;top:auto!important;left:auto!important;right:auto!important;inset:auto!important;width:100%!important}
         .community-benefits-block__visual{display:none!important;min-height:0!important}
-        .community-benefits-block__canvas-wrap{display:block!important;opacity:0.58!important;mix-blend-mode:screen!important}
+        .community-benefits-block__canvas-wrap{display:block!important;opacity:1!important;mix-blend-mode:screen!important}
       }
       @media(max-width:980px){
         .community-benefits-block{display:block!important;height:auto!important;min-height:100vh;padding:88px 0}
         .community-benefits-block__axis{display:none!important}
         .community-benefits-block__scenes{position:relative!important;height:auto!important;display:flex!important;flex-direction:column!important;gap:80px!important;padding:0 24px!important}
         .community-benefits-block__scene{position:relative!important;top:auto!important;left:auto!important;right:auto!important;inset:auto!important;width:100%!important}
-        .community-benefits-block__canvas-wrap{display:block!important;opacity:0.58!important;mix-blend-mode:screen!important}
+        .community-benefits-block__canvas-wrap{display:block!important;opacity:1!important;mix-blend-mode:screen!important}
       }
 
       /* ================================================================
@@ -391,11 +391,7 @@ function GlobalStyle() {
           padding:72px 0 64px!important;
         }
         .community-benefits-block__axis{display:none!important}
-        .community-benefits-block__canvas-wrap{
-          display:block!important;
-          opacity:0.58!important;
-          mix-blend-mode:screen!important;
-        }
+        .community-benefits-block__canvas-wrap{display:block!important;opacity:1!important;mix-blend-mode:screen!important}
         .community-benefits-block__scenes{
           position:relative!important;
           inset:auto!important;
@@ -623,51 +619,71 @@ export const CommunityBenefitsBlock = () => {
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
-    const particleCount = compactLayout ? 260 : 850;
+    const particleCount = 850;
     const particles = Array.from({ length: particleCount }, () => {
       const angle = Math.random() * Math.PI * 2;
       const sweepAngle = angle + (Math.random() - 0.5) * 0.6;
       const forceDistance = Math.random() * 0.8 + 0.2;
       return { seed: Math.random() * 120, size: Math.random() * 1.8 + 0.8, alpha: Math.random() * 0.5 + 0.45, blastX: Math.cos(sweepAngle) * forceDistance, blastY: Math.sin(sweepAngle) * forceDistance, blastZ: (Math.random() - 0.5) * 2.5, currentX: 0, currentY: 0, currentZ: 0 };
     });
-    const ambientParticles = Array.from({ length: compactLayout ? 72 : 120 }, () => ({ x: Math.random(), y: Math.random(), size: Math.random() * 1.0 + 0.4, alpha: Math.random() * 0.25 + 0.1, speedX: (Math.random() - 0.5) * (compactLayout ? 0.00025 : 0.0004), speedY: (Math.random() - 0.5) * (compactLayout ? 0.00015 : 0.0002), seed: Math.random() * Math.PI }));
-    const engineState = { progress: 0, blastFactor: compactLayout ? 0.08 : 0, rotation: 0 };
+    const ambientParticles = Array.from({ length: 120 }, () => ({ x: Math.random(), y: Math.random(), size: Math.random() * 1.0 + 0.4, alpha: Math.random() * 0.25 + 0.1, speedX: (Math.random() - 0.5) * 0.0004, speedY: (Math.random() - 0.5) * 0.0002, seed: Math.random() * Math.PI }));
+    const engineState = { progress: 0, blastFactor: 0, rotation: 0 };
 
     const renderEngine = () => {
       const dpr = window.devicePixelRatio || 1;
       const width = canvas.width / dpr, height = canvas.height / dpr;
       ctx.clearRect(0, 0, width, height);
       const time = Date.now() * 0.001;
-      const baseScale = Math.min(width, height) * (compactLayout ? 0.2 : 0.28);
+      const baseScale = Math.min(width, height) * 0.28;
+      const wrapperRect = wrapper.getBoundingClientRect();
+      const measureSceneCenter = (sceneIndex) => {
+        const scene = sceneTextRefs.current[sceneIndex];
+        if (!scene) return null;
+        const rect = scene.getBoundingClientRect();
+        return {
+          x: rect.left - wrapperRect.left + rect.width / 2,
+          y: rect.top - wrapperRect.top + rect.height / 2,
+        };
+      };
 
       ambientParticles.forEach((p) => {
         p.x += p.speedX; p.y += p.speedY;
         if (p.x < 0) p.x = 1; if (p.x > 1) p.x = 0;
         if (p.y < 0) p.y = 1; if (p.y > 1) p.y = 0;
         ctx.fillStyle = GOLD;
-        ctx.globalAlpha = p.alpha * (compactLayout ? 0.22 : 0.4) * (0.7 + Math.sin(time + p.seed) * 0.25);
+        ctx.globalAlpha = p.alpha * (0.4 + Math.sin(time + p.seed) * 0.3);
         ctx.beginPath();
-        ctx.arc(p.x * width + Math.sin(time * 0.5 + p.seed) * (compactLayout ? 5 : 8), p.y * height + Math.cos(time * 0.3 + p.seed) * (compactLayout ? 3 : 5), p.size, 0, Math.PI * 2);
+        ctx.arc(p.x * width + Math.sin(time * 0.5 + p.seed) * 8, p.y * height + Math.cos(time * 0.3 + p.seed) * 5, p.size, 0, Math.PI * 2);
         ctx.fill();
       });
 
-      if (!compactLayout) {
-        ctx.strokeStyle = "rgba(201,168,76,0.015)"; ctx.lineWidth = 0.5; ctx.beginPath();
-        for (let x = 0; x < width; x += 100) { ctx.moveTo(x, 0); ctx.lineTo(x, height); }
-        for (let y = 0; y < height; y += 100) { ctx.moveTo(0, y); ctx.lineTo(width, y); }
-        ctx.stroke();
-      }
+      ctx.strokeStyle = "rgba(201,168,76,0.015)"; ctx.lineWidth = 0.5; ctx.beginPath();
+      for (let x = 0; x < width; x += 100) { ctx.moveTo(x, 0); ctx.lineTo(x, height); }
+      for (let y = 0; y < height; y += 100) { ctx.moveTo(0, y); ctx.lineTo(width, y); }
+      ctx.stroke();
 
       const currentPhase = Math.floor(engineState.progress);
       const phaseRatio = engineState.progress % 1;
       const nextPhase = Math.min(currentPhase + 1, communityBenefits.length - 1);
-      const getTargetCenter = (p) => compactLayout ? width * 0.5 : p === 0 ? width * 0.74 : p === 1 ? width * 0.26 : width * 0.74;
-      const activeCenterX = getTargetCenter(currentPhase) + (getTargetCenter(nextPhase) - getTargetCenter(currentPhase)) * phaseRatio;
-      const activeCenterY = height * 0.5;
+      let activeCenterX;
+      let activeCenterY;
+      if (compactLayout) {
+        const currentCenter = measureSceneCenter(currentPhase) || { x: width * 0.5, y: height * 0.5 };
+        const nextCenter = measureSceneCenter(nextPhase) || currentCenter;
+        const travelX = nextCenter.x - currentCenter.x;
+        const travelY = nextCenter.y - currentCenter.y;
+        const phasePulse = Math.sin(phaseRatio * Math.PI) * Math.min(height * 0.06, 44);
+        activeCenterX = currentCenter.x + travelX * phaseRatio;
+        activeCenterY = currentCenter.y + travelY * phaseRatio + phasePulse;
+      } else {
+        const getTargetCenter = (p) => p === 0 ? width * 0.74 : p === 1 ? width * 0.26 : width * 0.74;
+        activeCenterX = getTargetCenter(currentPhase) + (getTargetCenter(nextPhase) - getTargetCenter(currentPhase)) * phaseRatio;
+        activeCenterY = height * 0.5;
+      }
 
       if (engineState.blastFactor < 0.2) {
-        ctx.strokeStyle = `rgba(201,168,76,${(compactLayout ? 0.03 : 0.08) * (1 - engineState.blastFactor / 0.2)})`; ctx.lineWidth = 0.5; ctx.beginPath();
-        const step = compactLayout ? 20 : currentPhase === 1 ? 8 : 15;
+        ctx.strokeStyle = `rgba(201,168,76,${0.08 * (1 - engineState.blastFactor / 0.2)})`; ctx.lineWidth = 0.5; ctx.beginPath();
+        const step = currentPhase === 1 ? 8 : 15;
         for (let i = 0; i < particles.length; i += step) {
           for (let j = i + 1; j < i + 4; j++) {
             if (j >= particles.length) break;
@@ -681,8 +697,8 @@ export const CommunityBenefitsBlock = () => {
       particles.forEach((particle, index) => {
         const p1 = getFormationCoords(index, particleCount, currentPhase, width, height);
         const p2 = getFormationCoords(index, particleCount, nextPhase, width, height);
-        let targetX = p1.x + (p2.x - p1.x) * phaseRatio + particle.blastX * engineState.blastFactor * (baseScale * 2.2) + Math.sin(time * 1.2 + particle.seed) * (compactLayout ? 1.8 : 3);
-        let targetY = p1.y + (p2.y - p1.y) * phaseRatio + particle.blastY * engineState.blastFactor * (baseScale * 2.2) + Math.cos(time * 0.9 + particle.seed) * (compactLayout ? 1.8 : 3);
+        let targetX = p1.x + (p2.x - p1.x) * phaseRatio + particle.blastX * engineState.blastFactor * (baseScale * 2.2) + Math.sin(time * 1.2 + particle.seed) * 3;
+        let targetY = p1.y + (p2.y - p1.y) * phaseRatio + particle.blastY * engineState.blastFactor * (baseScale * 2.2) + Math.cos(time * 0.9 + particle.seed) * 3;
         let targetZ = p1.z + (p2.z - p1.z) * phaseRatio + particle.blastZ * engineState.blastFactor * (baseScale * 2.2);
         particle.currentX += (targetX - particle.currentX) * 0.12;
         particle.currentY += (targetY - particle.currentY) * 0.12;
@@ -697,7 +713,7 @@ export const CommunityBenefitsBlock = () => {
         particle.finalX = nx + activeCenterX; particle.finalY = ny + activeCenterY; particle.finalZ = nz;
         const perspective = (particle.finalZ + 400) / 800;
         ctx.fillStyle = index % 12 === 0 ? "#ffffff" : GOLD;
-        ctx.globalAlpha = Math.max(0.04, particle.alpha * (perspective + 0.3) * (compactLayout ? 0.75 : 1));
+        ctx.globalAlpha = Math.max(0.05, particle.alpha * (perspective + 0.3));
         ctx.beginPath();
         ctx.arc(particle.finalX, particle.finalY, Math.max(0.35, particle.size * (perspective + 0.5)), 0, Math.PI * 2);
         ctx.fill();
@@ -735,19 +751,19 @@ export const CommunityBenefitsBlock = () => {
 
       if (compactLayout) {
         gsap.to(engineState, {
-          progress: communityBenefits.length - 1,
-          rotation: Math.PI * 1.8,
+          progress: 2,
+          rotation: Math.PI * 2.2,
           ease: "none",
           scrollTrigger: {
             trigger: wrapper,
-            start: "top 85%",
-            end: "bottom 15%",
-            scrub: 1.1,
+            start: "top top",
+            end: "+=380%",
+            scrub: 1.2,
             invalidateOnRefresh: true,
           },
         });
 
-        gsap.to(engineState, { blastFactor: 0.16, duration: 1.6, repeat: -1, yoyo: true, ease: "sine.inOut" });
+        gsap.to(engineState, { keyframes: [{ blastFactor: 0.75, duration: 0.35, ease: "power3.out" },{ blastFactor: 0.08, duration: 0.35, ease: "power2.inOut" },{ blastFactor: 0, duration: 0.3, ease: "power2.out" },{ blastFactor: 0, duration: 1.0 },{ blastFactor: 0.75, duration: 0.35, ease: "power3.out" },{ blastFactor: 0.08, duration: 0.35, ease: "power2.inOut" },{ blastFactor: 0, duration: 0.3, ease: "power2.out" }], duration: 3, ease: "none", scrollTrigger: { trigger: wrapper, start: "top top", end: "+=380%", scrub: 1.2, invalidateOnRefresh: true } });
 
         scenes.forEach((scene, index) => {
           const revealTl = gsap.timeline({
@@ -759,12 +775,8 @@ export const CommunityBenefitsBlock = () => {
             },
           });
           buildSceneEntrance(revealTl, scene, 0);
-          if (index === 0 && progressLineRef.current) {
-            gsap.set(progressLineRef.current, { scaleY: 1, transformOrigin: "top center" });
-          }
-          if (progressDotsRef.current[index]) {
-            gsap.set(progressDotsRef.current[index], { background: GOLD, boxShadow: `0 0 16px ${GOLD}`, scale: 1.15 });
-          }
+          if (index === 0 && progressLineRef.current) gsap.set(progressLineRef.current, { scaleY: 1, transformOrigin: "top center" });
+          if (progressDotsRef.current[index]) gsap.set(progressDotsRef.current[index], { background: GOLD, boxShadow: `0 0 16px ${GOLD}`, scale: 1.3 });
         });
       } else {
         const masterTimeline = gsap.timeline({ scrollTrigger: { trigger: wrapper, start: "top top", end: "+=380%", pin: true, scrub: 1.2, anticipatePin: 1 } });
@@ -810,14 +822,14 @@ export const CommunityBenefitsBlock = () => {
           <div key={benefit.id} ref={(el) => { progressDotsRef.current[index] = el; }} style={{ position: "absolute", top: `${(index / (communityBenefits.length - 1)) * 100}%`, transform: "translateY(-50%) translateX(-3.5px)", width: 8, height: 8, borderRadius: "50%", backgroundColor: "#0d0d0d", border: "1px solid rgba(201,168,76,0.55)", transition: "background 0.5s cubic-bezier(0.25,1,0.5,1),box-shadow 0.5s ease" }} />
         ))}
       </div>
-      <div className="community-benefits-block__canvas-wrap" style={{ position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none", opacity: isCompactLayout ? 0.58 : 1, mixBlendMode: isCompactLayout ? "screen" : "normal" }}>
+      <div className="community-benefits-block__canvas-wrap" style={{ position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none", opacity: isCompactLayout ? 0.82 : 1, mixBlendMode: isCompactLayout ? "screen" : "normal" }}>
         <canvas ref={canvasRef} style={{ width: "100%", height: "100%", display: "block" }} />
       </div>
       <div className="community-benefits-block__scenes" style={{ position: isCompactLayout ? "relative" : "absolute", inset: isCompactLayout ? "auto" : 0, zIndex: 5, pointerEvents: "none", display: isCompactLayout ? "flex" : "block", flexDirection: isCompactLayout ? "column" : "initial", gap: isCompactLayout ? "18px" : 0, padding: isCompactLayout ? "0 20px" : 0 }}>
         {communityBenefits.map((benefit, index) => {
           const isLeft = index % 2 === 0;
           return (
-            <div key={benefit.id} ref={(el) => { sceneTextRefs.current[index] = el; }} className="community-benefits-block__scene" style={{ position: isCompactLayout ? "relative" : "absolute", top: isCompactLayout ? "auto" : 0, left: isCompactLayout ? "auto" : (isLeft ? "12%" : "auto"), right: isCompactLayout ? "auto" : (isLeft ? "auto" : "12%"), width: isCompactLayout ? "100%" : "42%", height: isCompactLayout ? "auto" : "100%", display: "flex", flexDirection: "column", justifyContent: isCompactLayout ? "flex-start" : "center", pointerEvents: "auto", perspective: 1000, willChange: "transform, opacity", padding: isCompactLayout ? "24px 18px 28px" : 0, borderRadius: isCompactLayout ? 24 : 0, background: isCompactLayout ? "linear-gradient(180deg,rgba(15,15,15,0.82),rgba(10,10,10,0.56))" : "transparent", border: isCompactLayout ? "1px solid rgba(201,168,76,0.1)" : "none", boxShadow: isCompactLayout ? "0 20px 60px rgba(0,0,0,0.35)" : "none" }}>
+            <div key={benefit.id} ref={(el) => { sceneTextRefs.current[index] = el; }} className="community-benefits-block__scene" style={{ position: isCompactLayout ? "relative" : "absolute", top: isCompactLayout ? "auto" : 0, left: isCompactLayout ? "auto" : (isLeft ? "12%" : "auto"), right: isCompactLayout ? "auto" : (isLeft ? "auto" : "12%"), width: isCompactLayout ? "100%" : "42%", height: isCompactLayout ? "auto" : "100%", display: "flex", flexDirection: "column", justifyContent: isCompactLayout ? "flex-start" : "center", pointerEvents: "auto", perspective: 1000, willChange: "transform, opacity", padding: isCompactLayout ? "24px 18px 28px" : 0, borderRadius: isCompactLayout ? 24 : 0, background: isCompactLayout ? "linear-gradient(180deg,rgba(15,15,15,0.52),rgba(10,10,10,0.24))" : "transparent", border: isCompactLayout ? "1px solid rgba(201,168,76,0.14)" : "none", boxShadow: isCompactLayout ? "0 20px 60px rgba(0,0,0,0.35)" : "none", backdropFilter: isCompactLayout ? "blur(12px)" : "none", WebkitBackdropFilter: isCompactLayout ? "blur(12px)" : "none", overflow: "hidden" }}>
               <div style={{ marginBottom: isCompactLayout ? 18 : 22 }}>
                 <span className="scene-eyebrow" style={poppins(500, 11, GOLD, { letterSpacing: "0.2em", textTransform: "uppercase", display: "inline-block" })}>
                   CHAPTER {benefit.id} · {benefit.eyebrow}
