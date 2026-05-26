@@ -4,10 +4,7 @@ import { AnimatePresence, motion, useInView, useScroll, useSpring, useTransform 
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import SiteNavbar from "@/components/layout/site-navbar";
-import Footer from "@/components/layout/footer";
-import { DottedSurface } from "@/components/ui/dotted-surface";
 import ResponsiveHeroBanner from "@/components/ui/responsive-hero-banner";
-import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,6 +15,8 @@ const GOLD = "#c9a84c";
 const BG = "#0a0a0a";
 const TEXT = "#f5f0e8";
 const EASE = [0.16, 1, 0.3, 1];
+const FADE_EDGE = (dir) => ({ position: "absolute", [dir === "left" ? "left" : "right"]: 0, top: 0, height: "100%", width: "220px", background: `linear-gradient(${dir === "left" ? "90deg" : "-90deg"},${BG} 35%,transparent 100%)`, pointerEvents: "none", zIndex: 3 });
+const MINI_CARD_BASE = { position: "absolute", borderRadius: 24, backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", padding: 24, transformStyle: "preserve-3d", backfaceVisibility: "hidden", willChange: "transform, opacity" };
 
 const stats = [
   { value: "180+", label: "Countries", note: "Global Reach" },
@@ -25,27 +24,23 @@ const stats = [
   { value: "50+", label: "Annual Summits", note: "Invite-Only" },
   { value: "24/7", label: "Mentorship", note: "Executive Access" },
 ];
-
 const stories = [
   { eyebrow: "Network", title: "Connect with the world's most influential business leaders.", body: "Access curated networking experiences, private communities, and international business events designed exclusively for top-tier entrepreneurs, executives, and investors.", accent: "Global connections. Limitless possibilities.", align: "left" },
   { eyebrow: "Mentorship", title: "Gain direct access to the minds that have been where you're going.", body: "Personalized coaching, leadership guidance, and mastermind-driven growth sessions with experienced business leaders who have scaled empires and navigated disruption.", accent: "Wisdom that accelerates. Guidance that transforms.", align: "right" },
   { eyebrow: "Summits", title: "Step into rooms where the future of business is decided.", body: "Invitation-only conferences, executive forums, and leadership retreats featuring impactful keynote speakers, interactive workshops, and transformative discussions reserved for those who qualify.", accent: "Not attended. Only earned.", align: "left" },
   { eyebrow: "Legacy", title: "Build something that outlasts the moment and defines a generation.", body: "Strategic investment networks, venture partner access, and high-growth business opportunities designed for scalable success and multi-generational wealth creation.", accent: "Influence that transcends. Legacy that endures.", align: "right" },
 ];
-
 const storySlides = [
   { id: "01", img: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&q=80&w=2000", giantText: "Elite Network", title: "Global Connections", desc: "Connect with influential entrepreneurs, executives, investors, and industry pioneers through curated networking experiences, private communities, and international business events.", features: ["Curated Introductions", "Private Communities", "International Events"] },
   { id: "02", img: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=2000", giantText: "Mentorship", title: "Executive Guidance", desc: "Gain direct access to experienced business leaders and mentors through personalized coaching, leadership guidance, and mastermind-driven growth sessions.", features: ["1-on-1 Coaching", "Mastermind Sessions", "Leadership Frameworks"] },
   { id: "03", img: "https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?auto=format&fit=crop&q=80&w=2000", giantText: "Leadership Summits", title: "Exclusive Retreats", desc: "Attend invitation-only conferences, executive forums, and leadership retreats featuring impactful keynote speakers, interactive workshops, and transformative discussions.", features: ["Keynote Speakers", "Executive Forums", "Leadership Retreats"] },
   { id: "04", img: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?auto=format&fit=crop&q=80&w=2000", giantText: "Investment Access", title: "Strategic Capital", desc: "Access curated investment networks and connect with qualified investors, venture partners, and high-growth business opportunities designed for scalable success.", features: ["Venture Partners", "Investor Access", "Deal Flow Network"] },
 ];
-
 const quotes = [
   { text: "CEO Square gave me the connections and clarity I needed to scale beyond what I thought was possible.", name: "Vikram S.", role: "Founder & CEO, Series D Venture" },
   { text: "The mentorship inside CEO Square is unlike anything I've experienced — direct, elite, and genuinely transformative.", name: "Ananya R.", role: "Co-Founder, Global Fintech Group" },
   { text: "This community doesn't just open doors — it builds them where none existed before.", name: "Rohan M.", role: "CEO, International Consulting Group" },
 ];
-
 const communityBenefits = [
   { id: "01", eyebrow: "Network & Influence", headline: "The Architecture\nof Connection.", sub: "Forge relationships that reshape markets and redefine industries.", detail: "At CEO Square, influence is not inherited — it is cultivated. Our elite global network connects you directly with the entrepreneurs, investors, and executives who are actively shaping the future. Every introduction is intentional. Every relationship, transformative.", tags: ["Elite Introductions", "Global Community", "Industry Pioneers"], stat: { value: "180+", label: "Countries represented within the CEO Square global network." }, accent: "Your network is your most valuable asset." },
   { id: "02", eyebrow: "Mentorship & Growth", headline: "The Mentor\nAdvantage.", sub: "Access wisdom that compresses decades into decisive moments.", detail: "Stop navigating alone. CEO Square pairs you with battle-tested leaders and executive mentors who offer personalized coaching, strategic guidance, and mastermind-driven sessions. The insight you need to break through your next ceiling is already inside our community.", tags: ["Personalized Coaching", "Mastermind Groups", "Executive Access"], stat: { value: "500+", label: "Elite founders and CEOs actively engaged in mentorship programs." }, accent: "Proximity to greatness accelerates everything." },
@@ -53,15 +48,11 @@ const communityBenefits = [
 ];
 
 // ---------------------------------------------------------------------------
-// Shared style helpers
+// Style helpers
 // ---------------------------------------------------------------------------
 const eyebrowStyle = { fontFamily: "Poppins", fontSize: 11, fontWeight: 300, color: GOLD, letterSpacing: "0.4em", textTransform: "uppercase", marginBottom: 24 };
 const poppins = (weight, size, color, extra = {}) => ({ fontFamily: "Poppins", fontWeight: weight, fontSize: size, color, ...extra });
-const listVariants = { hidden: {}, show: { transition: { staggerChildren: 0.1, delayChildren: 0.08 } } };
-const itemVariants = { hidden: { opacity: 0, y: 18, x: -10, filter: "blur(6px)" }, show: { opacity: 1, y: 0, x: 0, filter: "blur(0px)", transition: { duration: 0.55, ease: "easeOut" } } };
-const metricVariants = { hidden: { opacity: 0, y: 22, scale: 0.96 }, show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: "easeOut" } } };
 const storyVariants = { hidden: { opacity: 0, y: 30 }, visible: (delay) => ({ opacity: 1, y: 0, transition: { duration: 1.0, delay, ease: EASE } }) };
-const revealStyle = (visible, delay = 0) => ({ opacity: visible ? 1 : 0, transform: visible ? "translate3d(0,0,0)" : "translate3d(0,24px,0)", transition: `opacity 820ms ease ${delay}ms, transform 820ms ease ${delay}ms` });
 
 // ---------------------------------------------------------------------------
 // Utilities
@@ -72,19 +63,6 @@ const createParticle = (index) => {
   return { id: index, left: `${rand(1) * 100}%`, delay: `${rand(2) * 12}s`, duration: `${8 + rand(3) * 12}s`, size: `${1 + rand(4) * 3}px`, drift: `${(rand(5) - 0.5) * 200}px` };
 };
 
-function useReveal(threshold = 0.22) {
-  const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-    const observer = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } }, { threshold });
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [threshold]);
-  return [ref, visible];
-}
-
 function splitTextToSpans(text) {
   return text.split("").map((char, i) => (
     <span key={i} className="char" style={{ display: "inline-block", willChange: "transform, opacity", transformOrigin: "50% 50% -20px" }}>
@@ -94,7 +72,7 @@ function splitTextToSpans(text) {
 }
 
 // ---------------------------------------------------------------------------
-// Global style & Particles
+// Global styles & Particles
 // ---------------------------------------------------------------------------
 function GlobalStyle() {
   return (
@@ -225,6 +203,23 @@ function Eyebrow({ children, style = {} }) {
   return <p style={{ ...eyebrowStyle, ...style }}>{children}</p>;
 }
 
+function AccentLine({ text }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      <div style={{ width: 24, height: 1, backgroundColor: GOLD }} />
+      <span style={poppins(400, 12, GOLD, { letterSpacing: "0.05em" })}>{text}</span>
+    </div>
+  );
+}
+
+function TagPill({ children, className = "" }) {
+  return (
+    <span className={className} style={{ padding: "6px 14px", borderRadius: "20px", border: "1px solid rgba(201,168,76,0.25)", backgroundColor: "rgba(201,168,76,0.05)", ...poppins(400, 11, GOLD, { letterSpacing: "0.05em", textTransform: "uppercase" }) }}>
+      {children}
+    </span>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Section 1: Hero
 // ---------------------------------------------------------------------------
@@ -263,10 +258,8 @@ export const CommunityBenefitsBlock = () => {
     const resizeCanvas = () => {
       const dpr = window.devicePixelRatio || 1;
       const rect = wrapper.getBoundingClientRect();
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.scale(dpr, dpr);
+      canvas.width = rect.width * dpr; canvas.height = rect.height * dpr;
+      ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.scale(dpr, dpr);
     };
 
     const getFormationCoords = (index, total, phaseIndex, width, height) => {
@@ -458,9 +451,8 @@ export const CommunityBenefitsBlock = () => {
   return (
     <section ref={wrapperRef} className="community-benefits-block" style={{ height: "100vh", position: "relative", backgroundColor: BG, overflow: "hidden" }}>
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 50%,rgba(201,168,76,0.03) 0%,transparent 75%)", pointerEvents: "none", zIndex: 1 }} />
-      <div style={{ position: "absolute", left: 0, top: 0, height: "100%", width: "220px", background: `linear-gradient(90deg,${BG} 35%,transparent 100%)`, pointerEvents: "none", zIndex: 3 }} />
-      <div style={{ position: "absolute", right: 0, top: 0, height: "100%", width: "220px", background: `linear-gradient(-90deg,${BG} 35%,transparent 100%)`, pointerEvents: "none", zIndex: 3 }} />
-
+      <div style={FADE_EDGE("left")} />
+      <div style={FADE_EDGE("right")} />
       <div className="community-benefits-block__axis" style={{ position: "absolute", left: 60, top: "50%", transform: "translateY(-50%)", height: "300px", display: "flex", flexDirection: "column", alignItems: "center", zIndex: 10, pointerEvents: "none" }}>
         <div style={{ position: "relative", width: 1, height: "100%", backgroundColor: "rgba(201,168,76,0.12)" }}>
           <div ref={progressLineRef} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", background: `linear-gradient(to bottom,${GOLD},#ffffff)`, transformOrigin: "top center", transform: "scaleY(0)" }} />
@@ -469,11 +461,9 @@ export const CommunityBenefitsBlock = () => {
           <div key={benefit.id} ref={(el) => { progressDotsRef.current[index] = el; }} style={{ position: "absolute", top: `${(index / (communityBenefits.length - 1)) * 100}%`, transform: "translateY(-50%) translateX(-3.5px)", width: 8, height: 8, borderRadius: "50%", backgroundColor: "#0d0d0d", border: "1px solid rgba(201,168,76,0.55)", transition: "background 0.5s cubic-bezier(0.25,1,0.5,1),box-shadow 0.5s ease" }} />
         ))}
       </div>
-
       <div className="community-benefits-block__canvas-wrap" style={{ position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none" }}>
         <canvas ref={canvasRef} style={{ width: "100%", height: "100%", display: "block" }} />
       </div>
-
       <div className="community-benefits-block__scenes" style={{ position: "absolute", inset: 0, zIndex: 5, pointerEvents: "none" }}>
         {communityBenefits.map((benefit, index) => {
           const isLeft = index % 2 === 0;
@@ -498,18 +488,13 @@ export const CommunityBenefitsBlock = () => {
               <p className="scene-sub" style={poppins(400, 18, "rgba(245,240,232,0.95)", { lineHeight: 1.6, marginBottom: 24, maxWidth: 520 })}>{benefit.sub}</p>
               <p className="scene-detail" style={poppins(300, 14, "rgba(245,240,232,0.52)", { lineHeight: 1.8, marginBottom: 32, maxWidth: 480 })}>{benefit.detail}</p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: 40 }}>
-                {benefit.tags.map((tag, i) => (
-                  <span key={i} className="scene-tag-node" style={{ padding: "6px 14px", borderRadius: "20px", border: "1px solid rgba(201,168,76,0.25)", backgroundColor: "rgba(201,168,76,0.05)", ...poppins(400, 11, GOLD, { letterSpacing: "0.05em", textTransform: "uppercase" }) }}>{tag}</span>
-                ))}
+                {benefit.tags.map((tag, i) => <TagPill key={i} className="scene-tag-node">{tag}</TagPill>)}
               </div>
               <div className="scene-stat" style={{ borderLeft: `2px solid ${GOLD}`, paddingLeft: 20, marginBottom: 32 }}>
                 <h3 style={poppins(300, 42, TEXT, { lineHeight: 1, marginBottom: 8 })}>{benefit.stat.value}</h3>
                 <p style={poppins(300, 12, "rgba(245,240,232,0.6)", { maxWidth: 280, lineHeight: 1.5 })}>{benefit.stat.label}</p>
               </div>
-              <div className="scene-accent" style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <div style={{ width: 24, height: 1, backgroundColor: GOLD }} />
-                <span style={poppins(400, 12, GOLD, { letterSpacing: "0.05em" })}>{benefit.accent}</span>
-              </div>
+              <div className="scene-accent"><AccentLine text={benefit.accent} /></div>
             </div>
           );
         })}
@@ -556,14 +541,11 @@ function Section3Statement() {
   const c4Rot = useTransform(sp, [0.28, 0.51, 0.66, 0.81], [3.5, 1.8, 0.5, 0]);
   const c4Opacity = useTransform(sp, [0, 0.28, 0.36, 0.66, 0.81], [0, 0, 1, 1, 0]);
 
-  const miniCard = (extra) => ({ position: "absolute", borderRadius: 24, backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", padding: 24, transformStyle: "preserve-3d", backfaceVisibility: "hidden", willChange: "transform, opacity", ...extra });
-
   return (
     <section ref={ref} className="home-statement-section" style={{ height: "400vh", marginTop: "-10vh", position: "relative", borderTop: "1px solid rgba(201,168,76,0.06)", borderBottom: "1px solid rgba(201,168,76,0.06)", zIndex: 1, willChange: "transform" }}>
       <div className="home-statement-stage" style={{ position: "sticky", top: 0, height: "100vh", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 24px" }}>
         <motion.div aria-hidden="true" style={{ position: "absolute", top: -140, left: "50%", width: "min(980px,92vw)", height: 280, transform: "translateX(-50%)", borderRadius: "50%", background: "radial-gradient(ellipse,rgba(201,168,76,0.08) 0%,rgba(10,10,10,0) 72%)", filter: "blur(10px)", opacity: handoffGlow, pointerEvents: "none" }} />
         <motion.div aria-hidden="true" style={{ position: "absolute", inset: "0 0 auto 0", height: 240, background: "linear-gradient(180deg,rgba(10,10,10,0.96) 0%,rgba(10,10,10,0.72) 42%,rgba(10,10,10,0) 100%)", opacity: handoffGlow, pointerEvents: "none" }} />
-
         <motion.div className="home-statement-main" style={{ maxWidth: 1200, width: "100%", margin: "0 auto", position: "absolute", zIndex: 1, y: sectionLift, opacity: textOpacity, scale: textScale, filter: textBlur, willChange: "transform, opacity, filter" }}>
           <motion.div style={{ x: x1 }}>
             <p style={poppins(800, "clamp(42px,7vw,96px)", "rgba(245,240,232,0.04)", { lineHeight: 1.05, textAlign: "left", whiteSpace: "nowrap", letterSpacing: "-0.02em" })}>NETWORK – MENTORSHIP – INFLUENCE – LEGACY</p>
@@ -579,21 +561,20 @@ function Section3Statement() {
             <p style={poppins(800, "clamp(42px,7vw,96px)", "rgba(201,168,76,0.04)", { lineHeight: 1.05, textAlign: "right", whiteSpace: "nowrap", letterSpacing: "-0.02em" })}>GROWTH – SUMMITS – INVESTMENT – IMPACT</p>
           </motion.div>
         </motion.div>
-
         <div className="home-statement-cards" style={{ position: "absolute", inset: 0, zIndex: 10, pointerEvents: "none", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <motion.div className="home-statement-card" style={miniCard({ width: 230, height: 155, background: "linear-gradient(145deg,rgba(30,30,30,0.9),rgba(15,15,15,0.9))", border: "1px solid rgba(255,255,255,0.05)", boxShadow: "0 20px 40px rgba(0,0,0,0.5)", x: c5X, y: c5Y, rotate: c5Rot, opacity: c5Opacity, zIndex: 7 })}>
+          <motion.div className="home-statement-card" style={{ ...MINI_CARD_BASE, width: 230, height: 155, background: "linear-gradient(145deg,rgba(30,30,30,0.9),rgba(15,15,15,0.9))", border: "1px solid rgba(255,255,255,0.05)", boxShadow: "0 20px 40px rgba(0,0,0,0.5)", x: c5X, y: c5Y, rotate: c5Rot, opacity: c5Opacity, zIndex: 7 }}>
             <p style={poppins(undefined, 11, "#888", { letterSpacing: 1 })}>GLOBAL REACH</p>
             <h4 style={poppins(400, 16, TEXT, { marginTop: 6 })}>180+ Countries</h4>
           </motion.div>
-          <motion.div className="home-statement-card" style={miniCard({ width: 250, height: 185, background: "linear-gradient(135deg,rgba(201,168,76,0.08),rgba(10,10,10,0.8))", border: "1px solid rgba(201,168,76,0.15)", x: c4X, y: c4Y, rotate: c4Rot, opacity: c4Opacity, zIndex: 4 })}>
+          <motion.div className="home-statement-card" style={{ ...MINI_CARD_BASE, width: 250, height: 185, background: "linear-gradient(135deg,rgba(201,168,76,0.08),rgba(10,10,10,0.8))", border: "1px solid rgba(201,168,76,0.15)", x: c4X, y: c4Y, rotate: c4Rot, opacity: c4Opacity, zIndex: 4 }}>
             <p style={poppins(undefined, 11, "rgba(201,168,76,0.8)", { letterSpacing: 1 })}>INVESTMENT ACCESS</p>
             <h4 style={poppins(300, 18, TEXT, { marginTop: 6 })}>Curated Deal Flow</h4>
           </motion.div>
-          <motion.div className="home-statement-card" style={miniCard({ width: 280, height: 170, background: "linear-gradient(145deg,rgba(20,20,20,0.8),rgba(5,5,5,0.9))", border: "1px solid rgba(255,255,255,0.08)", x: c3X, y: c3Y, rotate: c3Rot, opacity: c3Opacity, zIndex: 6 })}>
+          <motion.div className="home-statement-card" style={{ ...MINI_CARD_BASE, width: 280, height: 170, background: "linear-gradient(145deg,rgba(20,20,20,0.8),rgba(5,5,5,0.9))", border: "1px solid rgba(255,255,255,0.08)", x: c3X, y: c3Y, rotate: c3Rot, opacity: c3Opacity, zIndex: 6 }}>
             <p style={poppins(undefined, 11, "#888", { letterSpacing: 1 })}>LEADERSHIP</p>
             <h4 style={poppins(300, 19, TEXT, { marginTop: 6 })}>Executive Summits</h4>
           </motion.div>
-          <motion.div className="home-statement-card" style={miniCard({ width: 310, height: 210, background: "rgba(25,25,25,0.6)", border: "1px solid rgba(255,255,255,0.06)", boxShadow: "0 30px 60px rgba(0,0,0,0.6)", x: c2X, y: c2Y, rotate: c2Rot, opacity: c2Opacity, zIndex: 5, display: "flex", flexDirection: "column" })}>
+          <motion.div className="home-statement-card" style={{ ...MINI_CARD_BASE, width: 310, height: 210, background: "rgba(25,25,25,0.6)", border: "1px solid rgba(255,255,255,0.06)", boxShadow: "0 30px 60px rgba(0,0,0,0.6)", x: c2X, y: c2Y, rotate: c2Rot, opacity: c2Opacity, zIndex: 5, display: "flex", flexDirection: "column" }}>
             <p style={poppins(undefined, 11, "#aaa", { letterSpacing: 1 })}>MENTORSHIP</p>
             <h4 style={poppins(300, 19, TEXT, { marginTop: 6 })}>1-on-1 Executive Coaching</h4>
             <div style={{ marginTop: "auto", paddingTop: 20 }}>
@@ -864,7 +845,6 @@ function HomePageSections() {
       <Section6Story />
       <Section7Quotes />
       <Section8CallToAction />
-      <Footer />
     </>
   );
 }
