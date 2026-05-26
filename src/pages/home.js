@@ -914,7 +914,6 @@ function HomePageSections() {
       <CommunityBenefitsBlock />
       <Section3Statement />
       <Section4BenefitsGrid />
-      
       <Section6Story />
       <Section7Quotes />
       <Section8CallToAction />
