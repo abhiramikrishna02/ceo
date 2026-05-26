@@ -210,6 +210,9 @@ export function ResponsiveStyles() {
         .story-grid{grid-template-columns:1fr!important;gap:40px!important;padding:80px 0!important}
         .benefits-slide-image{height:44vw!important}
       }
+      @media(max-width:768px){
+        .community-benefits-block__canvas-wrap{display:none!important}
+      }
     `}</style>
   );
 }

@@ -207,14 +207,55 @@ export const CommunityBenefitsBlock = () => {
   const wrapperRef=useRef(null), canvasRef=useRef(null);
   const sceneTextRefs=useRef([]), progressLineRef=useRef(null), progressDotsRef=useRef([]);
   const isCompactLayout=useMediaQuery("(max-width: 1024px)");
+  const isMobileScreen=useMediaQuery("(max-width: 768px)");
 
   useEffect(()=>{
-    const wrapper=wrapperRef.current, canvas=canvasRef.current;
-    if(!wrapper||!canvas) return undefined;
+    const wrapper=wrapperRef.current;
+    if(!wrapper) return undefined;
+    const compactLayout=isCompactLayout;
+    const mobileOnlyLayout=typeof window!=="undefined"&&window.matchMedia("(max-width: 768px)").matches;
+    const communityBenefitsMotion=getCommunityBenefitsResponsiveMotion();
+    const revealMobileScene=(scene)=>{
+      gsap.to(scene,{ opacity:1,visibility:"visible",y:0,duration:0.1,ease:"power2.out",overwrite:"auto" });
+      gsap.to(scene.querySelector(".scene-eyebrow"),{ opacity:1,y:0,letterSpacing:"0.45em",duration:0.28,ease:"power2.out",overwrite:"auto" });
+      gsap.to(scene.querySelectorAll(".char-item"),{ opacity:1,y:0,filter:"blur(0px)",scale:1,rotateX:0,stagger:0.01,duration:0.42,ease:"power3.out",overwrite:"auto" });
+      gsap.to(scene.querySelector(".scene-sub"),{ opacity:1,y:0,filter:"blur(0px)",duration:0.3,ease:"power2.out",overwrite:"auto" });
+      gsap.to(scene.querySelector(".scene-detail"),{ opacity:1,x:0,filter:"blur(0px)",duration:0.32,ease:"power2.out",overwrite:"auto" });
+      gsap.to(scene.querySelectorAll(".scene-tag-node"),{ opacity:1,y:0,scale:1,stagger:0.025,duration:0.32,ease:"back.out(1.4)",overwrite:"auto" });
+      gsap.to(scene.querySelector(".scene-stat"),{ opacity:1,y:0,filter:"blur(0px)",scale:1,duration:0.34,ease:"power3.out",overwrite:"auto" });
+      gsap.to(scene.querySelector(".scene-accent"),{ opacity:1,x:0,duration:0.28,ease:"power2.out",overwrite:"auto" });
+    };
+
+    if(mobileOnlyLayout){
+      const scenes=sceneTextRefs.current.filter(Boolean);
+      const mobileContext=gsap.context(()=>{
+        scenes.forEach((scene,index)=>{
+          const start=communityBenefitsMotion.mobileSceneTriggers[index]?.start??"top 82%";
+          gsap.set(scene,{ opacity:0,visibility:"hidden",y:36 });
+          if(index===0){
+            revealMobileScene(scene);
+          } else {
+            ScrollTrigger.create({
+              trigger:scene,
+              start,
+              once:true,
+              onEnter:()=>revealMobileScene(scene),
+              onEnterBack:()=>revealMobileScene(scene)
+            });
+          }
+        });
+      },wrapper);
+
+      return ()=>{
+        mobileContext.revert();
+      };
+    }
+
+    const canvas=canvasRef.current;
+    if(!canvas) return undefined;
     const ctx=canvas.getContext("2d");
     if(!ctx) return undefined;
     let animationFrameId;
-    const compactLayout=isCompactLayout;
 
     const resizeCanvas=()=>{
       const dpr=window.devicePixelRatio||1, rect=wrapper.getBoundingClientRect();
@@ -411,31 +452,7 @@ export const CommunityBenefitsBlock = () => {
       };
 
       const blastKeyframes=[{ blastFactor:0.96,duration:0.3,ease:"power3.out" },{ blastFactor:0.14,duration:0.32,ease:"power2.inOut" },{ blastFactor:0,duration:0.26,ease:"power2.out" },{ blastFactor:0,duration:0.82 },{ blastFactor:0.96,duration:0.3,ease:"power3.out" },{ blastFactor:0.14,duration:0.32,ease:"power2.inOut" },{ blastFactor:0,duration:0.26,ease:"power2.out" }];
-      const communityBenefitsMotion=getCommunityBenefitsResponsiveMotion();
-
       if(compactLayout){
-        const revealMobileScene=(scene)=>{
-          gsap.to(scene,{ opacity:1,visibility:"visible",y:0,duration:0.1,ease:"power2.out",overwrite:"auto" });
-          gsap.to(scene.querySelector(".scene-eyebrow"),{ opacity:1,y:0,letterSpacing:"0.45em",duration:0.28,ease:"power2.out",overwrite:"auto" });
-          gsap.to(scene.querySelectorAll(".char-item"),{ opacity:1,y:0,filter:"blur(0px)",scale:1,rotateX:0,stagger:0.01,duration:0.42,ease:"power3.out",overwrite:"auto" });
-          gsap.to(scene.querySelector(".scene-sub"),{ opacity:1,y:0,filter:"blur(0px)",duration:0.3,ease:"power2.out",overwrite:"auto" });
-          gsap.to(scene.querySelector(".scene-detail"),{ opacity:1,x:0,filter:"blur(0px)",duration:0.32,ease:"power2.out",overwrite:"auto" });
-          gsap.to(scene.querySelectorAll(".scene-tag-node"),{ opacity:1,y:0,scale:1,stagger:0.025,duration:0.32,ease:"back.out(1.4)",overwrite:"auto" });
-          gsap.to(scene.querySelector(".scene-stat"),{ opacity:1,y:0,filter:"blur(0px)",scale:1,duration:0.34,ease:"power3.out",overwrite:"auto" });
-          gsap.to(scene.querySelector(".scene-accent"),{ opacity:1,x:0,duration:0.28,ease:"power2.out",overwrite:"auto" });
-        };
-
-        const mobileTimeline=gsap.timeline({ scrollTrigger:{ trigger:wrapper,start:communityBenefitsMotion.mobileTimeline.start,end:communityBenefitsMotion.mobileTimeline.end,scrub:1.2,invalidateOnRefresh:true } });
-        mobileTimeline.to(engineState,{
-          rotation:communityBenefitsMotion.mobileTimeline.rotation,
-          ease:"none",
-          duration:communityBenefitsMotion.mobileTimeline.duration
-        },0);
-        mobileTimeline.to(engineState,{
-          keyframes:blastKeyframes,
-          duration:communityBenefitsMotion.mobileTimeline.duration,
-          ease:"none"
-        },0);
         scenes.forEach((scene,index)=>{
           const start=communityBenefitsMotion.mobileSceneTriggers[index]?.start??"top 82%";
           gsap.set(scene,{ opacity:0,visibility:"hidden",y:36 });
@@ -450,19 +467,6 @@ export const CommunityBenefitsBlock = () => {
               onEnterBack:()=>revealMobileScene(scene)
             });
           }
-          const [fromPhase,toPhase]=communityBenefitsMotion.mobilePhaseRanges[index];
-          gsap.fromTo(engineState,{ progress:fromPhase },{ 
-            progress:toPhase,
-            ease:"none",
-            overwrite:"auto",
-            scrollTrigger:{
-              trigger:scene,
-              start:index===0?"top 92%":"top 86%",
-              end:"bottom 28%",
-              scrub:1.15,
-              invalidateOnRefresh:true
-            }
-          });
         });
       } else {
         const masterTimeline=gsap.timeline({ scrollTrigger:{ trigger:wrapper,start:"top top",end:"+=380%",pin:true,scrub:1.2,anticipatePin:1 } });
@@ -491,7 +495,7 @@ export const CommunityBenefitsBlock = () => {
       window.cancelAnimationFrame(animationFrameId);
       timelineContext.revert();
     };
-  },[isCompactLayout]);
+  },[isCompactLayout,isMobileScreen]);
 
   return (
     <section ref={wrapperRef} className="community-benefits-block" style={{ height:isCompactLayout?"auto":"100vh",minHeight:"100vh",position:"relative",backgroundColor:BG,overflow:isCompactLayout?"visible":"hidden",padding:isCompactLayout?"60px 0 52px":0 }}>
@@ -506,9 +510,11 @@ export const CommunityBenefitsBlock = () => {
           <div key={benefit.id} ref={(el)=>{ progressDotsRef.current[index]=el; }} style={{ position:"absolute",top:`${(index/(communityBenefits.length-1))*100}%`,transform:"translateY(-50%) translateX(-3.5px)",width:8,height:8,borderRadius:"50%",backgroundColor:"#0d0d0d",border:"1px solid rgba(201,168,76,0.55)",transition:"background 0.5s cubic-bezier(0.25,1,0.5,1),box-shadow 0.5s ease" }} />
         ))}
       </div>
-      <div className="community-benefits-block__canvas-wrap" style={{ position:"absolute",inset:0,zIndex:2,pointerEvents:"none",opacity:1,mixBlendMode:isCompactLayout?"screen":"normal" }}>
-        <canvas ref={canvasRef} style={{ width:"100%",height:"100%",display:"block" }} />
-      </div>
+      {!isMobileScreen&&(
+        <div className="community-benefits-block__canvas-wrap" style={{ position:"absolute",inset:0,zIndex:2,pointerEvents:"none",opacity:1,mixBlendMode:isCompactLayout?"screen":"normal" }}>
+          <canvas ref={canvasRef} style={{ width:"100%",height:"100%",display:"block" }} />
+        </div>
+      )}
       <div className="community-benefits-block__scenes" style={{ position:isCompactLayout?"relative":"absolute",inset:isCompactLayout?"auto":0,zIndex:5,pointerEvents:"none",display:isCompactLayout?"flex":"block",flexDirection:isCompactLayout?"column":"initial",alignItems:isCompactLayout?"center":"initial",gap:isCompactLayout?"24px":0,padding:isCompactLayout?"0 16px":0 }}>
         {communityBenefits.map((benefit,index)=>{
           const isLeft=index%2===0;
