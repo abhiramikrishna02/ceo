@@ -188,7 +188,7 @@ function TagPill({ children, className="" }) {
 function Section1Hero() {
   return (
     <ResponsiveHeroBanner
-      badgeLabel="Welcomes to CEO Square"
+      badgeLabel="Welcome to CEO Square"
       badgeText=""
       title="Where Visionary Leaders Build Influence, Connections & Legacy"
       titleLine2=""
