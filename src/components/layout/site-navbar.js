@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/router";
@@ -142,7 +143,8 @@ export default function SiteNavbar() {
         >
           <Link
             href="/home"
-            className="whitespace-nowrap no-underline"
+            aria-label="CEO Square"
+            className="inline-flex items-center whitespace-nowrap no-underline"
             style={{
               fontFamily: '"Poppins", sans-serif',
               fontSize: 20,
@@ -150,8 +152,15 @@ export default function SiteNavbar() {
               letterSpacing: "0.06em",
               color: "#ffffff",
             }}
-          >
-            CEO Square
+            >
+            <Image
+              src="/CEO Square Logo BY IQUE.png"
+              alt="CEO Square logo"
+              width={96}
+              height={32}
+              priority
+              className="block h-auto w-auto object-contain"
+            />
           </Link>
 
           <div className="flex flex-wrap items-center justify-center gap-3">
@@ -170,7 +179,8 @@ export default function SiteNavbar() {
           <div className="flex items-center justify-between gap-3">
             <Link
               href="/home"
-              className="whitespace-nowrap no-underline"
+              aria-label="CEO Square"
+              className="inline-flex items-center whitespace-nowrap no-underline"
               style={{
                 fontFamily: '"Poppins", sans-serif',
                 fontSize: 18,
@@ -178,8 +188,15 @@ export default function SiteNavbar() {
                 letterSpacing: "0.06em",
                 color: "#ffffff",
               }}
-            >
-              CEO Square
+              >
+              <Image
+                src="/CEO Square Logo BY IQUE.png"
+                alt="CEO Square logo"
+                width={84}
+                height={28}
+                priority
+                className="block h-auto w-auto object-contain"
+              />
             </Link>
 
             <button
