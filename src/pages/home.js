@@ -96,6 +96,10 @@ function GlobalStyle() {
       .card-tilt{transform-style:preserve-3d;transition:transform 0.4s cubic-bezier(0.23,1,0.32,1),box-shadow 0.4s ease}
       .card-tilt:hover{box-shadow:0 30px 80px rgba(201,168,76,0.15),0 0 0 1px rgba(201,168,76,0.2)}
       .shimmer-text{background:linear-gradient(90deg,#c9a84c 0%,#f0d080 25%,#fff8e7 50%,#f0d080 75%,#c9a84c 100%);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 4s linear infinite}
+
+      /* ================================================================
+         EXISTING RESPONSIVE OVERRIDES (desktop unchanged)
+      ================================================================ */
       @media(max-width:768px){
         .story-grid{grid-template-columns:1fr!important;gap:36px!important;padding:72px 0!important}
         .story-grid>div:nth-child(2){order:-1!important}
@@ -131,7 +135,184 @@ function GlobalStyle() {
         .community-benefits-block__visual{display:none!important;min-height:0!important}
         .community-benefits-block__canvas-wrap{display:none!important}
       }
-      @media(max-width:980px){.community-benefits-block{display:block!important;height:auto!important;min-height:100vh;padding:88px 0}.community-benefits-block__axis{display:none!important}.community-benefits-block__scenes{position:relative!important;height:auto!important;display:flex!important;flex-direction:column!important;gap:80px!important;padding:0 24px!important}.community-benefits-block__scene{position:relative!important;top:auto!important;left:auto!important;right:auto!important;inset:auto!important;width:100%!important;opacity:1!important;visibility:visible!important;transform:none!important}.community-benefits-block__canvas-wrap{display:none!important}}
+      @media(max-width:980px){
+        .community-benefits-block{display:block!important;height:auto!important;min-height:100vh;padding:88px 0}
+        .community-benefits-block__axis{display:none!important}
+        .community-benefits-block__scenes{position:relative!important;height:auto!important;display:flex!important;flex-direction:column!important;gap:80px!important;padding:0 24px!important}
+        .community-benefits-block__scene{position:relative!important;top:auto!important;left:auto!important;right:auto!important;inset:auto!important;width:100%!important;opacity:1!important;visibility:visible!important;transform:none!important}
+        .community-benefits-block__canvas-wrap{display:none!important}
+      }
+
+      /* ================================================================
+         NEW MOBILE / TABLET RESPONSIVE ADDITIONS
+         Only affects ≤1024px. Desktop (>1024px) is completely untouched.
+      ================================================================ */
+
+      /* ---- Global mobile base ---- */
+      @media(max-width:1024px){
+        /* Prevent horizontal scroll globally */
+        html,body{overflow-x:hidden;max-width:100vw}
+
+        /* ---- Section 4: Benefits Grid ---- */
+        /* On tablet+mobile the pinned gsap scroll becomes impractical;
+           convert to a vertically scrollable premium showcase */
+        .benefits-grid-section{height:auto!important;overflow:visible!important}
+        .benefits-slide-wrapper{
+          position:relative!important;
+          display:flex!important;
+          flex-direction:column!important;
+          width:100%!important;
+          height:auto!important;
+          z-index:auto!important;
+          border-bottom:1px solid rgba(201,168,76,0.08);
+          padding-bottom:0!important;
+          margin-bottom:0!important;
+        }
+        .benefits-slide-image{
+          width:100%!important;
+          height:56vw!important;
+          min-height:220px!important;
+          max-height:380px!important;
+          flex-shrink:0;
+        }
+        .benefits-slide-content{
+          width:100%!important;
+          padding:36px 24px 48px!important;
+        }
+        .benefits-slide-giant{
+          position:relative!important;
+          bottom:auto!important;
+          left:auto!important;
+          transform:none!important;
+          display:block!important;
+          font-size:clamp(38px,11vw,72px)!important;
+          text-align:left!important;
+          padding:0 24px 32px!important;
+          opacity:0.45!important;
+          pointer-events:none;
+          overflow:hidden;
+          white-space:nowrap;
+        }
+
+        /* ---- Section 3: Statement ---- */
+        .home-statement-section{height:auto!important;margin-top:0!important}
+        .home-statement-stage{
+          position:relative!important;top:auto!important;
+          height:auto!important;min-height:auto!important;
+          display:flex!important;flex-direction:column!important;
+          align-items:center!important;
+          padding:64px 20px 48px!important;
+          overflow:visible!important;
+          gap:0!important;
+        }
+        .home-statement-main{
+          position:relative!important;
+          max-width:100%!important;
+          opacity:1!important;
+          transform:none!important;
+          filter:none!important;
+          margin:0 auto;
+          width:100%;
+        }
+        .home-statement-main p{
+          white-space:normal!important;
+          letter-spacing:-0.01em!important;
+          text-align:center!important;
+          font-size:clamp(22px,6vw,40px)!important;
+        }
+        .home-statement-headline{padding:24px 0 32px!important;text-align:center!important}
+        .home-statement-headline h2{font-size:clamp(22px,5.5vw,36px)!important;line-height:1.5!important}
+        /* Cards: vertical stack, no absolute positioning */
+        .home-statement-cards{
+          position:relative!important;
+          inset:auto!important;
+          display:flex!important;
+          flex-direction:column!important;
+          align-items:center!important;
+          gap:14px!important;
+          pointer-events:auto!important;
+          width:100%!important;
+          max-width:480px!important;
+          margin:0 auto!important;
+          padding:0!important;
+        }
+        .home-statement-card{
+          position:relative!important;
+          width:100%!important;
+          height:auto!important;
+          min-height:unset!important;
+          padding:20px 22px!important;
+          transform:none!important;
+          opacity:1!important;
+          border-radius:14px!important;
+        }
+        .home-statement-card h4{font-size:16px!important;margin-top:6px!important}
+        .home-statement-card p{font-size:12px!important}
+
+        /* ---- Section 5: Stats ---- */
+        .home-stats-section{padding:72px 20px!important}
+        .stats-grid{
+          grid-template-columns:1fr 1fr!important;
+          gap:2px!important;
+        }
+        .stat-cell{padding:36px 20px!important}
+        .stat-value{font-size:clamp(34px,9vw,54px)!important}
+
+        /* ---- Section 6: Story ---- */
+        .home-story-section{padding:64px 20px 80px!important}
+        .story-section-heading{font-size:clamp(26px,7vw,52px)!important;text-align:center!important}
+        .story-grid{
+          grid-template-columns:1fr!important;
+          gap:32px!important;
+          padding:64px 0!important;
+        }
+        .story-text-col{order:1!important}
+        .story-image-col{order:0!important}
+        .story-grid h3{font-size:clamp(24px,6.5vw,38px)!important;line-height:1.25!important}
+        .story-grid p{font-size:15px!important;line-height:1.75!important}
+
+        /* ---- Section 7: Quotes ---- */
+        .home-quotes-section{padding:72px 20px 80px!important}
+        .quotes-text{font-size:clamp(19px,5vw,32px)!important;line-height:1.55!important}
+        .quotes-dots{gap:10px!important;margin-top:28px!important}
+
+        /* ---- Section 8: CTA ---- */
+        .home-cta-section{padding:56px 16px 100px!important}
+        .cta-inner{padding:clamp(40px,8vw,72px) clamp(24px,5vw,56px)!important}
+        .cta-heading-large{font-size:clamp(30px,8vw,56px)!important;line-height:1.2!important}
+        .cta-sub{font-size:16px!important;margin-bottom:40px!important}
+        .cta-buttons{flex-direction:column!important;align-items:center!important;gap:14px!important}
+        .cta-btn-primary{width:100%!important;max-width:360px!important;padding:20px 32px!important}
+
+        /* ---- Community Benefits text scenes on tablet ---- */
+        .community-benefits-block__scene h2{font-size:clamp(30px,6vw,48px)!important}
+        .community-benefits-block__scene p{font-size:15px!important}
+      }
+
+      /* ---- Tighter mobile-only overrides (<= 640px) ---- */
+      @media(max-width:640px){
+        .home-statement-headline h2{font-size:clamp(20px,6vw,28px)!important}
+        .stats-grid{grid-template-columns:1fr 1fr!important}
+        .stat-cell{padding:28px 14px!important}
+        .stat-value{font-size:clamp(30px,10vw,46px)!important}
+        .story-grid{gap:24px!important;padding:48px 0!important}
+        .benefits-slide-image{height:62vw!important}
+        .home-cta-section{padding:44px 14px 80px!important}
+        .cta-inner{padding:32px 20px!important}
+        .community-benefits-block{padding:56px 0!important}
+        .community-benefits-block__scenes{gap:48px!important;padding:0 16px!important}
+        .community-benefits-block__scene h2{font-size:clamp(26px,8vw,40px)!important}
+        .home-quotes-section{padding:56px 16px 64px!important}
+        .quotes-text{font-size:clamp(18px,5.5vw,26px)!important}
+      }
+
+      /* ---- Tablet-only (641px – 1024px): two-column stats ---- */
+      @media(min-width:641px) and (max-width:1024px){
+        .stats-grid{grid-template-columns:repeat(2,1fr)!important}
+        .stat-cell{padding:44px 28px!important}
+        .story-grid{grid-template-columns:1fr!important;gap:40px!important;padding:80px 0!important}
+        .benefits-slide-image{height:44vw!important}
+      }
     `}</style>
   );
 }
@@ -642,14 +823,14 @@ function Section4BenefitsGrid() {
   }, []);
 
   return (
-    <section ref={sectionRef} style={{ height: "100vh", position: "relative", backgroundColor: "#050505", overflow: "hidden", color: TEXT }}>
+    <section ref={sectionRef} className="benefits-grid-section" style={{ height: "100vh", position: "relative", backgroundColor: "#050505", overflow: "hidden", color: TEXT }}>
       {storySlides.map((slide, i) => (
-        <div key={slide.id} ref={(el) => { slideRefs.current[i] = el; }} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", display: "flex", zIndex: i }}>
-          <div ref={(el) => { imageRefs.current[i] = el; }} style={{ width: "55%", height: "100%", position: "relative", overflow: "hidden", willChange: "clip-path" }}>
+        <div key={slide.id} ref={(el) => { slideRefs.current[i] = el; }} className="benefits-slide-wrapper" style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", display: "flex", zIndex: i }}>
+          <div ref={(el) => { imageRefs.current[i] = el; }} className="benefits-slide-image" style={{ width: "55%", height: "100%", position: "relative", overflow: "hidden", willChange: "clip-path" }}>
             <div style={{ position: "absolute", inset: 0, backgroundColor: "#000", opacity: 0.2, zIndex: 1 }} />
             <img src={slide.img} alt={slide.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
-          <div style={{ width: "45%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 6%", position: "relative", zIndex: 2 }}>
+          <div className="benefits-slide-content" style={{ width: "45%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 6%", position: "relative", zIndex: 2 }}>
             <div ref={(el) => { contentRefs.current[i] = el; }} style={{ maxWidth: 480, willChange: "transform, opacity" }}>
               <p style={poppins(400, 13, GOLD, { letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 20 })}>{slide.id} - The Suite</p>
               <h3 style={poppins(300, "clamp(32px,3vw,48px)", "#ffffff", { lineHeight: 1.1, marginBottom: 24 })}>{slide.title}</h3>
@@ -663,7 +844,7 @@ function Section4BenefitsGrid() {
               </ul>
             </div>
           </div>
-          <div ref={(el) => { titleRefs.current[i] = el; }} style={{ position: "absolute", bottom: "7%", left: "50%", transform: "translateX(-50%)", zIndex: 1, width: "100%", pointerEvents: "none", display: "flex", justifyContent: "center", alignItems: "flex-end", fontFamily: "Poppins,sans-serif", fontWeight: 300, fontSize: "clamp(46px,8.5vw,120px)", color: "rgba(255,255,255,0.58)", letterSpacing: "0.08em", lineHeight: 0.92, mixBlendMode: "overlay", textShadow: "0px 12px 36px rgba(0,0,0,0.55)", filter: "drop-shadow(0 0 18px rgba(201,168,76,0.12))", perspective: "1000px" }}>
+          <div ref={(el) => { titleRefs.current[i] = el; }} className="benefits-slide-giant" style={{ position: "absolute", bottom: "7%", left: "50%", transform: "translateX(-50%)", zIndex: 1, width: "100%", pointerEvents: "none", display: "flex", justifyContent: "center", alignItems: "flex-end", fontFamily: "Poppins,sans-serif", fontWeight: 300, fontSize: "clamp(46px,8.5vw,120px)", color: "rgba(255,255,255,0.58)", letterSpacing: "0.08em", lineHeight: 0.92, mixBlendMode: "overlay", textShadow: "0px 12px 36px rgba(0,0,0,0.55)", filter: "drop-shadow(0 0 18px rgba(201,168,76,0.12))", perspective: "1000px" }}>
             {splitTextToSpans(slide.giantText)}
           </div>
         </div>
@@ -680,15 +861,15 @@ function Section5Stats() {
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const bgY = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
   return (
-    <section ref={ref} style={{ padding: "120px 24px", position: "relative", overflow: "hidden" }}>
+    <section ref={ref} className="home-stats-section" style={{ padding: "120px 24px", position: "relative", overflow: "hidden" }}>
       <motion.div style={{ position: "absolute", inset: 0, y: bgY, backgroundImage: "linear-gradient(rgba(201,168,76,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.03) 1px,transparent 1px)", backgroundSize: "80px 80px", pointerEvents: "none" }} />
       <div style={{ maxWidth: 1200, margin: "0 auto", position: "relative", zIndex: 2 }}>
         <Reveal><Eyebrow style={{ textAlign: "center", marginBottom: 56 }}>CEO Square by the numbers</Eyebrow></Reveal>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 2, background: "rgba(201,168,76,0.05)" }}>
+        <div className="stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))", gap: 2, background: "rgba(201,168,76,0.05)" }}>
           {stats.map((stat, i) => (
             <Reveal key={stat.label} delay={i * 0.12}>
-              <div style={{ padding: "48px 32px", background: BG, textAlign: "center", position: "relative", overflow: "hidden" }}>
-                <motion.p initial={{ opacity: 0, scale: 0.5 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: i * 0.15, ease: EASE }} style={poppins(700, "clamp(36px,5vw,64px)", undefined, { lineHeight: 1, marginBottom: 12 })} className="gold-gradient">{stat.value}</motion.p>
+              <div className="stat-cell" style={{ padding: "48px 32px", background: BG, textAlign: "center", position: "relative", overflow: "hidden" }}>
+                <motion.p className="stat-value" initial={{ opacity: 0, scale: 0.5 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: i * 0.15, ease: EASE }} style={poppins(700, "clamp(36px,5vw,64px)", undefined, { lineHeight: 1, marginBottom: 12 })} className="gold-gradient">{stat.value}</motion.p>
                 <p style={poppins(500, 16, TEXT, { marginBottom: 4 })}>{stat.label}</p>
                 <p style={poppins(300, 11, "rgba(245,240,232,0.3)", { letterSpacing: "0.2em", textTransform: "uppercase" })}>{stat.note}</p>
               </div>
@@ -705,10 +886,10 @@ function Section5Stats() {
 // ---------------------------------------------------------------------------
 function Section6Story() {
   return (
-    <section style={{ padding: "96px 24px 120px", position: "relative" }}>
+    <section className="home-story-section" style={{ padding: "96px 24px 120px", position: "relative" }}>
       <div style={{ maxWidth: 1280, margin: "0 auto" }}>
         <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 1.6, ease: EASE }} style={{ marginBottom: 60 }}>
-          <h2 style={poppins(700, "clamp(36px,6vw,72px)", TEXT, { textAlign: "center", borderBottom: "1px solid rgba(201,168,76,0.1)", paddingBottom: 40, textTransform: "uppercase", letterSpacing: "0.05em" })}>The CEO Square Difference</h2>
+          <h2 className="story-section-heading" style={poppins(700, "clamp(36px,6vw,72px)", TEXT, { textAlign: "center", borderBottom: "1px solid rgba(201,168,76,0.1)", paddingBottom: 40, textTransform: "uppercase", letterSpacing: "0.05em" })}>The CEO Square Difference</h2>
         </motion.div>
         {stories.map((story, i) => {
           const isLeft = story.align === "left";
@@ -718,7 +899,7 @@ function Section6Story() {
           };
           return (
             <motion.div key={story.eyebrow} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-30%" }} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 56, padding: "120px 0", borderBottom: i < stories.length - 1 ? "1px solid rgba(201,168,76,0.06)" : "none", alignItems: "center" }} className="story-grid">
-              <div style={{ order: isLeft ? 0 : 2 }}>
+              <div className="story-text-col" style={{ order: isLeft ? 0 : 2 }}>
                 <motion.p custom={0.9} variants={storyVariants} style={poppins(500, 13, GOLD, { letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 20 })}>
                   <span style={{ fontSize: 24, fontWeight: 300, marginRight: 12 }}>{["01","02","03","04"][i]}</span>{story.eyebrow}
                 </motion.p>
@@ -731,7 +912,7 @@ function Section6Story() {
                   <span style={{ marginLeft: 32, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.1em", borderBottom: "1px solid rgba(201,168,76,0.4)", paddingBottom: 4, cursor: "pointer", color: TEXT }}>Explore More →</span>
                 </motion.div>
               </div>
-              <motion.div variants={imageVariants} style={{ order: isLeft ? 1 : 0, position: "relative" }}>
+              <motion.div variants={imageVariants} className="story-image-col" style={{ order: isLeft ? 1 : 0, position: "relative" }}>
                 <TiltCard style={{ borderRadius: 4 }}>
                   <div className="glass" style={{ borderRadius: 4, padding: "64px 48px", minHeight: 320, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", position: "relative", overflow: "hidden" }}>
                     <img src="/ceo.png" alt={story.eyebrow} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block", transform: "scale(1.02)" }} />
@@ -762,7 +943,7 @@ function Section7Quotes() {
     return () => clearInterval(id);
   }, []);
   return (
-    <section style={{ padding: "100px 24px", position: "relative", borderTop: "1px solid rgba(201,168,76,0.06)" }}>
+    <section className="home-quotes-section" style={{ padding: "100px 24px", position: "relative", borderTop: "1px solid rgba(201,168,76,0.06)" }}>
       <div style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", width: 1, height: "100%", background: "rgba(201,168,76,0.06)" }} />
       <div style={{ maxWidth: 900, margin: "0 auto", textAlign: "center", position: "relative", zIndex: 2 }}>
         <Reveal><Eyebrow style={{ marginBottom: 56 }}>Voices from the community</Eyebrow></Reveal>
@@ -772,7 +953,7 @@ function Section7Quotes() {
               <div style={{ marginBottom: 16 }}>
                 {[0, 1, 2].map((s) => <span key={s} style={{ color: GOLD, fontSize: 28, marginRight: 4, filter: "drop-shadow(0 0 8px rgba(201,168,76,0.5))" }}>★</span>)}
               </div>
-              <p style={poppins(200, "clamp(22px,3.5vw,42px)", TEXT, { lineHeight: 1.5, marginBottom: 48, fontStyle: "italic" })}>&ldquo;{quotes[active].text}&rdquo;</p>
+              <p className="quotes-text" style={poppins(200, "clamp(22px,3.5vw,42px)", TEXT, { lineHeight: 1.5, marginBottom: 48, fontStyle: "italic" })}>&ldquo;{quotes[active].text}&rdquo;</p>
               <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
                 <div style={{ width: 40, height: 1, background: "rgba(201,168,76,0.4)", marginBottom: 12 }} />
                 <p style={poppins(500, 15, TEXT)}>{quotes[active].name}</p>
@@ -781,7 +962,7 @@ function Section7Quotes() {
             </motion.div>
           </AnimatePresence>
         </div>
-        <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 36 }}>
+        <div className="quotes-dots" style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 36 }}>
           {quotes.map((_, i) => (
             <motion.button key={i} onClick={() => setActive(i)} animate={{ width: i === active ? 40 : 8, background: i === active ? GOLD : "rgba(245,240,232,0.15)" }} transition={{ duration: 0.3 }} style={{ height: 2, borderRadius: 2, border: "none", cursor: "pointer", padding: 0 }} />
           ))}
@@ -800,20 +981,20 @@ function Section8CallToAction() {
   const scale = useTransform(scrollYProgress, [0, 0.5], [0.9, 1]);
   const opacity = useTransform(scrollYProgress, [0, 0.3], [0, 1]);
   return (
-    <section ref={ref} style={{ padding: "80px 24px 160px", position: "relative" }}>
+    <section ref={ref} className="home-cta-section" style={{ padding: "80px 24px 160px", position: "relative" }}>
       <motion.div style={{ scale, opacity, maxWidth: 1100, margin: "0 auto" }}>
         <TiltCard style={{ borderRadius: 6 }}>
-          <div style={{ borderRadius: 6, padding: "clamp(60px,8vw,120px) clamp(40px,6vw,100px)", position: "relative", overflow: "hidden", background: "linear-gradient(135deg,#0f0f0f 0%,#141414 50%,#0a0a0a 100%)", border: "1px solid rgba(201,168,76,0.15)", animation: "borderShimmer 4s ease-in-out infinite" }}>
+          <div className="cta-inner" style={{ borderRadius: 6, padding: "clamp(60px,8vw,120px) clamp(40px,6vw,100px)", position: "relative", overflow: "hidden", background: "linear-gradient(135deg,#0f0f0f 0%,#141414 50%,#0a0a0a 100%)", border: "1px solid rgba(201,168,76,0.15)", animation: "borderShimmer 4s ease-in-out infinite" }}>
             <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: "80%", height: "80%", borderRadius: "50%", background: "radial-gradient(ellipse,rgba(201,168,76,0.08),transparent 70%)", pointerEvents: "none" }} />
             <CornerAccents inset={32} size={50} />
             <div style={{ textAlign: "center", position: "relative", zIndex: 2 }}>
               <Reveal><Eyebrow style={{ marginBottom: 32 }}>Coming Soon · Dubai</Eyebrow></Reveal>
-              <Reveal delay={0.15}><h2 style={poppins(200, "clamp(36px,6vw,80px)", TEXT, { lineHeight: 1.15, marginBottom: 12 })}>A new era of</h2></Reveal>
-              <Reveal delay={0.25}><h2 style={{ fontFamily: "Poppins", fontWeight: 700, fontSize: "clamp(36px,6vw,80px)", lineHeight: 1.15, marginBottom: 40 }}><span className="shimmer-text">leadership begins.</span></h2></Reveal>
-              <Reveal delay={0.35}><p style={poppins(300, 18, "rgba(245,240,232,0.45)", { maxWidth: 600, margin: "0 auto 60px", lineHeight: 1.8 })}>CEO Square is arriving in Dubai. Join a global community of visionary leaders, founders, and innovators building influence, connections, and lasting legacies together.</p></Reveal>
+              <Reveal delay={0.15}><h2 className="cta-heading-large" style={poppins(200, "clamp(36px,6vw,80px)", TEXT, { lineHeight: 1.15, marginBottom: 12 })}>A new era of</h2></Reveal>
+              <Reveal delay={0.25}><h2 className="cta-heading-large" style={{ fontFamily: "Poppins", fontWeight: 700, fontSize: "clamp(36px,6vw,80px)", lineHeight: 1.15, marginBottom: 40 }}><span className="shimmer-text">leadership begins.</span></h2></Reveal>
+              <Reveal delay={0.35}><p className="cta-sub" style={poppins(300, 18, "rgba(245,240,232,0.45)", { maxWidth: 600, margin: "0 auto 60px", lineHeight: 1.8 })}>CEO Square is arriving in Dubai. Join a global community of visionary leaders, founders, and innovators building influence, connections, and lasting legacies together.</p></Reveal>
               <Reveal delay={0.45}>
-                <div style={{ display: "flex", gap: 20, justifyContent: "center", flexWrap: "wrap" }}>
-                  <motion.button whileHover={{ scale: 1.05, boxShadow: "0 0 60px rgba(201,168,76,0.5)" }} whileTap={{ scale: 0.97 }} style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 14, letterSpacing: "0.12em", textTransform: "uppercase", padding: "22px 64px", borderRadius: 2, cursor: "pointer", border: "none", background: "linear-gradient(135deg,#c9a84c 0%,#f0d080 50%,#b8882a 100%)", color: BG }}>
+                <div className="cta-buttons" style={{ display: "flex", gap: 20, justifyContent: "center", flexWrap: "wrap" }}>
+                  <motion.button className="cta-btn-primary" whileHover={{ scale: 1.05, boxShadow: "0 0 60px rgba(201,168,76,0.5)" }} whileTap={{ scale: 0.97 }} style={{ fontFamily: "Poppins", fontWeight: 600, fontSize: 14, letterSpacing: "0.12em", textTransform: "uppercase", padding: "22px 64px", borderRadius: 2, cursor: "pointer", border: "none", background: "linear-gradient(135deg,#c9a84c 0%,#f0d080 50%,#b8882a 100%)", color: BG }}>
                     Join the Waitlist
                   </motion.button>
                 </div>
