@@ -242,9 +242,9 @@ function GlobalStyle() {
           height:auto!important;min-height:auto!important;
           display:flex!important;flex-direction:column!important;
           align-items:center!important;
-          padding:64px 20px 48px!important;
+          padding:64px 20px 56px!important;
           overflow:visible!important;
-          gap:0!important;
+          gap:20px!important;
         }
         .home-statement-main{
           position:relative!important;
@@ -252,28 +252,48 @@ function GlobalStyle() {
           opacity:1!important;
           transform:none!important;
           filter:none!important;
-          margin:0 auto;
-          width:100%;
+          margin:0 auto!important;
+          width:100%!important;
+          display:flex!important;
+          flex-direction:column!important;
+          align-items:center!important;
+          gap:12px!important;
+        }
+        .home-statement-mobile-stack{
+          display:flex!important;
+        }
+        .home-statement-cards{
+          display:none!important;
+        }
+        .home-statement-main > div{
+          width:100%!important;
+          transform:none!important;
         }
         .home-statement-main p{
           white-space:normal!important;
           letter-spacing:-0.01em!important;
           text-align:center!important;
-          font-size:clamp(22px,6vw,40px)!important;
+          font-size:clamp(18px,5vw,30px)!important;
+          line-height:1.08!important;
         }
-        .home-statement-headline{padding:24px 0 32px!important;text-align:center!important}
-        .home-statement-headline h2{font-size:clamp(22px,5.5vw,36px)!important;line-height:1.5!important}
-        /* Cards: vertical stack, no absolute positioning */
+        .home-statement-headline{
+          padding:22px 0 28px!important;
+          text-align:center!important;
+        }
+        .home-statement-headline h2{
+          font-size:clamp(22px,5.5vw,34px)!important;
+          line-height:1.35!important;
+        }
         .home-statement-cards{
           position:relative!important;
           inset:auto!important;
           display:flex!important;
           flex-direction:column!important;
-          align-items:center!important;
+          align-items:stretch!important;
           gap:14px!important;
           pointer-events:auto!important;
           width:100%!important;
-          max-width:480px!important;
+          max-width:520px!important;
           margin:0 auto!important;
           padding:0!important;
         }
@@ -282,11 +302,16 @@ function GlobalStyle() {
           width:100%!important;
           height:auto!important;
           min-height:unset!important;
-          padding:20px 22px!important;
+          padding:18px 20px!important;
           transform:none!important;
           opacity:1!important;
-          border-radius:14px!important;
+          border-radius:16px!important;
         }
+        .home-statement-card:nth-child(5){order:0!important}
+        .home-statement-card:nth-child(1){order:1!important}
+        .home-statement-card:nth-child(2){order:2!important}
+        .home-statement-card:nth-child(3){order:3!important}
+        .home-statement-card:nth-child(4){order:4!important}
         .home-statement-card h4{font-size:16px!important;margin-top:6px!important}
         .home-statement-card p{font-size:12px!important}
 
@@ -832,6 +857,7 @@ export const CommunityBenefitsBlock = () => {
 // ---------------------------------------------------------------------------
 function Section3Statement() {
   const ref = useRef(null);
+  const isCompactLayout = useMediaQuery("(max-width: 1024px)");
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const sp = useSpring(scrollYProgress, { stiffness: 70, damping: 24, mass: 0.35 });
 
@@ -864,6 +890,12 @@ function Section3Statement() {
   const c4Y = useTransform(sp, [0.28, 0.51, 0.66, 0.81], ["-50vh", "-22vh", "-8vh", "0vh"]);
   const c4Rot = useTransform(sp, [0.28, 0.51, 0.66, 0.81], [3.5, 1.8, 0.5, 0]);
   const c4Opacity = useTransform(sp, [0, 0.28, 0.36, 0.66, 0.81], [0, 0, 1, 1, 0]);
+  const mobileCards = [
+    { label: "GLOBAL REACH", title: "180+ Countries", copy: "Worldwide network access" },
+    { label: "INVESTMENT ACCESS", title: "Curated Deal Flow", copy: "Selective opportunities and capital connections" },
+    { label: "LEADERSHIP", title: "Executive Summits", copy: "High-trust rooms and strategic conversations" },
+    { label: "MENTORSHIP", title: "1-on-1 Executive Coaching", copy: "Vetted guidance and accountability" },
+  ];
 
   return (
     <section ref={ref} className="home-statement-section" style={{ height: "400vh", marginTop: "-10vh", position: "relative", borderTop: "1px solid rgba(201,168,76,0.06)", borderBottom: "1px solid rgba(201,168,76,0.06)", zIndex: 1, willChange: "transform" }}>
@@ -925,6 +957,52 @@ function Section3Statement() {
             </div>
           </motion.div>
         </div>
+        {isCompactLayout && (
+          <div className="home-statement-mobile-stack" style={{ position: "relative", zIndex: 12, width: "100%", maxWidth: 520, margin: "0 auto", display: "none", flexDirection: "column", gap: 14, pointerEvents: "auto" }}>
+            <Reveal delay={0.05}>
+              <div style={{ borderRadius: 16, padding: "18px 20px", background: "linear-gradient(145deg,rgba(30,30,30,0.95),rgba(15,15,15,0.95))", border: "1px solid rgba(255,255,255,0.05)", boxShadow: "0 20px 40px rgba(0,0,0,0.35)" }}>
+                <p style={poppins(undefined, 11, "#8a8a8a", { letterSpacing: 1.2, textTransform: "uppercase" })}>{mobileCards[0].label}</p>
+                <h4 style={poppins(500, 18, TEXT, { marginTop: 8 })}>{mobileCards[0].title}</h4>
+                <p style={poppins(300, 12, "rgba(245,240,232,0.55)", { marginTop: 6, lineHeight: 1.6 })}>{mobileCards[0].copy}</p>
+              </div>
+            </Reveal>
+            <Reveal delay={0.14}>
+              <div style={{ borderRadius: 16, padding: "18px 20px", background: "linear-gradient(135deg,rgba(201,168,76,0.08),rgba(10,10,10,0.9))", border: "1px solid rgba(201,168,76,0.14)", boxShadow: "0 20px 40px rgba(0,0,0,0.32)" }}>
+                <p style={poppins(undefined, 11, "rgba(201,168,76,0.88)", { letterSpacing: 1.2, textTransform: "uppercase" })}>{mobileCards[1].label}</p>
+                <h4 style={poppins(400, 19, TEXT, { marginTop: 8 })}>{mobileCards[1].title}</h4>
+                <p style={poppins(300, 12, "rgba(245,240,232,0.55)", { marginTop: 6, lineHeight: 1.6 })}>{mobileCards[1].copy}</p>
+              </div>
+            </Reveal>
+            <Reveal delay={0.23}>
+              <div style={{ borderRadius: 16, padding: "18px 20px", background: "linear-gradient(145deg,rgba(20,20,20,0.94),rgba(5,5,5,0.96))", border: "1px solid rgba(255,255,255,0.08)", boxShadow: "0 18px 36px rgba(0,0,0,0.28)" }}>
+                <p style={poppins(undefined, 11, "#8a8a8a", { letterSpacing: 1.2, textTransform: "uppercase" })}>{mobileCards[2].label}</p>
+                <h4 style={poppins(400, 19, TEXT, { marginTop: 8 })}>{mobileCards[2].title}</h4>
+                <p style={poppins(300, 12, "rgba(245,240,232,0.55)", { marginTop: 6, lineHeight: 1.6 })}>{mobileCards[2].copy}</p>
+              </div>
+            </Reveal>
+            <Reveal delay={0.32}>
+              <div style={{ borderRadius: 16, padding: "18px 20px", background: "rgba(25,25,25,0.88)", border: "1px solid rgba(255,255,255,0.06)", boxShadow: "0 22px 42px rgba(0,0,0,0.34)" }}>
+                <p style={poppins(undefined, 11, "#aaaaaa", { letterSpacing: 1.2, textTransform: "uppercase" })}>{mobileCards[3].label}</p>
+                <h4 style={poppins(400, 19, TEXT, { marginTop: 8 })}>{mobileCards[3].title}</h4>
+                <p style={poppins(300, 12, "rgba(245,240,232,0.55)", { marginTop: 6, lineHeight: 1.6 })}>{mobileCards[3].copy}</p>
+              </div>
+            </Reveal>
+            <Reveal delay={0.42}>
+              <div style={{ borderRadius: 18, padding: "22px 20px", background: "linear-gradient(145deg,rgba(201,168,76,0.14),rgba(15,15,15,0.98))", border: "1px solid rgba(201,168,76,0.28)", boxShadow: "0 28px 56px rgba(0,0,0,0.44)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
+                  <p style={poppins(600, 12, "rgba(201,168,76,0.9)", { letterSpacing: 1.5, textTransform: "uppercase" })}>CEO Square · Dubai</p>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="rgba(201,168,76,0.8)" /></svg>
+                </div>
+                <h3 style={poppins(300, "clamp(24px,6vw,34px)", TEXT, { lineHeight: 1.18, marginTop: 16 })}>Elite Leadership Community</h3>
+                <p style={poppins(300, 13, "rgba(245,240,232,0.7)", { marginTop: 10, lineHeight: 1.6 })}>Where Visionaries Shape the Future</p>
+                <div style={{ marginTop: 18, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+                  <p style={poppins(undefined, 11, "#aaa")}>Global Members</p>
+                  <p style={poppins(500, 22, TEXT, { marginTop: 4 })}>500+ CEOs & Founders</p>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        )}
       </div>
     </section>
   );
