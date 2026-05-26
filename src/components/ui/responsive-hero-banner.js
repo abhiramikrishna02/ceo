@@ -101,22 +101,28 @@ function ResponsiveHeroBanner({
               {description}
             </p>
 
-            <div className="hero-banner-actions animate-fade-slide-in-4 mt-8 flex w-full flex-col items-center justify-center gap-3 sm:mt-10 sm:flex-row sm:gap-4">
-              <a
-                href={primaryButtonHref}
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-white/10 px-5 py-3 font-sans text-sm font-medium text-white ring-1 ring-white/15 transition-colors hover:bg-white/15"
-              >
-                {primaryButtonText}
-                <ArrowRight className="h-4 w-4" />
-              </a>
-              <a
-                href={secondaryButtonHref}
-                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-transparent px-5 py-3 font-sans text-sm font-medium text-white/90 transition-colors hover:text-white"
-              >
-                {secondaryButtonText}
-                <Play className="h-4 w-4" />
-              </a>
-            </div>
+            {(primaryButtonText || secondaryButtonText) ? (
+              <div className="hero-banner-actions animate-fade-slide-in-4 mt-8 flex w-full flex-col items-center justify-center gap-3 sm:mt-10 sm:flex-row sm:gap-4">
+                {primaryButtonText ? (
+                  <a
+                    href={primaryButtonHref}
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-white/10 px-5 py-3 font-sans text-sm font-medium text-white ring-1 ring-white/15 transition-colors hover:bg-white/15"
+                  >
+                    {primaryButtonText}
+                    <ArrowRight className="h-4 w-4" />
+                  </a>
+                ) : null}
+                {secondaryButtonText ? (
+                  <a
+                    href={secondaryButtonHref}
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-transparent px-5 py-3 font-sans text-sm font-medium text-white/90 transition-colors hover:text-white"
+                  >
+                    {secondaryButtonText}
+                    <Play className="h-4 w-4" />
+                  </a>
+                ) : null}
+              </div>
+            ) : null}
           </div>
         </div>
       </div>

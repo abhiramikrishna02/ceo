@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import SiteNavbar from "@/components/layout/site-navbar";
 
 const PRINCIPLES = [
   { num: "01", title: "Media & Brand Elevation", body: "Gain exclusive access to podcasts, interviews, and media opportunities designed to strengthen your personal brand, increase visibility, and position you as a thought leader in your industry." },
@@ -373,7 +372,6 @@ export default function About() {
   return (
     <div ref={rootRef} className="about-root">
       <style>{STYLES}</style>
-      <SiteNavbar />
 
       {/* Grain overlay */}
       <canvas ref={grainRef} className="grain-canvas" aria-hidden="true" />
@@ -523,7 +521,7 @@ export default function About() {
               <p className="gap-stat-desc">CEO Square is arriving soon — a new era of leadership, collaboration, and global impact launching in Dubai.</p>
             </div>
             <div className="gap-quote-block">
-              <span className="gap-quote-mark">"</span>
+              <span className="gap-quote-mark">&ldquo;</span>
               <p
                 ref={typeRef}
                 className="gap-quote-text"
@@ -573,7 +571,7 @@ export default function About() {
             ].map((t, i) => (
               <div key={i} ref={el => testiRef.current[i] = el} className="testi-card" style={{transition:"transform .25s ease, box-shadow .25s ease"}}>
                 <div className="testi-shine" />
-                <p className="testi-quote">"{t.quote}"</p>
+                <p className="testi-quote">&ldquo;{t.quote}&rdquo;</p>
                 <div className="testi-author">
                   <span className="testi-name">{t.name}</span>
                   <span className="testi-role">{t.role}</span>

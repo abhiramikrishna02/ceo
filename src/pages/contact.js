@@ -1,6 +1,5 @@
 import Head from "next/head";
 
-import SiteNavbar from "@/components/layout/site-navbar";
 
 export default function Contact() {
   return (
@@ -8,7 +7,6 @@ export default function Contact() {
       <Head>
         <title>Contact — CEO Square</title>
       </Head>
-      <SiteNavbar />
       <main className="min-h-screen bg-[#070706] pt-24 text-white">
         <section className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 py-8 sm:px-10 lg:px-12">
           <div className="grid flex-1 items-center gap-12 py-20 lg:grid-cols-[0.9fr_1.1fr]">
@@ -20,7 +18,7 @@ export default function Contact() {
                 Be among the first to join.
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-8 text-white/70">
-                CEO Square is arriving in Dubai. Share your details and we will reach out with exclusive early access to the world's most powerful entrepreneurial ecosystem.
+                CEO Square is arriving in Dubai. Share your details and we will reach out with exclusive early access to the world&apos;s most powerful entrepreneurial ecosystem.
               </p>
             </div>
             <form className="space-y-5 border border-white/10 bg-white/[0.03] p-6 text-white">

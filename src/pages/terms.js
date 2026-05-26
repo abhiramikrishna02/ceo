@@ -1,6 +1,5 @@
 import Head from "next/head";
 
-import SiteNavbar from "@/components/layout/site-navbar";
 
 const userResponsibilities = [
   "Provide accurate information",
@@ -15,7 +14,6 @@ export default function TermsPage() {
       <Head>
         <title>Terms of Service — CEO Square</title>
       </Head>
-      <SiteNavbar />
       <main className="min-h-screen bg-[#070706] pt-24 text-white">
         <section className="mx-auto w-full max-w-5xl px-6 py-10 sm:px-10 lg:px-12 lg:py-16">
           <div className="rounded-[28px] border border-white/10 bg-white/[0.03] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl sm:p-8 lg:p-10">

@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 
 const GOLD = "#c9a84c";
@@ -81,20 +80,7 @@ export default function SovereignMembershipExperience() {
   return (
     <>
       <DesignSystemOverride />
-      
       <main ref={scrollWrapperRef} style={{ position: "relative", height: "450vh", backgroundColor: BG }}>
-        
-        {/* Navigation bar */}
-        <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "28px 8%", background: "linear-gradient(to bottom, rgba(5,5,5,0.85) 0%, transparent 100%)", backdropFilter: "blur(12px)", borderBottom: "1px solid rgba(201,168,76,0.08)" }}>
-          <Link href="/home" className="serif-text" style={{ fontSize: 16, fontWeight: 600, letterSpacing: "0.2em", color: TEXT, textDecoration: "none", textTransform: "uppercase" }}>
-            CEO <span style={{ color: GOLD }}>STUDIO</span>
-          </Link>
-          <div style={{ display: "flex", gap: 40 }}>
-            {["Home", "About", "Benefits", "Contact"].map((item) => (
-              <span key={item} style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(245,240,232,0.4)" }}>{item}</span>
-            ))}
-          </div>
-        </nav>
 
         {/* PERSISTENT 3D PERSPECTIVE VIEWPORT */}
         <div style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 2, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", pointerEvents: "none" }} className="scene-viewport">
@@ -163,7 +149,7 @@ export default function SovereignMembershipExperience() {
               <div style={{ position: "absolute", inset: 14, border: "1px solid rgba(201,168,76,0.25)", borderRadius: 8, display: "flex", flexDirection: "column", justifyContent: "space-between", padding: 20, background: "rgba(0,0,0,0.4)" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                   <span className="serif-text" style={{ fontSize: 14, color: GOLD, fontWeight: 600, letterSpacing: "0.05em" }}>CEO ALPHA</span>
-                  <span style={{ fontSize: 9, fontFamily: "monospace", color: "rgba(245,240,232,0.3)" }}>// CORE SUBSYSTEM</span>
+                  <span style={{ fontSize: 9, fontFamily: "monospace", color: "rgba(245,240,232,0.3)" }}>· CORE SUBSYSTEM</span>
                 </div>
                 
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
@@ -213,7 +199,7 @@ export default function SovereignMembershipExperience() {
                     pointerEvents: "auto"
                   }}
                 >
-                  <span className="mono-tag">0{premiumBenefits[activeTextSection].id} // VECTOR CAPABILITIES</span>
+                  <span className="mono-tag">0{premiumBenefits[activeTextSection].id} · VECTOR CAPABILITIES</span>
                   <h2 className="serif-text" style={{ fontSize: "clamp(24px, 2.5vw, 40px)", fontWeight: 400, color: TEXT, margin: "14px 0 20px" }}>
                     {premiumBenefits[activeTextSection].title}
                   </h2>

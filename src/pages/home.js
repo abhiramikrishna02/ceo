@@ -3,7 +3,6 @@ import Head from "next/head";
 import { AnimatePresence, motion, useInView, useScroll, useSpring, useTransform } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import SiteNavbar from "@/components/layout/site-navbar";
 import ResponsiveHeroBanner from "@/components/ui/responsive-hero-banner";
 import { ResponsiveStyles, getCommunityBenefitsResponsiveMotion, useMediaQuery } from "@/components/responsive";
 
@@ -192,8 +191,8 @@ function Section1Hero() {
       badgeLabel="Coming Soon" badgeText="CEO Square Arriving in Dubai — Join the Waitlist"
       title="Where Visionary Leaders" titleLine2="Build Legacy"
       description="A global entrepreneurial community empowering CEOs, founders, and innovators through elite networking, executive mentorship, strategic growth opportunities, and transformative leadership experiences."
-      primaryButtonText="Join CEO Square" primaryButtonHref="#"
-      secondaryButtonText="Learn More" secondaryButtonHref="#"
+      primaryButtonText=""
+      secondaryButtonText=""
       backgroundImageUrl="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/0e2dbea0-c0a9-413f-a57b-af279633c0df_3840w.jpg"
     />
   );
@@ -950,10 +949,10 @@ export default function Home() {
       <GlobalStyle />
       <div className="noise-overlay" />
       <Particles />
-      <SiteNavbar />
       <main className="relative z-10 bg-black text-white">
         <HomePageSections />
       </main>
     </>
   );
 }
+ 
