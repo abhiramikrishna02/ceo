@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import { AnimatePresence, motion, useInView, useScroll, useSpring, useTransform } from "framer-motion";
 import { gsap } from "gsap";
@@ -35,13 +35,13 @@ const storySlides = [
 ];
 const quotes = [
   { text:"CEO Square gave me the connections and clarity I needed to scale beyond what I thought was possible.", name:"Vikram S.", role:"Founder & CEO, Series D Venture" },
-  { text:"The mentorship inside CEO Square is unlike anything I've experienced — direct, elite, and genuinely transformative.", name:"Ananya R.", role:"Co-Founder, Global Fintech Group" },
-  { text:"This community doesn't just open doors — it builds them where none existed before.", name:"Rohan M.", role:"CEO, International Consulting Group" },
+  { text:"The mentorship inside CEO Square is unlike anything I've experienced â€” direct, elite, and genuinely transformative.", name:"Ananya R.", role:"Co-Founder, Global Fintech Group" },
+  { text:"This community doesn't just open doors â€” it builds them where none existed before.", name:"Rohan M.", role:"CEO, International Consulting Group" },
 ];
 const communityBenefits = [
-  { id:"01", eyebrow:"Network & Influence", headline:"The Architecture\nof Connection.", sub:"Forge relationships that reshape markets and redefine industries.", detail:"At CEO Square, influence is not inherited — it is cultivated. Our elite global network connects you directly with the entrepreneurs, investors, and executives who are actively shaping the future. Every introduction is intentional. Every relationship, transformative.", tags:["Elite Introductions","Global Community","Industry Pioneers"], stat:{ value:"180+", label:"Countries represented within the CEO Square global network." }, accent:"Your network is your most valuable asset." },
+  { id:"01", eyebrow:"Network & Influence", headline:"The Architecture\nof Connection.", sub:"Forge relationships that reshape markets and redefine industries.", detail:"At CEO Square, influence is not inherited â€” it is cultivated. Our elite global network connects you directly with the entrepreneurs, investors, and executives who are actively shaping the future. Every introduction is intentional. Every relationship, transformative.", tags:["Elite Introductions","Global Community","Industry Pioneers"], stat:{ value:"180+", label:"Countries represented within the CEO Square global network." }, accent:"Your network is your most valuable asset." },
   { id:"02", eyebrow:"Mentorship & Growth", headline:"The Mentor\nAdvantage.", sub:"Access wisdom that compresses decades into decisive moments.", detail:"Stop navigating alone. CEO Square pairs you with battle-tested leaders and executive mentors who offer personalized coaching, strategic guidance, and mastermind-driven sessions. The insight you need to break through your next ceiling is already inside our community.", tags:["Personalized Coaching","Mastermind Groups","Executive Access"], stat:{ value:"500+", label:"Elite founders and CEOs actively engaged in mentorship programs." }, accent:"Proximity to greatness accelerates everything." },
-  { id:"03", eyebrow:"Summits & Innovation", headline:"The Mandate\nof Leadership.", sub:"Attend exclusive gatherings where tomorrow's business landscape is decided.", detail:"CEO Square summits and retreats are not conferences — they are catalysts. Gather with visionary leaders at invitation-only forums, absorb future-focused keynotes, and walk away with the strategies, relationships, and inspiration to lead at your absolute highest level.", tags:["Invite-Only Summits","Global Retreats","Innovation Forums"], stat:{ value:"50+", label:"Annual executive summits and leadership retreats across key global cities." }, accent:"The room you're in determines the future you build." },
+  { id:"03", eyebrow:"Summits & Innovation", headline:"The Mandate\nof Leadership.", sub:"Attend exclusive gatherings where tomorrow's business landscape is decided.", detail:"CEO Square summits and retreats are not conferences â€” they are catalysts. Gather with visionary leaders at invitation-only forums, absorb future-focused keynotes, and walk away with the strategies, relationships, and inspiration to lead at your absolute highest level.", tags:["Invite-Only Summits","Global Retreats","Innovation Forums"], stat:{ value:"50+", label:"Annual executive summits and leadership retreats across key global cities." }, accent:"The room you're in determines the future you build." },
 ];
 
 // ---------------------------------------------------------------------------
@@ -188,9 +188,11 @@ function TagPill({ children, className="" }) {
 function Section1Hero() {
   return (
     <ResponsiveHeroBanner
-      badgeLabel="Coming Soon" badgeText="CEO Square Arriving in Dubai — Join the Waitlist"
-      title="Where Visionary Leaders" titleLine2="Build Legacy"
-      description="A global entrepreneurial community empowering CEOs, founders, and innovators through elite networking, executive mentorship, strategic growth opportunities, and transformative leadership experiences."
+      badgeLabel="Welcome to CEO Square"
+      badgeText=""
+      title="Where Visionary Leaders Build Influence, Connections & Legacy"
+      titleLine2=""
+      description="A global entrepreneurial community empowering CEOs, founders, and innovators through elite networking, executive mentorship, and strategic growth opportunities."
       primaryButtonText=""
       secondaryButtonText=""
       backgroundImageUrl="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/0e2dbea0-c0a9-413f-a57b-af279633c0df_3840w.jpg"
@@ -514,7 +516,7 @@ export const CommunityBenefitsBlock = () => {
             <div key={benefit.id} ref={(el)=>{ sceneTextRefs.current[index]=el; }} className="community-benefits-block__scene" style={{ position:isCompactLayout?"relative":"absolute",top:isCompactLayout?"auto":0,left:isCompactLayout?"auto":(isLeft?"12%":"auto"),right:isCompactLayout?"auto":(isLeft?"auto":"12%"),width:isCompactLayout?"100%":"42%",maxWidth:isCompactLayout?560:"none",height:isCompactLayout?"auto":"100%",display:"flex",flexDirection:"column",justifyContent:isCompactLayout?"flex-start":"center",pointerEvents:"auto",perspective:1000,willChange:"transform, opacity",padding:isCompactLayout?"22px 16px 10px":0,borderRadius:isCompactLayout?0:0,background:isCompactLayout?"transparent":"transparent",border:isCompactLayout?"none":"none",boxShadow:isCompactLayout?"none":"none",backdropFilter:isCompactLayout?"none":"none",WebkitBackdropFilter:isCompactLayout?"none":"none",overflow:"visible",alignSelf:isCompactLayout?"center":"auto" }}>
               <div style={{ marginBottom:isCompactLayout?18:22 }}>
                 <span className="scene-eyebrow" style={poppins(500,11,GOLD,{ letterSpacing:"0.2em",textTransform:"uppercase",display:"inline-block" })}>
-                  CHAPTER {benefit.id} · {benefit.eyebrow}
+                  CHAPTER {benefit.id} Â· {benefit.eyebrow}
                 </span>
               </div>
               <h2 style={poppins(300,"clamp(36px,3.8vw,56px)",TEXT,{ lineHeight:1.12,letterSpacing:"-0.02em",marginBottom:32 })}>
@@ -599,7 +601,7 @@ function Section3Statement() {
         <motion.div aria-hidden="true" style={{ position:"absolute",inset:"0 0 auto 0",height:240,background:"linear-gradient(180deg,rgba(10,10,10,0.96) 0%,rgba(10,10,10,0.72) 42%,rgba(10,10,10,0) 100%)",opacity:handoffGlow,pointerEvents:"none" }} />
         <motion.div className="home-statement-main" style={{ maxWidth:1200,width:"100%",margin:"0 auto",position:"absolute",zIndex:1,y:sectionLift,opacity:textOpacity,scale:textScale,filter:textBlur,willChange:"transform, opacity, filter" }}>
           <motion.div style={{ x:x1 }}>
-            <p style={poppins(800,"clamp(42px,7vw,96px)","rgba(245,240,232,0.04)",{ lineHeight:1.05,textAlign:"left",whiteSpace:"nowrap",letterSpacing:"-0.02em" })}>NETWORK – MENTORSHIP – INFLUENCE – LEGACY</p>
+            <p style={poppins(800,"clamp(42px,7vw,96px)","rgba(245,240,232,0.04)",{ lineHeight:1.05,textAlign:"left",whiteSpace:"nowrap",letterSpacing:"-0.02em" })}>NETWORK â€“ MENTORSHIP â€“ INFLUENCE â€“ LEGACY</p>
           </motion.div>
           <div className="home-statement-headline" style={{ padding:"44px 0",textAlign:"center",position:"relative",zIndex:2 }}>
             <Reveal>
@@ -609,7 +611,7 @@ function Section3Statement() {
             </Reveal>
           </div>
           <motion.div style={{ x:x2 }}>
-            <p style={poppins(800,"clamp(42px,7vw,96px)","rgba(201,168,76,0.04)",{ lineHeight:1.05,textAlign:"right",whiteSpace:"nowrap",letterSpacing:"-0.02em" })}>GROWTH – SUMMITS – INVESTMENT – IMPACT</p>
+            <p style={poppins(800,"clamp(42px,7vw,96px)","rgba(201,168,76,0.04)",{ lineHeight:1.05,textAlign:"right",whiteSpace:"nowrap",letterSpacing:"-0.02em" })}>GROWTH â€“ SUMMITS â€“ INVESTMENT â€“ IMPACT</p>
           </motion.div>
         </motion.div>
         <div className="home-statement-cards" style={{ position:"absolute",inset:0,zIndex:10,pointerEvents:"none",display:"flex",alignItems:"center",justifyContent:"center" }}>
@@ -637,7 +639,7 @@ function Section3Statement() {
             <div style={{ position:"relative",height:"100%",display:"flex",flexDirection:"column",justifyContent:"space-between" }}>
               <div>
                 <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center" }}>
-                  <p style={poppins(600,12,"rgba(201,168,76,0.9)",{ letterSpacing:1.5 })}>CEO SQUARE · DUBAI</p>
+                  <p style={poppins(600,12,"rgba(201,168,76,0.9)",{ letterSpacing:1.5 })}>CEO SQUARE Â· DUBAI</p>
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="rgba(201,168,76,0.8)" /></svg>
                 </div>
                 <div style={{ position:"relative",marginTop:16 }}>
@@ -666,7 +668,7 @@ function Section3Statement() {
             <Reveal delay={0.42}>
               <div style={{ borderRadius:18,padding:"22px 20px",background:"linear-gradient(145deg,rgba(201,168,76,0.14),rgba(15,15,15,0.98))",border:"1px solid rgba(201,168,76,0.28)",boxShadow:"0 28px 56px rgba(0,0,0,0.44)" }}>
                 <div style={{ display:"flex",justifyContent:"space-between",alignItems:"center",gap:12 }}>
-                  <p style={poppins(600,12,"rgba(201,168,76,0.9)",{ letterSpacing:1.5,textTransform:"uppercase" })}>CEO Square · Dubai</p>
+                  <p style={poppins(600,12,"rgba(201,168,76,0.9)",{ letterSpacing:1.5,textTransform:"uppercase" })}>CEO Square Â· Dubai</p>
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="rgba(201,168,76,0.8)" /></svg>
                 </div>
                 <h3 style={poppins(300,"clamp(24px,6vw,34px)",TEXT,{ lineHeight:1.18,marginTop:16 })}>Elite Leadership Community</h3>
@@ -750,7 +752,7 @@ function Section4BenefitsGrid() {
               <ul style={{ listStyle:"none",padding:0,margin:0,display:"flex",flexDirection:"column",gap:16 }}>
                 {slide.features.map((f)=>(
                   <li key={f} style={poppins(300,14,"rgba(245,240,232,0.8)",{ display:"flex",alignItems:"center" })}>
-                    <span style={{ color:GOLD,marginRight:16,fontSize:18 }}>✦</span>{f}
+                    <span style={{ color:GOLD,marginRight:16,fontSize:18 }}>âœ¦</span>{f}
                   </li>
                 ))}
               </ul>
@@ -820,8 +822,8 @@ function Section6Story() {
                 </motion.h3>
                 <motion.p custom={1.3} variants={storyVariants} style={poppins(300,17,"rgba(245,240,232,0.45)",{ lineHeight:1.9,marginBottom:24,maxWidth:480 })}>{story.body}</motion.p>
                 <motion.div custom={1.5} variants={storyVariants}>
-                  <p style={poppins(500,15,GOLD,{ letterSpacing:"0.05em",display:"inline-block" })}>— {story.accent}</p>
-                  <span style={{ marginLeft:32,fontSize:12,textTransform:"uppercase",letterSpacing:"0.1em",borderBottom:"1px solid rgba(201,168,76,0.4)",paddingBottom:4,cursor:"pointer",color:TEXT }}>Explore More →</span>
+                  <p style={poppins(500,15,GOLD,{ letterSpacing:"0.05em",display:"inline-block" })}>â€” {story.accent}</p>
+                  <span style={{ marginLeft:32,fontSize:12,textTransform:"uppercase",letterSpacing:"0.1em",borderBottom:"1px solid rgba(201,168,76,0.4)",paddingBottom:4,cursor:"pointer",color:TEXT }}>Explore More â†’</span>
                 </motion.div>
               </div>
               <motion.div variants={imageVariants} className="story-image-col" style={{ order:isLeft?1:0,position:"relative" }}>
@@ -863,7 +865,7 @@ function Section7Quotes() {
           <AnimatePresence mode="wait">
             <motion.div key={active} initial={{ opacity:0,y:30,filter:"blur(10px)" }} animate={{ opacity:1,y:0,filter:"blur(0px)" }} exit={{ opacity:0,y:-30,filter:"blur(10px)" }} transition={{ duration:0.7,ease:EASE }}>
               <div style={{ marginBottom:16 }}>
-                {[0,1,2].map((s)=><span key={s} style={{ color:GOLD,fontSize:28,marginRight:4,filter:"drop-shadow(0 0 8px rgba(201,168,76,0.5))" }}>★</span>)}
+                {[0,1,2].map((s)=><span key={s} style={{ color:GOLD,fontSize:28,marginRight:4,filter:"drop-shadow(0 0 8px rgba(201,168,76,0.5))" }}>â˜…</span>)}
               </div>
               <p className="quotes-text" style={poppins(200,"clamp(22px,3.5vw,42px)",TEXT,{ lineHeight:1.5,marginBottom:48,fontStyle:"italic" })}>&ldquo;{quotes[active].text}&rdquo;</p>
               <div style={{ display:"inline-flex",flexDirection:"column",alignItems:"center",gap:6 }}>
@@ -900,7 +902,7 @@ function Section8CallToAction() {
             <div style={{ position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"80%",height:"80%",borderRadius:"50%",background:"radial-gradient(ellipse,rgba(201,168,76,0.08),transparent 70%)",pointerEvents:"none" }} />
             <CornerAccents inset={32} size={50} />
             <div style={{ textAlign:"center",position:"relative",zIndex:2 }}>
-              <Reveal><Eyebrow style={{ marginBottom:32 }}>Coming Soon · Dubai</Eyebrow></Reveal>
+              <Reveal><Eyebrow style={{ marginBottom:32 }}>Coming Soon Â· Dubai</Eyebrow></Reveal>
               <Reveal delay={0.15}><h2 className="cta-heading-large" style={poppins(200,"clamp(36px,6vw,80px)",TEXT,{ lineHeight:1.15,marginBottom:12 })}>A new era of</h2></Reveal>
               <Reveal delay={0.25}><h2 className="cta-heading-large" style={{ fontFamily:"Poppins",fontWeight:700,fontSize:"clamp(36px,6vw,80px)",lineHeight:1.15,marginBottom:40 }}><span className="shimmer-text">leadership begins.</span></h2></Reveal>
               <Reveal delay={0.35}><p className="cta-sub" style={poppins(300,18,"rgba(245,240,232,0.45)",{ maxWidth:600,margin:"0 auto 60px",lineHeight:1.8 })}>CEO Square is arriving in Dubai. Join a global community of visionary leaders, founders, and innovators building influence, connections, and lasting legacies together.</p></Reveal>
@@ -911,14 +913,14 @@ function Section8CallToAction() {
                   </motion.button>
                 </div>
               </Reveal>
-              <Reveal delay={0.55}><p style={poppins(300,12,"rgba(245,240,232,0.2)",{ letterSpacing:"0.1em",marginTop:20,textTransform:"uppercase" })}>Invite-only · Limited seats · CEO verified</p></Reveal>
+              <Reveal delay={0.55}><p style={poppins(300,12,"rgba(245,240,232,0.2)",{ letterSpacing:"0.1em",marginTop:20,textTransform:"uppercase" })}>Invite-only Â· Limited seats Â· CEO verified</p></Reveal>
             </div>
           </div>
         </TiltCard>
       </motion.div>
       <div style={{ textAlign:"center",marginTop:100 }}>
         <div style={{ width:1,height:60,background:"linear-gradient(to bottom,rgba(201,168,76,0.4),transparent)",margin:"0 auto 32px" }} />
-        <p style={poppins(300,11,"rgba(245,240,232,0.2)",{ letterSpacing:"0.3em",textTransform:"uppercase" })}>© 2025 CEO Square · Empowering Visionary Leaders Worldwide</p>
+        <p style={poppins(300,11,"rgba(245,240,232,0.2)",{ letterSpacing:"0.3em",textTransform:"uppercase" })}>Â© 2025 CEO Square Â· Empowering Visionary Leaders Worldwide</p>
       </div>
     </section>
   );

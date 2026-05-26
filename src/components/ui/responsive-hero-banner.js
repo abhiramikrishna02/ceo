@@ -6,9 +6,9 @@ import { ArrowRight, Play } from "lucide-react";
 function ResponsiveHeroBanner({
   backgroundImageUrl = "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/0e2dbea0-c0a9-413f-a57b-af279633c0df_3840w.jpg",
   badgeLabel = "New",
-  badgeText = "First Commercial Flight to Mars 2026",
+  badgeText = "",
   title = "Journey Beyond Earth",
-  titleLine2 = "Into the Cosmos",
+  titleLine2 = "",
   description = "Experience the cosmos like never before. Our advanced spacecraft and cutting-edge technology make interplanetary travel accessible, safe, and unforgettable.",
   primaryButtonText = "Book Your Journey",
   primaryButtonHref = "#",
@@ -86,14 +86,16 @@ function ResponsiveHeroBanner({
               <span className="inline-flex items-center rounded-full bg-white/90 px-2 py-0.5 font-sans text-xs font-medium text-neutral-900">
                 {badgeLabel}
               </span>
-              <span className="font-sans text-sm font-medium text-white/90">
-                {badgeText}
-              </span>
+              {badgeText ? (
+                <span className="font-sans text-sm font-medium text-white/90">
+                  {badgeText}
+                </span>
+              ) : null}
             </div>
 
             <h1 className="hero-banner-title animate-fade-slide-in-2 mx-auto max-w-5xl font-serif text-[clamp(2.5rem,8vw,5.5rem)] font-normal leading-[1.02] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
               {title}
-              <br className="hidden sm:block" />
+              {titleLine2 ? <br className="hidden sm:block" /> : null}
               {titleLine2}
             </h1>
 
