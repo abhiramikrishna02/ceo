@@ -71,6 +71,29 @@ function splitTextToSpans(text) {
   ));
 }
 
+function useMediaQuery(query) {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+
+    const mediaQuery = window.matchMedia(query);
+    const updateMatch = () => setMatches(mediaQuery.matches);
+
+    updateMatch();
+
+    if (mediaQuery.addEventListener) {
+      mediaQuery.addEventListener("change", updateMatch);
+      return () => mediaQuery.removeEventListener("change", updateMatch);
+    }
+
+    mediaQuery.addListener(updateMatch);
+    return () => mediaQuery.removeListener(updateMatch);
+  }, [query]);
+
+  return matches;
+}
+
 // ---------------------------------------------------------------------------
 // Global styles & Particles
 // ---------------------------------------------------------------------------
@@ -131,16 +154,16 @@ function GlobalStyle() {
         .community-benefits-block__text,.community-benefits-block__visual{width:100%!important}
         .community-benefits-block__text{padding:0 20px 24px!important}
         .community-benefits-block__scenes{position:relative!important;height:auto!important;display:flex!important;flex-direction:column!important;gap:56px!important;padding:0 20px!important}
-        .community-benefits-block__scene{position:relative!important;top:auto!important;left:auto!important;right:auto!important;inset:auto!important;width:100%!important;opacity:1!important;visibility:visible!important;transform:none!important}
+        .community-benefits-block__scene{position:relative!important;top:auto!important;left:auto!important;right:auto!important;inset:auto!important;width:100%!important}
         .community-benefits-block__visual{display:none!important;min-height:0!important}
-        .community-benefits-block__canvas-wrap{display:none!important}
+        .community-benefits-block__canvas-wrap{display:block!important;opacity:0.58!important;mix-blend-mode:screen!important}
       }
       @media(max-width:980px){
         .community-benefits-block{display:block!important;height:auto!important;min-height:100vh;padding:88px 0}
         .community-benefits-block__axis{display:none!important}
         .community-benefits-block__scenes{position:relative!important;height:auto!important;display:flex!important;flex-direction:column!important;gap:80px!important;padding:0 24px!important}
-        .community-benefits-block__scene{position:relative!important;top:auto!important;left:auto!important;right:auto!important;inset:auto!important;width:100%!important;opacity:1!important;visibility:visible!important;transform:none!important}
-        .community-benefits-block__canvas-wrap{display:none!important}
+        .community-benefits-block__scene{position:relative!important;top:auto!important;left:auto!important;right:auto!important;inset:auto!important;width:100%!important}
+        .community-benefits-block__canvas-wrap{display:block!important;opacity:0.58!important;mix-blend-mode:screen!important}
       }
 
       /* ================================================================
@@ -165,7 +188,10 @@ function GlobalStyle() {
           height:auto!important;
           z-index:auto!important;
           border-bottom:1px solid rgba(201,168,76,0.08);
-          padding-bottom:0!important;
+          padding-bottom:8px!important;
+          margin-bottom:24px!important;
+        }
+        .benefits-slide-wrapper:last-child{
           margin-bottom:0!important;
         }
         .benefits-slide-image{
@@ -177,7 +203,20 @@ function GlobalStyle() {
         }
         .benefits-slide-content{
           width:100%!important;
-          padding:36px 24px 48px!important;
+          padding:28px 20px 24px!important;
+        }
+        .benefits-slide-content h3{
+          font-size:clamp(24px,6vw,36px)!important;
+          line-height:1.15!important;
+          margin-bottom:16px!important;
+        }
+        .benefits-slide-content p{
+          font-size:14px!important;
+          line-height:1.7!important;
+          margin-bottom:28px!important;
+        }
+        .benefits-slide-content li{
+          font-size:13px!important;
         }
         .benefits-slide-giant{
           position:relative!important;
@@ -185,13 +224,15 @@ function GlobalStyle() {
           left:auto!important;
           transform:none!important;
           display:block!important;
-          font-size:clamp(38px,11vw,72px)!important;
+          font-size:clamp(32px,9vw,64px)!important;
           text-align:left!important;
-          padding:0 24px 32px!important;
-          opacity:0.45!important;
+          padding:0 20px 24px!important;
+          opacity:0.25!important;
           pointer-events:none;
           overflow:hidden;
-          white-space:nowrap;
+          white-space:normal!important;
+          overflow-wrap:anywhere!important;
+          word-break:break-word!important;
         }
 
         /* ---- Section 3: Statement ---- */
@@ -297,6 +338,11 @@ function GlobalStyle() {
         .stat-value{font-size:clamp(30px,10vw,46px)!important}
         .story-grid{gap:24px!important;padding:48px 0!important}
         .benefits-slide-image{height:62vw!important}
+        .benefits-slide-content{padding:22px 16px 18px!important}
+        .benefits-slide-content h3{font-size:clamp(22px,7vw,30px)!important;margin-bottom:14px!important}
+        .benefits-slide-content p{font-size:13px!important;margin-bottom:24px!important}
+        .benefits-slide-content li{font-size:12px!important}
+        .benefits-slide-giant{font-size:clamp(28px,10vw,48px)!important;padding:0 16px 20px!important}
         .home-cta-section{padding:44px 14px 80px!important}
         .cta-inner{padding:32px 20px!important}
         .community-benefits-block{padding:56px 0!important}
@@ -312,6 +358,65 @@ function GlobalStyle() {
         .stat-cell{padding:44px 28px!important}
         .story-grid{grid-template-columns:1fr!important;gap:40px!important;padding:80px 0!important}
         .benefits-slide-image{height:44vw!important}
+      }
+      @media(max-width:1024px){
+        .community-benefits-block{
+          height:auto!important;
+          min-height:100vh!important;
+          padding:72px 0 64px!important;
+        }
+        .community-benefits-block__axis{display:none!important}
+        .community-benefits-block__canvas-wrap{
+          display:block!important;
+          opacity:0.58!important;
+          mix-blend-mode:screen!important;
+        }
+        .community-benefits-block__scenes{
+          position:relative!important;
+          inset:auto!important;
+          display:flex!important;
+          flex-direction:column!important;
+          gap:18px!important;
+          padding:0 20px!important;
+        }
+        .community-benefits-block__scene{
+          position:relative!important;
+          top:auto!important;
+          left:auto!important;
+          right:auto!important;
+          inset:auto!important;
+          width:100%!important;
+          height:auto!important;
+          padding:24px 18px 28px!important;
+          border-radius:24px!important;
+          background:linear-gradient(180deg,rgba(15,15,15,0.82),rgba(10,10,10,0.56))!important;
+          border:1px solid rgba(201,168,76,0.1)!important;
+          box-shadow:0 20px 60px rgba(0,0,0,0.35)!important;
+        }
+        .community-benefits-block__scene h2{
+          font-size:clamp(30px,8vw,44px)!important;
+          line-height:1.15!important;
+          margin-bottom:22px!important;
+        }
+        .community-benefits-block__scene .scene-eyebrow{
+          letter-spacing:0.18em!important;
+        }
+        .community-benefits-block__scene .scene-sub{
+          font-size:16px!important;
+          line-height:1.6!important;
+          margin-bottom:18px!important;
+        }
+        .community-benefits-block__scene .scene-detail{
+          font-size:13px!important;
+          line-height:1.8!important;
+          margin-bottom:24px!important;
+        }
+        .community-benefits-block__scene .scene-stat{
+          margin-bottom:24px!important;
+        }
+        .community-benefits-block__scene .scene-stat h3{
+          font-size:34px!important;
+        }
       }
     `}</style>
   );
@@ -426,15 +531,16 @@ export const CommunityBenefitsBlock = () => {
   const sceneTextRefs = useRef([]);
   const progressLineRef = useRef(null);
   const progressDotsRef = useRef([]);
+  const isCompactLayout = useMediaQuery("(max-width: 1024px)");
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
     const canvas = canvasRef.current;
     if (!wrapper || !canvas) return undefined;
-    if (window.matchMedia("(max-width: 980px)").matches) return undefined;
     const ctx = canvas.getContext("2d");
     if (!ctx) return undefined;
     let animationFrameId;
+    const compactLayout = isCompactLayout;
 
     const resizeCanvas = () => {
       const dpr = window.devicePixelRatio || 1;
@@ -492,49 +598,51 @@ export const CommunityBenefitsBlock = () => {
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
-    const particleCount = 850;
+    const particleCount = compactLayout ? 260 : 850;
     const particles = Array.from({ length: particleCount }, () => {
       const angle = Math.random() * Math.PI * 2;
       const sweepAngle = angle + (Math.random() - 0.5) * 0.6;
       const forceDistance = Math.random() * 0.8 + 0.2;
       return { seed: Math.random() * 120, size: Math.random() * 1.8 + 0.8, alpha: Math.random() * 0.5 + 0.45, blastX: Math.cos(sweepAngle) * forceDistance, blastY: Math.sin(sweepAngle) * forceDistance, blastZ: (Math.random() - 0.5) * 2.5, currentX: 0, currentY: 0, currentZ: 0 };
     });
-    const ambientParticles = Array.from({ length: 120 }, () => ({ x: Math.random(), y: Math.random(), size: Math.random() * 1.0 + 0.4, alpha: Math.random() * 0.25 + 0.1, speedX: (Math.random() - 0.5) * 0.0004, speedY: (Math.random() - 0.5) * 0.0002, seed: Math.random() * Math.PI }));
-    const engineState = { progress: 0, blastFactor: 0, rotation: 0 };
+    const ambientParticles = Array.from({ length: compactLayout ? 72 : 120 }, () => ({ x: Math.random(), y: Math.random(), size: Math.random() * 1.0 + 0.4, alpha: Math.random() * 0.25 + 0.1, speedX: (Math.random() - 0.5) * (compactLayout ? 0.00025 : 0.0004), speedY: (Math.random() - 0.5) * (compactLayout ? 0.00015 : 0.0002), seed: Math.random() * Math.PI }));
+    const engineState = { progress: 0, blastFactor: compactLayout ? 0.08 : 0, rotation: 0 };
 
     const renderEngine = () => {
       const dpr = window.devicePixelRatio || 1;
       const width = canvas.width / dpr, height = canvas.height / dpr;
       ctx.clearRect(0, 0, width, height);
       const time = Date.now() * 0.001;
-      const baseScale = Math.min(width, height) * 0.28;
+      const baseScale = Math.min(width, height) * (compactLayout ? 0.2 : 0.28);
 
       ambientParticles.forEach((p) => {
         p.x += p.speedX; p.y += p.speedY;
         if (p.x < 0) p.x = 1; if (p.x > 1) p.x = 0;
         if (p.y < 0) p.y = 1; if (p.y > 1) p.y = 0;
         ctx.fillStyle = GOLD;
-        ctx.globalAlpha = p.alpha * (0.4 + Math.sin(time + p.seed) * 0.3);
+        ctx.globalAlpha = p.alpha * (compactLayout ? 0.22 : 0.4) * (0.7 + Math.sin(time + p.seed) * 0.25);
         ctx.beginPath();
-        ctx.arc(p.x * width + Math.sin(time * 0.5 + p.seed) * 8, p.y * height + Math.cos(time * 0.3 + p.seed) * 5, p.size, 0, Math.PI * 2);
+        ctx.arc(p.x * width + Math.sin(time * 0.5 + p.seed) * (compactLayout ? 5 : 8), p.y * height + Math.cos(time * 0.3 + p.seed) * (compactLayout ? 3 : 5), p.size, 0, Math.PI * 2);
         ctx.fill();
       });
 
-      ctx.strokeStyle = "rgba(201,168,76,0.015)"; ctx.lineWidth = 0.5; ctx.beginPath();
-      for (let x = 0; x < width; x += 100) { ctx.moveTo(x, 0); ctx.lineTo(x, height); }
-      for (let y = 0; y < height; y += 100) { ctx.moveTo(0, y); ctx.lineTo(width, y); }
-      ctx.stroke();
+      if (!compactLayout) {
+        ctx.strokeStyle = "rgba(201,168,76,0.015)"; ctx.lineWidth = 0.5; ctx.beginPath();
+        for (let x = 0; x < width; x += 100) { ctx.moveTo(x, 0); ctx.lineTo(x, height); }
+        for (let y = 0; y < height; y += 100) { ctx.moveTo(0, y); ctx.lineTo(width, y); }
+        ctx.stroke();
+      }
 
       const currentPhase = Math.floor(engineState.progress);
       const phaseRatio = engineState.progress % 1;
       const nextPhase = Math.min(currentPhase + 1, communityBenefits.length - 1);
-      const getTargetCenter = (p) => p === 0 ? width * 0.74 : p === 1 ? width * 0.26 : width * 0.74;
+      const getTargetCenter = (p) => compactLayout ? width * 0.5 : p === 0 ? width * 0.74 : p === 1 ? width * 0.26 : width * 0.74;
       const activeCenterX = getTargetCenter(currentPhase) + (getTargetCenter(nextPhase) - getTargetCenter(currentPhase)) * phaseRatio;
       const activeCenterY = height * 0.5;
 
       if (engineState.blastFactor < 0.2) {
-        ctx.strokeStyle = `rgba(201,168,76,${0.08 * (1 - engineState.blastFactor / 0.2)})`; ctx.lineWidth = 0.5; ctx.beginPath();
-        const step = currentPhase === 1 ? 8 : 15;
+        ctx.strokeStyle = `rgba(201,168,76,${(compactLayout ? 0.03 : 0.08) * (1 - engineState.blastFactor / 0.2)})`; ctx.lineWidth = 0.5; ctx.beginPath();
+        const step = compactLayout ? 20 : currentPhase === 1 ? 8 : 15;
         for (let i = 0; i < particles.length; i += step) {
           for (let j = i + 1; j < i + 4; j++) {
             if (j >= particles.length) break;
@@ -548,8 +656,8 @@ export const CommunityBenefitsBlock = () => {
       particles.forEach((particle, index) => {
         const p1 = getFormationCoords(index, particleCount, currentPhase, width, height);
         const p2 = getFormationCoords(index, particleCount, nextPhase, width, height);
-        let targetX = p1.x + (p2.x - p1.x) * phaseRatio + particle.blastX * engineState.blastFactor * (baseScale * 2.2) + Math.sin(time * 1.2 + particle.seed) * 3;
-        let targetY = p1.y + (p2.y - p1.y) * phaseRatio + particle.blastY * engineState.blastFactor * (baseScale * 2.2) + Math.cos(time * 0.9 + particle.seed) * 3;
+        let targetX = p1.x + (p2.x - p1.x) * phaseRatio + particle.blastX * engineState.blastFactor * (baseScale * 2.2) + Math.sin(time * 1.2 + particle.seed) * (compactLayout ? 1.8 : 3);
+        let targetY = p1.y + (p2.y - p1.y) * phaseRatio + particle.blastY * engineState.blastFactor * (baseScale * 2.2) + Math.cos(time * 0.9 + particle.seed) * (compactLayout ? 1.8 : 3);
         let targetZ = p1.z + (p2.z - p1.z) * phaseRatio + particle.blastZ * engineState.blastFactor * (baseScale * 2.2);
         particle.currentX += (targetX - particle.currentX) * 0.12;
         particle.currentY += (targetY - particle.currentY) * 0.12;
@@ -564,7 +672,7 @@ export const CommunityBenefitsBlock = () => {
         particle.finalX = nx + activeCenterX; particle.finalY = ny + activeCenterY; particle.finalZ = nz;
         const perspective = (particle.finalZ + 400) / 800;
         ctx.fillStyle = index % 12 === 0 ? "#ffffff" : GOLD;
-        ctx.globalAlpha = Math.max(0.05, particle.alpha * (perspective + 0.3));
+        ctx.globalAlpha = Math.max(0.04, particle.alpha * (perspective + 0.3) * (compactLayout ? 0.75 : 1));
         ctx.beginPath();
         ctx.arc(particle.finalX, particle.finalY, Math.max(0.35, particle.size * (perspective + 0.5)), 0, Math.PI * 2);
         ctx.fill();
@@ -589,16 +697,6 @@ export const CommunityBenefitsBlock = () => {
         gsap.set(scene.querySelector(".scene-accent"), { opacity: 0, x: 10 });
       });
 
-      const masterTimeline = gsap.timeline({ scrollTrigger: { trigger: wrapper, start: "top top", end: "+=380%", pin: true, scrub: 1.2, anticipatePin: 1 } });
-      masterTimeline.to(engineState, { progress: 2, rotation: Math.PI * 2.2, ease: "none", duration: 3 }, 0);
-      masterTimeline.to(engineState, { keyframes: [{ blastFactor: 0.75, duration: 0.35, ease: "power3.out" },{ blastFactor: 0.08, duration: 0.35, ease: "power2.inOut" },{ blastFactor: 0, duration: 0.3, ease: "power2.out" },{ blastFactor: 0, duration: 1.0 },{ blastFactor: 0.75, duration: 0.35, ease: "power3.out" },{ blastFactor: 0.08, duration: 0.35, ease: "power2.inOut" },{ blastFactor: 0, duration: 0.3, ease: "power2.out" }], duration: 3, ease: "none" }, 0);
-      if (progressLineRef.current) masterTimeline.to(progressLineRef.current, { scaleY: 1, ease: "none", duration: 3 }, 0);
-      progressDotsRef.current.forEach((dot, index) => {
-        if (!dot) return;
-        if (index === 0) { gsap.set(dot, { background: GOLD, boxShadow: `0 0 16px ${GOLD}`, scale: 1.3 }); return; }
-        masterTimeline.to(dot, { background: GOLD, boxShadow: `0 0 18px ${GOLD}`, scale: 1.3, duration: 0.3, ease: "power2.out" }, (index * 1.5) - 0.5);
-      });
-
       const buildSceneEntrance = (tl, scene, startTime) => {
         tl.to(scene, { opacity: 1, visibility: "visible", duration: 0.05 }, startTime)
           .to(scene.querySelector(".scene-eyebrow"), { opacity: 1, y: 0, letterSpacing: "0.45em", duration: 0.4, ease: "power2.out" }, startTime + 0.05)
@@ -610,16 +708,61 @@ export const CommunityBenefitsBlock = () => {
           .to(scene.querySelector(".scene-accent"), { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" }, startTime + 0.55);
       };
 
-      const buildSceneExit = (tl, scene, exitTime) => {
-        tl.to([scene.querySelector(".scene-eyebrow"),scene.querySelectorAll(".char-item"),scene.querySelector(".scene-sub"),scene.querySelector(".scene-detail"),scene.querySelectorAll(".scene-tag-node"),scene.querySelector(".scene-stat"),scene.querySelector(".scene-accent")], { opacity: 0, y: -40, filter: "blur(12px)", stagger: 0.01, duration: 0.45, ease: "power2.in" }, exitTime)
-          .to(scene, { opacity: 0, visibility: "hidden", duration: 0.05 }, exitTime + 0.45);
-      };
+      if (compactLayout) {
+        gsap.to(engineState, {
+          progress: communityBenefits.length - 1,
+          rotation: Math.PI * 1.8,
+          ease: "none",
+          scrollTrigger: {
+            trigger: wrapper,
+            start: "top 85%",
+            end: "bottom 15%",
+            scrub: 1.1,
+            invalidateOnRefresh: true,
+          },
+        });
 
-      buildSceneEntrance(masterTimeline, scenes[0], 0.0);
-      buildSceneExit(masterTimeline, scenes[0], 0.9);
-      buildSceneEntrance(masterTimeline, scenes[1], 1.4);
-      buildSceneExit(masterTimeline, scenes[1], 2.3);
-      buildSceneEntrance(masterTimeline, scenes[2], 2.7);
+        gsap.to(engineState, { blastFactor: 0.16, duration: 1.6, repeat: -1, yoyo: true, ease: "sine.inOut" });
+
+        scenes.forEach((scene, index) => {
+          const revealTl = gsap.timeline({
+            scrollTrigger: {
+              trigger: scene,
+              start: "top 78%",
+              toggleActions: "play none none reverse",
+              invalidateOnRefresh: true,
+            },
+          });
+          buildSceneEntrance(revealTl, scene, 0);
+          if (index === 0 && progressLineRef.current) {
+            gsap.set(progressLineRef.current, { scaleY: 1, transformOrigin: "top center" });
+          }
+          if (progressDotsRef.current[index]) {
+            gsap.set(progressDotsRef.current[index], { background: GOLD, boxShadow: `0 0 16px ${GOLD}`, scale: 1.15 });
+          }
+        });
+      } else {
+        const masterTimeline = gsap.timeline({ scrollTrigger: { trigger: wrapper, start: "top top", end: "+=380%", pin: true, scrub: 1.2, anticipatePin: 1 } });
+        masterTimeline.to(engineState, { progress: 2, rotation: Math.PI * 2.2, ease: "none", duration: 3 }, 0);
+        masterTimeline.to(engineState, { keyframes: [{ blastFactor: 0.75, duration: 0.35, ease: "power3.out" },{ blastFactor: 0.08, duration: 0.35, ease: "power2.inOut" },{ blastFactor: 0, duration: 0.3, ease: "power2.out" },{ blastFactor: 0, duration: 1.0 },{ blastFactor: 0.75, duration: 0.35, ease: "power3.out" },{ blastFactor: 0.08, duration: 0.35, ease: "power2.inOut" },{ blastFactor: 0, duration: 0.3, ease: "power2.out" }], duration: 3, ease: "none" }, 0);
+        if (progressLineRef.current) masterTimeline.to(progressLineRef.current, { scaleY: 1, ease: "none", duration: 3 }, 0);
+        progressDotsRef.current.forEach((dot, index) => {
+          if (!dot) return;
+          if (index === 0) { gsap.set(dot, { background: GOLD, boxShadow: `0 0 16px ${GOLD}`, scale: 1.3 }); return; }
+          masterTimeline.to(dot, { background: GOLD, boxShadow: `0 0 18px ${GOLD}`, scale: 1.3, duration: 0.3, ease: "power2.out" }, (index * 1.5) - 0.5);
+        });
+
+        const buildSceneExit = (tl, scene, exitTime) => {
+          tl.to([scene.querySelector(".scene-eyebrow"),scene.querySelectorAll(".char-item"),scene.querySelector(".scene-sub"),scene.querySelector(".scene-detail"),scene.querySelectorAll(".scene-tag-node"),scene.querySelector(".scene-stat"),scene.querySelector(".scene-accent")], { opacity: 0, y: -40, filter: "blur(12px)", stagger: 0.01, duration: 0.45, ease: "power2.in" }, exitTime)
+            .to(scene, { opacity: 0, visibility: "hidden", duration: 0.05 }, exitTime + 0.45);
+        };
+
+        buildSceneEntrance(masterTimeline, scenes[0], 0.0);
+        buildSceneExit(masterTimeline, scenes[0], 0.9);
+        buildSceneEntrance(masterTimeline, scenes[1], 1.4);
+        buildSceneExit(masterTimeline, scenes[1], 2.3);
+        buildSceneEntrance(masterTimeline, scenes[2], 2.7);
+      }
     }, wrapper);
 
     return () => {
@@ -627,14 +770,14 @@ export const CommunityBenefitsBlock = () => {
       window.cancelAnimationFrame(animationFrameId);
       timelineContext.revert();
     };
-  }, []);
+  }, [isCompactLayout]);
 
   return (
-    <section ref={wrapperRef} className="community-benefits-block" style={{ height: "100vh", position: "relative", backgroundColor: BG, overflow: "hidden" }}>
+    <section ref={wrapperRef} className="community-benefits-block" style={{ height: isCompactLayout ? "auto" : "100vh", minHeight: "100vh", position: "relative", backgroundColor: BG, overflow: "hidden", padding: isCompactLayout ? "72px 0 64px" : 0 }}>
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 50%,rgba(201,168,76,0.03) 0%,transparent 75%)", pointerEvents: "none", zIndex: 1 }} />
       <div style={FADE_EDGE("left")} />
       <div style={FADE_EDGE("right")} />
-      <div className="community-benefits-block__axis" style={{ position: "absolute", left: 60, top: "50%", transform: "translateY(-50%)", height: "300px", display: "flex", flexDirection: "column", alignItems: "center", zIndex: 10, pointerEvents: "none" }}>
+      <div className="community-benefits-block__axis" style={{ position: "absolute", left: 60, top: "50%", transform: "translateY(-50%)", height: "300px", display: isCompactLayout ? "none" : "flex", flexDirection: "column", alignItems: "center", zIndex: 10, pointerEvents: "none" }}>
         <div style={{ position: "relative", width: 1, height: "100%", backgroundColor: "rgba(201,168,76,0.12)" }}>
           <div ref={progressLineRef} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", background: `linear-gradient(to bottom,${GOLD},#ffffff)`, transformOrigin: "top center", transform: "scaleY(0)" }} />
         </div>
@@ -642,15 +785,15 @@ export const CommunityBenefitsBlock = () => {
           <div key={benefit.id} ref={(el) => { progressDotsRef.current[index] = el; }} style={{ position: "absolute", top: `${(index / (communityBenefits.length - 1)) * 100}%`, transform: "translateY(-50%) translateX(-3.5px)", width: 8, height: 8, borderRadius: "50%", backgroundColor: "#0d0d0d", border: "1px solid rgba(201,168,76,0.55)", transition: "background 0.5s cubic-bezier(0.25,1,0.5,1),box-shadow 0.5s ease" }} />
         ))}
       </div>
-      <div className="community-benefits-block__canvas-wrap" style={{ position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none" }}>
+      <div className="community-benefits-block__canvas-wrap" style={{ position: "absolute", inset: 0, zIndex: 2, pointerEvents: "none", opacity: isCompactLayout ? 0.58 : 1, mixBlendMode: isCompactLayout ? "screen" : "normal" }}>
         <canvas ref={canvasRef} style={{ width: "100%", height: "100%", display: "block" }} />
       </div>
-      <div className="community-benefits-block__scenes" style={{ position: "absolute", inset: 0, zIndex: 5, pointerEvents: "none" }}>
+      <div className="community-benefits-block__scenes" style={{ position: isCompactLayout ? "relative" : "absolute", inset: isCompactLayout ? "auto" : 0, zIndex: 5, pointerEvents: "none", display: isCompactLayout ? "flex" : "block", flexDirection: isCompactLayout ? "column" : "initial", gap: isCompactLayout ? "18px" : 0, padding: isCompactLayout ? "0 20px" : 0 }}>
         {communityBenefits.map((benefit, index) => {
           const isLeft = index % 2 === 0;
           return (
-            <div key={benefit.id} ref={(el) => { sceneTextRefs.current[index] = el; }} className="community-benefits-block__scene" style={{ position: "absolute", top: 0, left: isLeft ? "12%" : "auto", right: isLeft ? "auto" : "12%", width: "42%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", pointerEvents: "auto", perspective: 1000, willChange: "transform, opacity" }}>
-              <div style={{ marginBottom: 22 }}>
+            <div key={benefit.id} ref={(el) => { sceneTextRefs.current[index] = el; }} className="community-benefits-block__scene" style={{ position: isCompactLayout ? "relative" : "absolute", top: isCompactLayout ? "auto" : 0, left: isCompactLayout ? "auto" : (isLeft ? "12%" : "auto"), right: isCompactLayout ? "auto" : (isLeft ? "auto" : "12%"), width: isCompactLayout ? "100%" : "42%", height: isCompactLayout ? "auto" : "100%", display: "flex", flexDirection: "column", justifyContent: isCompactLayout ? "flex-start" : "center", pointerEvents: "auto", perspective: 1000, willChange: "transform, opacity", padding: isCompactLayout ? "24px 18px 28px" : 0, borderRadius: isCompactLayout ? 24 : 0, background: isCompactLayout ? "linear-gradient(180deg,rgba(15,15,15,0.82),rgba(10,10,10,0.56))" : "transparent", border: isCompactLayout ? "1px solid rgba(201,168,76,0.1)" : "none", boxShadow: isCompactLayout ? "0 20px 60px rgba(0,0,0,0.35)" : "none" }}>
+              <div style={{ marginBottom: isCompactLayout ? 18 : 22 }}>
                 <span className="scene-eyebrow" style={poppins(500, 11, GOLD, { letterSpacing: "0.2em", textTransform: "uppercase", display: "inline-block" })}>
                   CHAPTER {benefit.id} · {benefit.eyebrow}
                 </span>
@@ -796,42 +939,74 @@ function Section4BenefitsGrid() {
   const imageRefs = useRef([]);
   const contentRefs = useRef([]);
   const titleRefs = useRef([]);
+  const isCompactLayout = useMediaQuery("(max-width: 1024px)");
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      storySlides.forEach((_, i) => {
-        if (i === 0) return;
-        if (imageRefs.current[i]) gsap.set(imageRefs.current[i], { clipPath: "polygon(0% 100%,100% 100%,100% 100%,0% 100%)" });
-        if (contentRefs.current[i]) gsap.set(contentRefs.current[i], { opacity: 0, y: 60 });
-        if (titleRefs.current[i]) gsap.set(titleRefs.current[i].querySelectorAll(".char"), { opacity: 0, y: 80, rotationX: -90 });
-      });
-      const tl = gsap.timeline({ scrollTrigger: { trigger: sectionRef.current, start: "top top", end: `+=${storySlides.length * 100}%`, pin: true, scrub: 1, anticipatePin: 1 } });
-      storySlides.forEach((_, i) => {
-        if (i === 0) return;
-        const step = gsap.timeline();
-        const prev = { content: contentRefs.current[i - 1], chars: titleRefs.current[i - 1]?.querySelectorAll(".char") };
-        const cur = { image: imageRefs.current[i], content: contentRefs.current[i], chars: titleRefs.current[i]?.querySelectorAll(".char") };
-        if (prev.content) step.to(prev.content, { opacity: 0, y: -60, duration: 1 }, 0);
-        if (prev.chars?.length) step.to(prev.chars, { opacity: 0, y: -80, rotationX: 90, stagger: 0.02, duration: 0.8 }, 0);
-        if (cur.image) step.to(cur.image, { clipPath: "polygon(0% 0%,100% 0%,100% 100%,0% 100%)", duration: 1.5, ease: "power2.inOut" }, 0);
-        if (cur.content) step.to(cur.content, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, 0.5);
-        if (cur.chars?.length) step.to(cur.chars, { opacity: 1, y: 0, rotationX: 0, stagger: 0.03, duration: 1, ease: "back.out(1.5)" }, 0.5);
-        tl.add(step);
-      });
+      if (isCompactLayout) {
+        storySlides.forEach((_, i) => {
+          if (imageRefs.current[i]) gsap.set(imageRefs.current[i], { clipPath: "polygon(0% 100%,100% 100%,100% 100%,0% 100%)" });
+          if (contentRefs.current[i]) gsap.set(contentRefs.current[i], { opacity: 0, y: 44 });
+          if (titleRefs.current[i]) gsap.set(titleRefs.current[i].querySelectorAll(".char"), { opacity: 0, y: 56, rotationX: -75 });
+        });
+
+        storySlides.forEach((_, i) => {
+          const slide = slideRefs.current[i];
+          const cur = {
+            image: imageRefs.current[i],
+            content: contentRefs.current[i],
+            chars: titleRefs.current[i]?.querySelectorAll(".char"),
+          };
+          if (!slide) return;
+
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: slide,
+              start: "top 78%",
+              toggleActions: "play none none reverse",
+              invalidateOnRefresh: true,
+            },
+          });
+
+          if (cur.image) tl.to(cur.image, { clipPath: "polygon(0% 0%,100% 0%,100% 100%,0% 100%)", duration: 1.1, ease: "power2.inOut" }, 0);
+          if (cur.content) tl.to(cur.content, { opacity: 1, y: 0, duration: 0.85, ease: "power2.out" }, 0.3);
+          if (cur.chars?.length) tl.to(cur.chars, { opacity: 1, y: 0, rotationX: 0, stagger: 0.02, duration: 0.9, ease: "back.out(1.4)" }, 0.45);
+        });
+      } else {
+        storySlides.forEach((_, i) => {
+          if (i === 0) return;
+          if (imageRefs.current[i]) gsap.set(imageRefs.current[i], { clipPath: "polygon(0% 100%,100% 100%,100% 100%,0% 100%)" });
+          if (contentRefs.current[i]) gsap.set(contentRefs.current[i], { opacity: 0, y: 60 });
+          if (titleRefs.current[i]) gsap.set(titleRefs.current[i].querySelectorAll(".char"), { opacity: 0, y: 80, rotationX: -90 });
+        });
+        const tl = gsap.timeline({ scrollTrigger: { trigger: sectionRef.current, start: "top top", end: `+=${storySlides.length * 100}%`, pin: true, scrub: 1, anticipatePin: 1 } });
+        storySlides.forEach((_, i) => {
+          if (i === 0) return;
+          const step = gsap.timeline();
+          const prev = { content: contentRefs.current[i - 1], chars: titleRefs.current[i - 1]?.querySelectorAll(".char") };
+          const cur = { image: imageRefs.current[i], content: contentRefs.current[i], chars: titleRefs.current[i]?.querySelectorAll(".char") };
+          if (prev.content) step.to(prev.content, { opacity: 0, y: -60, duration: 1 }, 0);
+          if (prev.chars?.length) step.to(prev.chars, { opacity: 0, y: -80, rotationX: 90, stagger: 0.02, duration: 0.8 }, 0);
+          if (cur.image) step.to(cur.image, { clipPath: "polygon(0% 0%,100% 0%,100% 100%,0% 100%)", duration: 1.5, ease: "power2.inOut" }, 0);
+          if (cur.content) step.to(cur.content, { opacity: 1, y: 0, duration: 1, ease: "power2.out" }, 0.5);
+          if (cur.chars?.length) step.to(cur.chars, { opacity: 1, y: 0, rotationX: 0, stagger: 0.03, duration: 1, ease: "back.out(1.5)" }, 0.5);
+          tl.add(step);
+        });
+      }
     }, sectionRef);
     return () => ctx.revert();
-  }, []);
+  }, [isCompactLayout]);
 
   return (
-    <section ref={sectionRef} className="benefits-grid-section" style={{ height: "100vh", position: "relative", backgroundColor: "#050505", overflow: "hidden", color: TEXT }}>
+    <section ref={sectionRef} className="benefits-grid-section" style={{ height: isCompactLayout ? "auto" : "100vh", minHeight: isCompactLayout ? "auto" : "100vh", position: "relative", backgroundColor: "#050505", overflow: "hidden", color: TEXT, padding: isCompactLayout ? "64px 0 72px" : 0 }}>
       {storySlides.map((slide, i) => (
-        <div key={slide.id} ref={(el) => { slideRefs.current[i] = el; }} className="benefits-slide-wrapper" style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", display: "flex", zIndex: i }}>
-          <div ref={(el) => { imageRefs.current[i] = el; }} className="benefits-slide-image" style={{ width: "55%", height: "100%", position: "relative", overflow: "hidden", willChange: "clip-path" }}>
+        <div key={slide.id} ref={(el) => { slideRefs.current[i] = el; }} className="benefits-slide-wrapper" style={isCompactLayout ? { position: "relative", top: "auto", left: "auto", width: "100%", height: "auto", display: "flex", flexDirection: "column", zIndex: i, marginBottom: i === storySlides.length - 1 ? 0 : 28 } : { position: "absolute", top: 0, left: 0, width: "100%", height: "100%", display: "flex", zIndex: i }}>
+          <div ref={(el) => { imageRefs.current[i] = el; }} className="benefits-slide-image" style={isCompactLayout ? { width: "100%", height: "56vw", minHeight: 220, maxHeight: 380, position: "relative", overflow: "hidden", willChange: "clip-path" } : { width: "55%", height: "100%", position: "relative", overflow: "hidden", willChange: "clip-path" }}>
             <div style={{ position: "absolute", inset: 0, backgroundColor: "#000", opacity: 0.2, zIndex: 1 }} />
             <img src={slide.img} alt={slide.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </div>
-          <div className="benefits-slide-content" style={{ width: "45%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 6%", position: "relative", zIndex: 2 }}>
-            <div ref={(el) => { contentRefs.current[i] = el; }} style={{ maxWidth: 480, willChange: "transform, opacity" }}>
+          <div className="benefits-slide-content" style={isCompactLayout ? { width: "100%", height: "auto", display: "flex", flexDirection: "column", justifyContent: "center", padding: "28px 20px 18px", position: "relative", zIndex: 2 } : { width: "45%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", padding: "0 6%", position: "relative", zIndex: 2 }}>
+            <div ref={(el) => { contentRefs.current[i] = el; }} style={{ maxWidth: isCompactLayout ? "100%" : 480, willChange: "transform, opacity" }}>
               <p style={poppins(400, 13, GOLD, { letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 20 })}>{slide.id} - The Suite</p>
               <h3 style={poppins(300, "clamp(32px,3vw,48px)", "#ffffff", { lineHeight: 1.1, marginBottom: 24 })}>{slide.title}</h3>
               <p style={poppins(300, 16, "rgba(245,240,232,0.6)", { lineHeight: 1.6, marginBottom: 40 })}>{slide.desc}</p>
@@ -844,7 +1019,7 @@ function Section4BenefitsGrid() {
               </ul>
             </div>
           </div>
-          <div ref={(el) => { titleRefs.current[i] = el; }} className="benefits-slide-giant" style={{ position: "absolute", bottom: "7%", left: "50%", transform: "translateX(-50%)", zIndex: 1, width: "100%", pointerEvents: "none", display: "flex", justifyContent: "center", alignItems: "flex-end", fontFamily: "Poppins,sans-serif", fontWeight: 300, fontSize: "clamp(46px,8.5vw,120px)", color: "rgba(255,255,255,0.58)", letterSpacing: "0.08em", lineHeight: 0.92, mixBlendMode: "overlay", textShadow: "0px 12px 36px rgba(0,0,0,0.55)", filter: "drop-shadow(0 0 18px rgba(201,168,76,0.12))", perspective: "1000px" }}>
+          <div ref={(el) => { titleRefs.current[i] = el; }} className="benefits-slide-giant" style={isCompactLayout ? { position: "relative", bottom: "auto", left: "auto", transform: "none", zIndex: 1, width: "100%", pointerEvents: "none", display: "flex", justifyContent: "flex-start", alignItems: "flex-start", fontFamily: "Poppins,sans-serif", fontWeight: 300, fontSize: "clamp(34px,9vw,72px)", color: "rgba(255,255,255,0.22)", letterSpacing: "0.08em", lineHeight: 0.92, mixBlendMode: "overlay", textShadow: "0px 12px 36px rgba(0,0,0,0.55)", filter: "drop-shadow(0 0 18px rgba(201,168,76,0.12))", perspective: "1000px", padding: "0 20px 20px" } : { position: "absolute", bottom: "7%", left: "50%", transform: "translateX(-50%)", zIndex: 1, width: "100%", pointerEvents: "none", display: "flex", justifyContent: "center", alignItems: "flex-end", fontFamily: "Poppins,sans-serif", fontWeight: 300, fontSize: "clamp(46px,8.5vw,120px)", color: "rgba(255,255,255,0.58)", letterSpacing: "0.08em", lineHeight: 0.92, mixBlendMode: "overlay", textShadow: "0px 12px 36px rgba(0,0,0,0.55)", filter: "drop-shadow(0 0 18px rgba(201,168,76,0.12))", perspective: "1000px" }}>
             {splitTextToSpans(slide.giantText)}
           </div>
         </div>
@@ -869,7 +1044,7 @@ function Section5Stats() {
           {stats.map((stat, i) => (
             <Reveal key={stat.label} delay={i * 0.12}>
               <div className="stat-cell" style={{ padding: "48px 32px", background: BG, textAlign: "center", position: "relative", overflow: "hidden" }}>
-                <motion.p className="stat-value" initial={{ opacity: 0, scale: 0.5 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: i * 0.15, ease: EASE }} style={poppins(700, "clamp(36px,5vw,64px)", undefined, { lineHeight: 1, marginBottom: 12 })} className="gold-gradient">{stat.value}</motion.p>
+                <motion.p className="stat-value gold-gradient" initial={{ opacity: 0, scale: 0.5 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.8, delay: i * 0.15, ease: EASE }} style={poppins(700, "clamp(36px,5vw,64px)", undefined, { lineHeight: 1, marginBottom: 12 })}>{stat.value}</motion.p>
                 <p style={poppins(500, 16, TEXT, { marginBottom: 4 })}>{stat.label}</p>
                 <p style={poppins(300, 11, "rgba(245,240,232,0.3)", { letterSpacing: "0.2em", textTransform: "uppercase" })}>{stat.note}</p>
               </div>
