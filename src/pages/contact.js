@@ -1,6 +1,5 @@
 import Head from "next/head";
 
-
 export default function Contact() {
   return (
     <>
@@ -32,7 +31,7 @@ export default function Contact() {
               </div>
               <div>
                 <label className="text-sm font-semibold text-white/80" htmlFor="role">Your Role</label>
-                <input id="role" className="mt-2 h-12 w-full border border-white/10 bg-transparent px-4 outline-none focus:border-[#D4AF37] text-white placeholder:text-white/30" placeholder="Founder, CEO, Investor…" />
+                <input id="role" className="mt-2 h-12 w-full border border-white/10 bg-transparent px-4 outline-none focus:border-[#D4AF37] text-white placeholder:text-white/30" placeholder="Founder, CEO, Investor..." />
               </div>
               <div>
                 <label className="text-sm font-semibold text-white/80" htmlFor="message">What are you building?</label>
