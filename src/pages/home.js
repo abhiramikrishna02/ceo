@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ResponsiveHeroBanner from "@/components/ui/responsive-hero-banner";
 import { ResponsiveStyles, getCommunityBenefitsResponsiveMotion, useMediaQuery } from "@/components/responsive";
+import { useRouter } from "next/router";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -31,7 +32,7 @@ const storySlides = [
   { id:"01", img:"https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&q=80&w=2000", giantText:"Elite Network", title:"Global Connections", desc:"Connect with influential entrepreneurs, executives, investors, and industry pioneers through curated networking experiences, private communities, and international business events.", features:["Curated Introductions","Private Communities","International Events"] },
   { id:"02", img:"https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=2000", giantText:"Mentorship", title:"Executive Guidance", desc:"Gain direct access to experienced business leaders and mentors through personalized coaching, leadership guidance, and mastermind-driven growth sessions.", features:["1-on-1 Coaching","Mastermind Sessions","Leadership Frameworks"] },
   { id:"03", img:"https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?auto=format&fit=crop&q=80&w=2000", giantText:"Leadership Summits", title:"Exclusive Retreats", desc:"Attend invitation-only conferences, executive forums, and leadership retreats featuring impactful keynote speakers, interactive workshops, and transformative discussions.", features:["Keynote Speakers","Executive Forums","Leadership Retreats"] },
-  { id:"04", img:"https://images.unsplash.com/photo-1556761175-5973dc0f32d7?auto=format&fit=crop&q=80&w=2000", giantText:"Investment Access", title:"Strategic Capital", desc:"Access curated investment networks and connect with qualified investors, venture partners, and high-growth business opportunities designed for scalable success.", features:["Venture Partners","Investor Access","Deal Flow Network"] },
+  { id:"04", img:"/ceo.png", giantText:"Investment Access", title:"Strategic Capital", desc:"Access curated investment networks and connect with qualified investors, venture partners, and high-growth business opportunities designed for scalable success.", features:["Venture Partners","Investor Access","Deal Flow Network"] },
 ];
 const quotes = [
   { text:"CEO Square gave me the connections and clarity I needed to scale beyond what I thought was possible.", name:"Vikram S.", role:"Founder & CEO, Series D Venture" },
@@ -748,7 +749,7 @@ function Section4BenefitsGrid() {
         <div key={slide.id} ref={(el)=>{ slideRefs.current[i]=el; }} className="benefits-slide-wrapper" style={isCompactLayout?{ position:"relative",top:"auto",left:"auto",width:"100%",height:"auto",display:"flex",flexDirection:"column",zIndex:i,marginBottom:i===storySlides.length-1?0:28 }:{ position:"absolute",top:0,left:0,width:"100%",height:"100%",display:"flex",zIndex:i }}>
           <div ref={(el)=>{ imageRefs.current[i]=el; }} className="benefits-slide-image" style={isCompactLayout?{ width:"100%",height:"56vw",minHeight:220,maxHeight:380,position:"relative",overflow:"hidden",willChange:"clip-path" }:{ width:"55%",height:"100%",position:"relative",overflow:"hidden",willChange:"clip-path" }}>
             <div style={{ position:"absolute",inset:0,backgroundColor:"#000",opacity:0.2,zIndex:1 }} />
-            <img src={slide.img} alt={slide.title} style={{ width:"100%",height:"100%",objectFit:"cover" }} />
+            <img src={slide.img} alt={slide.title} style={{ width:"100%",height:"100%",objectFit:slide.id==="04"?"contain":"cover",objectPosition:"center",backgroundColor:slide.id==="04"?"#050505":"transparent" }} />
           </div>
           <div className="benefits-slide-content" style={isCompactLayout?{ width:"100%",height:"auto",display:"flex",flexDirection:"column",justifyContent:"center",padding:"28px 20px 18px",position:"relative",zIndex:2 }:{ width:"45%",height:"100%",display:"flex",flexDirection:"column",justifyContent:"center",padding:"0 6%",position:"relative",zIndex:2 }}>
             <div ref={(el)=>{ contentRefs.current[i]=el; }} style={{ maxWidth:isCompactLayout?"100%":480,willChange:"transform, opacity" }}>
@@ -875,6 +876,7 @@ function Section7Quotes() {
 // ---------------------------------------------------------------------------
 function Section8CallToAction() {
   const ref=useRef(null);
+  const router=useRouter();
   const { scrollYProgress }=useScroll({ target:ref,offset:["start end","end start"] });
   const scale=useTransform(scrollYProgress,[0,0.5],[0.9,1]);
   const opacity=useTransform(scrollYProgress,[0,0.3],[0,1]);
@@ -892,7 +894,14 @@ function Section8CallToAction() {
               <Reveal delay={0.35}><p className="cta-sub" style={poppins(300,18,"rgba(245,240,232,0.45)",{ maxWidth:600,margin:"0 auto 60px",lineHeight:1.8 })}>CEO Square is arriving in Dubai. Join a global community of visionary leaders, founders, and innovators ready to build influence, connections, and legacy.</p></Reveal>
               <Reveal delay={0.45}>
                 <div className="cta-buttons" style={{ display:"flex",gap:20,justifyContent:"center",flexWrap:"wrap" }}>
-                  <motion.button className="cta-btn-primary" whileHover={{ scale:1.05,boxShadow:"0 0 60px rgba(201,168,76,0.5)" }} whileTap={{ scale:0.97 }} style={{ fontFamily:"Poppins",fontWeight:600,fontSize:14,letterSpacing:"0.12em",textTransform:"uppercase",padding:"22px 64px",borderRadius:2,cursor:"pointer",border:"none",background:"linear-gradient(135deg,#c9a84c 0%,#f0d080 50%,#b8882a 100%)",color:BG }}>
+                  <motion.button
+                    className="cta-btn-primary"
+                    type="button"
+                    onClick={()=>router.push("/contact")}
+                    whileHover={{ scale:1.05,boxShadow:"0 0 60px rgba(201,168,76,0.5)" }}
+                    whileTap={{ scale:0.97 }}
+                    style={{ fontFamily:"Poppins",fontWeight:600,fontSize:14,letterSpacing:"0.12em",textTransform:"uppercase",padding:"22px 64px",borderRadius:2,cursor:"pointer",border:"none",background:"linear-gradient(135deg,#c9a84c 0%,#f0d080 50%,#b8882a 100%)",color:BG }}
+                  >
                     Join the Waitlist
                   </motion.button>
                 </div>
