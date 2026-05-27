@@ -88,40 +88,6 @@ const DesignSystemOverride = () => (
   `}</style>
 );
 
-const SovereignFooter = ({ isMobile }) => (
-  <footer style={{ backgroundColor: "#020202", borderTop: "1px solid rgba(201,168,76,0.15)", padding: isMobile ? "60px 24px 40px" : "80px 8% 40px", position: "relative", zIndex: 12 }}>
-    <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", justifyContent: "space-between", alignItems: isMobile ? "flex-start" : "center", gap: isMobile ? 40 : 20, marginBottom: 60 }}>
-      <div>
-        <h3 className="serif-text" style={{ color: GOLD, fontSize: isMobile ? 18 : 22, fontWeight: 400, marginBottom: 12, letterSpacing: "0.05em" }}>SOVEREIGN CORE</h3>
-        <p style={{ fontSize: 13, color: "rgba(245,240,232,0.4)", maxWidth: 360, lineHeight: 1.6, fontWeight: 300 }}>
-          Admittance is curated strictly by invitation or private institutional nomination.
-        </p>
-      </div>
-      <div style={{ display: "flex", gap: isMobile ? 40 : 60, flexWrap: "wrap" }}>
-        <div>
-          <div style={{ fontSize: 10, fontFamily: "monospace", color: GOLD, letterSpacing: "0.1em", marginBottom: 16 }}>ENGAGE</div>
-          <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 12, fontSize: 13, fontWeight: 300 }}>
-            <li><a href="#apply" style={{ color: "rgba(245,240,232,0.6)", textDecoration: "none" }}>Apply for Protocol</a></li>
-            <li><a href="#verify" style={{ color: "rgba(245,240,232,0.6)", textDecoration: "none" }}>Identity Verification</a></li>
-          </ul>
-        </div>
-        <div>
-          <div style={{ fontSize: 10, fontFamily: "monospace", color: GOLD, letterSpacing: "0.1em", marginBottom: 16 }}>LEGAL</div>
-          <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: 12, fontSize: 13, fontWeight: 300 }}>
-            <li><a href="#privacy" style={{ color: "rgba(245,240,232,0.6)", textDecoration: "none" }}>Discreet Mandate</a></li>
-            <li><a href="#terms" style={{ color: "rgba(245,240,232,0.6)", textDecoration: "none" }}>Terms of Access</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    
-    <div style={{ display: "flex", flexDirection: isMobile ? "column-reverse" : "row", justifyContent: "space-between", alignItems: isMobile ? "flex-start" : "center", gap: 20, paddingTop: 30, borderTop: "1px solid rgba(255,255,255,0.03)" }}>
-      <span style={{ fontSize: 11, fontFamily: "monospace", color: "rgba(245,240,232,0.25)" }}>© 2026 SOVEREIGN CORE. ALL RIGHTS RESERVED.</span>
-      <span className="serif-text" style={{ fontSize: 14, color: GOLD, opacity: 0.5 }}>✦</span>
-    </div>
-  </footer>
-);
-
 export default function SovereignMembershipExperience() {
   const scrollWrapperRef = useRef(null);
   const [activeTextSection, setActiveTextSection] = useState(-1);
@@ -149,7 +115,7 @@ export default function SovereignMembershipExperience() {
   
   // Clean canvas fade-outs before reaching the footer boundary
   const vaultOpacity = useTransform(scrollYProgress, [0.2, 0.35], [1, 0]);
-  const generalCanvasOpacity = useTransform(scrollYProgress, [0.85, 0.92], [1, 0]);
+  const generalCanvasOpacity = useTransform(scrollYProgress, [0.74, 0.84], [1, 0]);
 
   // Premium card transition offsets
   const cardZ = useTransform(scrollYProgress, [0, 0.2, 0.45, 0.82], [isMobile ? -400 : -800, -150, 0, 80]);
@@ -174,10 +140,10 @@ export default function SovereignMembershipExperience() {
 
   useEffect(() => {
     return scrollYProgress.onChange((latestValue) => {
-      // End text visibility cleanly at 0.88 to give breathing room for the footer
+      // End text visibility early enough to keep the shared footer cleanly separate
       if (latestValue > 0.22 && latestValue <= 0.44) setActiveTextSection(0);
       else if (latestValue > 0.44 && latestValue <= 0.66) setActiveTextSection(1);
-      else if (latestValue > 0.66 && latestValue <= 0.88) setActiveTextSection(2);
+      else if (latestValue > 0.66 && latestValue <= 0.82) setActiveTextSection(2);
       else setActiveTextSection(-1);
     });
   }, [scrollYProgress]);
@@ -185,13 +151,13 @@ export default function SovereignMembershipExperience() {
   return (
     <>
       <DesignSystemOverride />
-      <main ref={scrollWrapperRef} style={{ position: "relative", backgroundColor: BG }}>
+      <main ref={scrollWrapperRef} style={{ position: "relative", backgroundColor: BG, paddingBottom: isMobile ? "220px" : "320px" }}>
 
         {/* Fixed Visual Canvas Wrapper */}
         <motion.div 
           style={{ 
             position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", 
-            zIndex: 2, overflow: "hidden", pointerEvents: "none",
+            zIndex: 0, overflow: "hidden", pointerEvents: "none",
             opacity: generalCanvasOpacity 
           }} 
           className="scene-viewport"
@@ -333,11 +299,8 @@ export default function SovereignMembershipExperience() {
           </div>
         </div>
 
-        {/* Ambient section step mask before footer layout */}
-        <div style={{ height: "10vh", background: `linear-gradient(to bottom, ${BG}, #020202)`, position: "relative", zIndex: 5 }} />
+        <div aria-hidden="true" style={{ height: isMobile ? 140 : 200 }} />
 
-        {/* Global Footer component */}
-        <SovereignFooter isMobile={isMobile} />
       </main>
     </>
   );
