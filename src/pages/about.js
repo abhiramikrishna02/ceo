@@ -10,13 +10,6 @@ const PRINCIPLES = [
   { num: "04", title: "Strategic Investment Access", body: "Access curated investment networks and connect with qualified investors, venture partners, and high-growth business opportunities designed for scalable success." },
 ];
 
-const PROCESS = [
-  { step: "Connect",  desc: "Join a curated global network of CEOs, founders, investors, and innovators through exclusive events, private communities, and international business forums." },
-  { step: "Grow",     desc: "Access executive mentorship, personalized coaching, and mastermind-driven growth sessions led by experienced business leaders who have built at scale." },
-  { step: "Scale",    desc: "Leverage strategic partnerships, investment opportunities, and premium resources to break barriers and accelerate your business to its next level." },
-  { step: "Lead",     desc: "Elevate your personal brand through media exposure, keynote platforms, and thought leadership opportunities that amplify your influence globally." },
-];
-
 const STATS = [
   { value: "Global", label: "Entrepreneurial ecosystem" },
   { value: "Elite",  label: "Executive network & mentorship" },
@@ -62,8 +55,6 @@ export default function About() {
   const manifestoRef = useRef(null);
   const statsRef   = useRef([]);
   const principlesRef = useRef([]);
-  const connLineRef = useRef(null);
-  const processRef = useRef([]);
   const ctaRef     = useRef(null);
   const cursorRef  = useRef(null);
   const cursorDotRef = useRef(null);
@@ -180,26 +171,6 @@ export default function About() {
         gsap.fromTo(el,
           { y: 60, opacity: 0, scale: 0.96 },
           { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: "power3.out",
-            scrollTrigger: { trigger: el, start: "top 88%", toggleActions: "play none none reverse" },
-            delay: i * 0.1 }
-        );
-      });
-
-      // Process connecting line draw
-      if (connLineRef.current) {
-        gsap.fromTo(connLineRef.current,
-          { scaleY: 0 },
-          { scaleY: 1, ease: "none",
-            scrollTrigger: { trigger: ".process-list", start: "top 70%", end: "bottom 60%", scrub: 1 } }
-        );
-      }
-
-      // Process items
-      processRef.current.forEach((el, i) => {
-        if (!el) return;
-        gsap.fromTo(el,
-          { x: 50, opacity: 0 },
-          { x: 0, opacity: 1, duration: 0.7, ease: "power3.out",
             scrollTrigger: { trigger: el, start: "top 88%", toggleActions: "play none none reverse" },
             delay: i * 0.1 }
         );
@@ -344,19 +315,27 @@ export default function About() {
     const wrap  = hScrollRef.current;
     const track = hTrackRef.current;
     if (!wrap || !track) return;
-    const panels = track.querySelectorAll(".hpanel");
-    const totalW = () => (panels.length - 1) * panels[0].offsetWidth;
-    const st = ScrollTrigger.create({
-      trigger: wrap,
-      start: "top top",
-      end: () => `+=${totalW()}`,
-      pin: true,
-      scrub: 1,
-      onUpdate: (self) => {
-        gsap.set(track, { x: -self.progress * totalW() });
-      },
+
+    const panels = Array.from(track.querySelectorAll(".hpanel"));
+    const mm = gsap.matchMedia();
+
+    mm.add("(min-width: 768px)", () => {
+      const totalW = (panels.length - 1) * 100;
+      gsap.to(track, {
+        xPercent: -totalW,
+        ease: "none",
+        scrollTrigger: {
+          trigger: wrap,
+          pin: true,
+          scrub: 1,
+          start: "top top",
+          end: () => `+=${track.offsetWidth}`,
+          invalidateOnRefresh: true,
+        },
+      });
     });
-    return () => st.kill();
+
+    return () => mm.revert();
   }, []);
 
   // ── Rotating CTA ring text ────────────────────────────────────────────────
@@ -533,31 +512,6 @@ export default function About() {
         </div>
       </section>
 
-      {/* ── PROCESS ── */}
-      <section className="process-section">
-        <div className="process-inner">
-          <div className="section-header">
-            <p className="section-eyebrow">Your Journey</p>
-            <h2 className="section-title">Four stages to<br />extraordinary success.</h2>
-          </div>
-          <div className="process-list">
-            <div ref={connLineRef} className="process-conn-line" />
-            {PROCESS.map((p, i) => (
-              <div key={p.step} ref={el => processRef.current[i] = el} className="process-item">
-                <div className="process-node">
-                  <span className="pn-num">{String(i + 1).padStart(2, "0")}</span>
-                  <div className="pn-dot" />
-                </div>
-                <div className="process-content">
-                  <h3 className="process-step">{p.step}</h3>
-                  <p className="process-desc">{p.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ── TESTIMONIALS ── */}
       <section className="testi-section">
         <div className="testi-inner">
@@ -692,7 +646,7 @@ const STYLES = `
   .line-inner{display:block}
   .gold-italic{font-style:italic;color:var(--gold)}
   .hero-sub{font-family:var(--serif);font-size:clamp(.95rem,1.4vw,1.15rem);font-weight:300;line-height:1.85;color:var(--ivory-lo);max-width:480px;margin-bottom:2.5rem}
-  .hero-cta-row{display:flex;align-items:center;gap:2.5rem}
+  .hero-cta-row{display:flex;align-items:center;gap:2.5rem;flex-wrap:wrap}
   .hero-scroll-hint{display:flex;align-items:center;gap:.8rem}
   .scroll-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ivory-lo)}
   .scroll-line{width:40px;height:1px;background:linear-gradient(to right,var(--gold),transparent);animation:sline 2s ease-in-out infinite}
@@ -724,8 +678,8 @@ const STYLES = `
   .stat-card{padding:3rem 2.5rem;border-right:1px solid rgba(212,175,55,0.1);position:relative;overflow:hidden}
   .stat-card:last-child{border-right:none}
   .stat-num-wrap{position:relative;display:inline-block;margin-bottom:.7rem}
-  .stat-outline{font-family:var(--serif);font-size:clamp(3.5rem,6vw,6rem);font-weight:300;line-height:1;-webkit-text-stroke:1px rgba(212,175,55,0.35);color:transparent;display:block}
-  .stat-fill{font-family:var(--serif);font-size:clamp(3.5rem,6vw,6rem);font-weight:300;line-height:1;color:var(--gold);position:absolute;inset:0;clip-path:inset(0 100% 0 0);display:block}
+  .stat-outline{font-family:var(--serif);font-size:clamp(2.8rem,6vw,6rem);font-weight:300;line-height:1;-webkit-text-stroke:1px rgba(212,175,55,0.35);color:transparent;display:block}
+  .stat-fill{font-family:var(--serif);font-size:clamp(2.8rem,6vw,6rem);font-weight:300;line-height:1;color:var(--gold);position:absolute;inset:0;clip-path:inset(0 100% 0 0);display:block}
   .stat-label{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ivory-lo)}
 
   /* PRINCIPLES */
@@ -748,21 +702,6 @@ const STYLES = `
   .principle-num{display:block;font-family:var(--mono);font-size:.6rem;letter-spacing:.22em;color:var(--gold);opacity:.55;margin-bottom:1.4rem}
   .principle-title{font-family:var(--serif);font-size:clamp(1.3rem,2vw,1.8rem);font-weight:400;color:var(--ivory);margin-bottom:1rem;line-height:1.2}
   .principle-body{font-family:var(--serif);font-size:1rem;font-weight:300;line-height:1.8;color:var(--ivory-lo)}
-
-  /* PROCESS */
-  .process-section{padding:130px 7vw;border-top:1px solid rgba(212,175,55,0.08);background:radial-gradient(ellipse at 50% 0%,rgba(212,175,55,0.04) 0%,transparent 55%)}
-  .process-inner{max-width:1000px;margin:0 auto}
-  .process-list{position:relative;padding-left:3rem;margin-top:0}
-  .process-conn-line{position:absolute;left:1.1rem;top:1.5rem;bottom:1.5rem;width:1px;background:linear-gradient(to bottom,var(--gold),rgba(212,175,55,0.1));transform-origin:top;will-change:transform}
-  .process-item{display:grid;grid-template-columns:auto 1fr;gap:2.5rem;padding:2.8rem 0;border-bottom:1px solid rgba(212,175,55,0.08);align-items:start;position:relative}
-  .process-item:first-child{border-top:1px solid rgba(212,175,55,0.08)}
-  .process-node{display:flex;flex-direction:column;align-items:center;gap:.6rem;padding-top:.3rem}
-  .pn-num{font-family:var(--mono);font-size:.6rem;letter-spacing:.18em;color:var(--gold);opacity:.5}
-  .pn-dot{width:8px;height:8px;border-radius:50%;border:1px solid var(--gold);background:transparent;transition:background .3s}
-  .process-item:hover .pn-dot{background:var(--gold)}
-  .process-step{font-family:var(--serif);font-size:clamp(1.5rem,2.5vw,2.2rem);font-weight:300;color:var(--ivory);margin-bottom:.6rem;transition:color .3s}
-  .process-item:hover .process-step{color:var(--gold)}
-  .process-desc{font-family:var(--serif);font-size:1rem;font-weight:300;line-height:1.8;color:var(--ivory-lo);max-width:560px}
 
   /* CTA */
   .about-cta{position:relative;padding:180px 7vw;display:flex;align-items:center;justify-content:center;overflow:hidden;border-top:1px solid rgba(212,175,55,0.08)}
@@ -794,7 +733,7 @@ const STYLES = `
   }
   .hp-tag{font-family:var(--mono);font-size:.6rem;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);opacity:.6;margin-bottom:1.5rem;display:block}
   .hp-num{font-family:var(--serif);font-size:clamp(5rem,12vw,11rem);font-weight:300;line-height:1;color:transparent;-webkit-text-stroke:1px rgba(212,175,55,0.15);position:absolute;right:10vw;bottom:8vh;pointer-events:none}
-  .hp-title{font-family:var(--serif);font-size:clamp(3rem,6vw,5.5rem);font-weight:300;line-height:1.05;color:var(--ivory);margin-bottom:1.8rem}
+  .hp-title{font-family:var(--serif);font-size:clamp(2.2rem,6vw,5.5rem);font-weight:300;line-height:1.05;color:var(--ivory);margin-bottom:1.8rem}
   .hp-body{font-family:var(--serif);font-size:clamp(1rem,1.4vw,1.2rem);font-weight:300;line-height:1.85;color:var(--ivory-lo);max-width:520px;margin-bottom:3rem}
   .hp-bar{width:200px;height:1px;background:rgba(212,175,55,0.15)}
   .hp-bar-fill{height:100%;background:var(--gold);transition:width 1s ease}
@@ -840,7 +779,7 @@ const STYLES = `
   .gap-heading{font-family:var(--serif);font-size:clamp(2.4rem,4.5vw,4.2rem);font-weight:300;line-height:1.05;color:var(--ivory);margin:1rem 0 1.8rem}
   .gap-body{font-family:var(--serif);font-size:1.05rem;font-weight:300;line-height:1.85;color:var(--ivory-lo)}
   .gap-stat-block{margin-bottom:3rem;padding-bottom:3rem;border-bottom:1px solid rgba(212,175,55,0.12)}
-  .gap-big-num{font-family:var(--serif);font-size:clamp(5rem,10vw,9rem);font-weight:300;line-height:1;color:var(--gold);display:block}
+  .gap-big-num{font-family:var(--serif);font-size:clamp(3.5rem,10vw,9rem);font-weight:300;line-height:1;color:var(--gold);display:block}
   .gap-pct{font-size:.5em;vertical-align:super}
   .gap-stat-desc{font-family:var(--serif);font-size:1rem;font-weight:300;line-height:1.75;color:var(--ivory-lo);max-width:380px;margin-top:.8rem}
   .gap-quote-block{position:relative;padding-left:1.8rem;border-left:2px solid rgba(212,175,55,0.3)}
@@ -863,6 +802,11 @@ const STYLES = `
   .testi-stars{color:var(--gold);font-size:.85rem;letter-spacing:.1em;position:relative;z-index:1}
 
   /* RESPONSIVE */
+  @media(max-width:1100px){
+    .hpanel{padding:0 8vw}
+    .hp-num{right:5vw;bottom:5vh}
+  }
+
   @media(max-width:900px){
     .about-hero{grid-template-columns:1fr;padding-top:100px}
     .hero-right{display:none}
@@ -870,18 +814,42 @@ const STYLES = `
     .stat-card{border-right:none;border-bottom:1px solid rgba(212,175,55,0.1)}
     .stat-card:last-child{border-bottom:none}
     .principles-grid{grid-template-columns:1fr}
-    .process-list{padding-left:2rem}
     .gap-inner{grid-template-columns:1fr}
     .testi-grid{grid-template-columns:1fr}
     .score-inner{grid-template-columns:1fr}
-    .hpanel{padding:0 7vw}
   }
+
+  @media(max-width:767px){
+    .hscroll-wrap{height:auto;overflow:visible}
+    .hscroll-track{flex-direction:column;height:auto;transform:none!important}
+    .hpanel{
+      min-width:100%;height:auto;padding:80px 7vw;
+      border-right:none;border-bottom:1px solid rgba(212,175,55,0.08);
+      background:none;
+    }
+    .hp-num{position:static;font-size:4rem;margin-bottom:1rem;color:rgba(212,175,55,0.15);-webkit-text-stroke:none;display:block}
+    .hp-title{font-size:2.8rem;margin-bottom:1.2rem}
+    .hp-body{font-size:1.05rem;margin-bottom:2.5rem;max-width:100%}
+    .hp-bar{width:100%}
+    .hscroll-progress-hint{display:none}
+  }
+
   @media(max-width:600px){
-    .about-hero,.manifesto-section,.principles-section,.process-section{padding-left:1.4rem;padding-right:1.4rem}
-    .stats-section,.about-cta{padding-left:1.4rem;padding-right:1.4rem}
-    .principle-card{padding:2rem 1.6rem}
+    .about-hero,.manifesto-section,.principles-section{padding-left:1.5rem;padding-right:1.5rem}
+    .stats-section,.about-cta,.gap-section,.testi-section,.score-section{padding-left:1.5rem;padding-right:1.5rem}
+    .hero-headline{font-size:3rem}
+    .manifesto-text{font-size:1.8rem}
+    .section-title{font-size:2.2rem}
+    .hp-num{font-size:3.5rem}
+    .hp-title{font-size:2.4rem}
+    .principle-card{padding:2.5rem 1.8rem}
     .cta-ring-text-wrap{display:none}
+    .hero-cta-row{gap:1.5rem}
+    .testi-card{padding:2rem 1.5rem}
+    .score-q-row{padding:1.2rem 0.5rem; gap:0.8rem}
+    .score-answer{padding:0.5rem 0.5rem 1.2rem 2.5rem}
   }
+
   @media(prefers-reduced-motion:reduce){
     .scroll-line,.cta-bg-glow,.hcl-dot,.marquee-track{animation:none!important}
   }
