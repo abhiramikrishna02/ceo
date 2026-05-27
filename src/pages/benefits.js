@@ -66,8 +66,8 @@ const DesignSystemOverride = () => (
         padding: 0;
       }
       .canvas-container {
-        height: 45vh !important;
-        margin-top: 5vh;
+        height: 36vh !important;
+        margin-top: 2vh;
       }
       .text-panel-position {
         top: auto;
@@ -261,7 +261,7 @@ export default function SovereignMembershipExperience() {
         <div style={{ position: "relative", zIndex: 5, pointerEvents: "none" }}>
           
           {/* Section 1: Hero Block */}
-          <div style={{ height: "100vh", display: "flex", flexDirection: "column", justifyContent: isMobile ? "flex-end" : "center", padding: isMobile ? "0 8% 15vh" : "0 8%" }}>
+          <div style={{ height: "100vh", display: "flex", flexDirection: "column", justifyContent: isMobile ? "center" : "center", padding: isMobile ? "0 8% 10vh" : "0 8%" }}>
             <span className="mono-tag" style={{ display: "block", marginBottom: 12 }}>INVITATION ONLY</span>
             <h1 className="serif-text" style={{ fontSize: "clamp(28px, 5vw, 72px)", fontWeight: 400, lineHeight: 1.1, textTransform: "uppercase" }}>
               THE ARCHITECTURE <br />
