@@ -15,6 +15,8 @@ function ResponsiveHeroBanner({
   secondaryButtonText = "Watch Launch",
   secondaryButtonHref = "#",
 }) {
+  const hasBadgeText = Boolean(badgeText?.trim());
+
   return (
     <section className="hero-banner-shell relative isolate min-h-[100svh] w-full overflow-hidden bg-black">
       {/* The animate-reveal-cosmos class triggers the diagonal wipe animation 
@@ -82,13 +84,15 @@ function ResponsiveHeroBanner({
       <div className="hero-banner-inner relative z-10 min-h-[100svh]">
         <div className="absolute inset-0 flex items-center justify-center px-4 sm:px-6 lg:px-8">
           <div className="mx-auto flex w-full max-w-4xl flex-col items-center text-center">
-            <div className="hero-banner-badge animate-fade-slide-in-1 mb-6 inline-flex max-w-[92vw] items-center gap-3 rounded-full bg-white/10 px-3 py-2 ring-1 ring-white/15 backdrop-blur sm:px-4">
+            <div className={`hero-banner-badge animate-fade-slide-in-1 mb-6 inline-flex max-w-[92vw] items-center rounded-full bg-white/10 ring-1 ring-white/15 backdrop-blur ${hasBadgeText ? "gap-3 px-3 py-2 sm:px-4" : "p-0.5"}`}>
               <span className="inline-flex items-center rounded-full bg-white/90 px-2 py-0.5 font-sans text-xs font-medium text-neutral-900">
                 {badgeLabel}
               </span>
-              <span className="font-sans text-sm font-medium text-white/90">
-                {badgeText}
-              </span>
+              {hasBadgeText ? (
+                <span className="font-sans text-sm font-medium text-white/90">
+                  {badgeText}
+                </span>
+              ) : null}
             </div>
 
             <h1 className="hero-banner-title animate-fade-slide-in-2 mx-auto max-w-5xl font-serif text-[clamp(2.5rem,8vw,5.5rem)] font-normal leading-[1.06] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
