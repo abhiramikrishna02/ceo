@@ -220,10 +220,10 @@ export const CommunityBenefitsBlock = () => {
       gsap.to(scene,{ opacity:1,visibility:"visible",y:0,duration:0.1,ease:"power2.out",overwrite:"auto" });
       gsap.to(scene.querySelector(".scene-eyebrow"),{ opacity:1,y:0,letterSpacing:"0.45em",duration:0.28,ease:"power2.out",overwrite:"auto" });
       gsap.to(scene.querySelectorAll(".char-item"),{ opacity:1,y:0,filter:"blur(0px)",scale:1,rotateX:0,stagger:0.01,duration:0.42,ease:"power3.out",overwrite:"auto" });
-      gsap.to(scene.querySelector(".scene-sub"),{ opacity:1,y:0,filter:"blur(0px)",duration:0.3,ease:"power2.out",overwrite:"auto" });
-      gsap.to(scene.querySelector(".scene-detail"),{ opacity:1,x:0,filter:"blur(0px)",duration:0.32,ease:"power2.out",overwrite:"auto" });
+      gsap.to(scene.querySelector(".scene-sub"),{ opacity:1,y:0,duration:0.3,ease:"power2.out",overwrite:"auto" });
+      gsap.to(scene.querySelector(".scene-detail"),{ opacity:1,x:0,duration:0.32,ease:"power2.out",overwrite:"auto" });
       gsap.to(scene.querySelectorAll(".scene-tag-node"),{ opacity:1,y:0,scale:1,stagger:0.025,duration:0.32,ease:"back.out(1.4)",overwrite:"auto" });
-      gsap.to(scene.querySelector(".scene-stat"),{ opacity:1,y:0,filter:"blur(0px)",scale:1,duration:0.34,ease:"power3.out",overwrite:"auto" });
+      gsap.to(scene.querySelector(".scene-stat"),{ opacity:1,y:0,scale:1,duration:0.34,ease:"power3.out",overwrite:"auto" });
       gsap.to(scene.querySelector(".scene-accent"),{ opacity:1,x:0,duration:0.28,ease:"power2.out",overwrite:"auto" });
     };
 
@@ -434,10 +434,10 @@ export const CommunityBenefitsBlock = () => {
         gsap.set(scene,{ opacity:0,visibility:"hidden" });
         gsap.set(scene.querySelector(".scene-eyebrow"),{ opacity:0,y:15,letterSpacing:"0.2em" });
         gsap.set(scene.querySelectorAll(".char-item"),{ opacity:0,y:35,filter:"blur(12px)",scale:0.9,rotateX:-30 });
-        gsap.set(scene.querySelector(".scene-sub"),{ opacity:0,y:20,filter:"blur(8px)" });
-        gsap.set(scene.querySelector(".scene-detail"),{ opacity:0,x:-15,filter:"blur(6px)" });
+        gsap.set(scene.querySelector(".scene-sub"),{ opacity:0,y:20 });
+        gsap.set(scene.querySelector(".scene-detail"),{ opacity:0,x:-15 });
         gsap.set(scene.querySelectorAll(".scene-tag-node"),{ opacity:0,y:15,scale:0.85 });
-        gsap.set(scene.querySelector(".scene-stat"),{ opacity:0,y:25,filter:"blur(10px)",scale:0.95 });
+        gsap.set(scene.querySelector(".scene-stat"),{ opacity:0,y:25,scale:0.95 });
         gsap.set(scene.querySelector(".scene-accent"),{ opacity:0,x:10 });
       });
 
@@ -445,10 +445,10 @@ export const CommunityBenefitsBlock = () => {
         tl.to(scene,{ opacity:1,visibility:"visible",duration:0.05 },startTime)
           .to(scene.querySelector(".scene-eyebrow"),{ opacity:1,y:0,letterSpacing:"0.45em",duration:0.4,ease:"power2.out" },startTime+0.05)
           .to(scene.querySelectorAll(".char-item"),{ opacity:1,y:0,filter:"blur(0px)",scale:1,rotateX:0,stagger:0.015,duration:0.55,ease:"power3.out" },startTime+0.1)
-          .to(scene.querySelector(".scene-sub"),{ opacity:1,y:0,filter:"blur(0px)",duration:0.45,ease:"power2.out" },startTime+0.25)
-          .to(scene.querySelector(".scene-detail"),{ opacity:1,x:0,filter:"blur(0px)",duration:0.5,ease:"power2.out" },startTime+0.35)
+          .to(scene.querySelector(".scene-sub"),{ opacity:1,y:0,duration:0.45,ease:"power2.out" },startTime+0.25)
+          .to(scene.querySelector(".scene-detail"),{ opacity:1,x:0,duration:0.5,ease:"power2.out" },startTime+0.35)
           .to(scene.querySelectorAll(".scene-tag-node"),{ opacity:1,y:0,scale:1,stagger:0.04,duration:0.4,ease:"back.out(1.4)" },startTime+0.4)
-          .to(scene.querySelector(".scene-stat"),{ opacity:1,y:0,filter:"blur(0px)",scale:1,duration:0.5,ease:"power3.out" },startTime+0.45)
+          .to(scene.querySelector(".scene-stat"),{ opacity:1,y:0,scale:1,duration:0.5,ease:"power3.out" },startTime+0.45)
           .to(scene.querySelector(".scene-accent"),{ opacity:1,x:0,duration:0.4,ease:"power2.out" },startTime+0.55);
       };
 
@@ -480,7 +480,7 @@ export const CommunityBenefitsBlock = () => {
           masterTimeline.to(dot,{ background:GOLD,boxShadow:`0 0 18px ${GOLD}`,scale:1.3,duration:0.3,ease:"power2.out" },(index*1.5)-0.5);
         });
         const buildSceneExit=(tl,scene,exitTime)=>{
-          tl.to([scene.querySelector(".scene-eyebrow"),scene.querySelectorAll(".char-item"),scene.querySelector(".scene-sub"),scene.querySelector(".scene-detail"),scene.querySelectorAll(".scene-tag-node"),scene.querySelector(".scene-stat"),scene.querySelector(".scene-accent")],{ opacity:0,y:-40,filter:"blur(12px)",stagger:0.01,duration:0.45,ease:"power2.in" },exitTime)
+          tl.to([scene.querySelector(".scene-eyebrow"),scene.querySelectorAll(".char-item"),scene.querySelector(".scene-sub"),scene.querySelector(".scene-detail"),scene.querySelectorAll(".scene-tag-node"),scene.querySelector(".scene-stat"),scene.querySelector(".scene-accent")],{ opacity:0,y:-40,filter:"blur(0px)",stagger:0.01,duration:0.45,ease:"power2.in" },exitTime)
             .to(scene,{ opacity:0,visibility:"hidden",duration:0.05 },exitTime+0.45);
         };
         buildSceneEntrance(masterTimeline,scenes[0],0.0);
@@ -537,14 +537,14 @@ export const CommunityBenefitsBlock = () => {
                   </span>
                 ))}
               </h2>
-              <p className="scene-sub" style={poppins(400,18,"rgba(245,240,232,0.95)",{ lineHeight:1.6,marginBottom:24,maxWidth:520 })}>{benefit.sub}</p>
-              <p className="scene-detail" style={poppins(300,14,"rgba(245,240,232,0.52)",{ lineHeight:1.8,marginBottom:32,maxWidth:480 })}>{benefit.detail}</p>
+              <p className="scene-sub" style={poppins(500,18,"rgba(255,250,240,0.98)",{ lineHeight:1.6,marginBottom:24,maxWidth:540,textShadow:"0 3px 18px rgba(0,0,0,0.9)" })}>{benefit.sub}</p>
+              <p className="scene-detail" style={poppins(400,15,"rgba(255,250,240,0.9)",{ lineHeight:1.85,marginBottom:32,maxWidth:520,textShadow:"0 2px 14px rgba(0,0,0,0.95),0 0 22px rgba(0,0,0,0.55)" })}>{benefit.detail}</p>
               <div style={{ display:"flex",flexWrap:"wrap",gap:"10px",marginBottom:40 }}>
                 {benefit.tags.map((tag,i)=><TagPill key={i} className="scene-tag-node">{tag}</TagPill>)}
               </div>
               <div className="scene-stat" style={{ borderLeft:`2px solid ${GOLD}`,paddingLeft:20,marginBottom:32 }}>
                 <h3 style={poppins(300,42,TEXT,{ lineHeight:1,marginBottom:8 })}>{benefit.stat.value}</h3>
-                <p style={poppins(300,12,"rgba(245,240,232,0.6)",{ maxWidth:280,lineHeight:1.5 })}>{benefit.stat.label}</p>
+                <p style={poppins(400,12,"rgba(245,240,232,0.78)",{ maxWidth:280,lineHeight:1.5,textShadow:"0 2px 12px rgba(0,0,0,0.85)" })}>{benefit.stat.label}</p>
               </div>
               <div className="scene-accent"><AccentLine text={benefit.accent} /></div>
             </div>
@@ -656,7 +656,7 @@ function Section3Statement() {
               </div>
               <div>
                 <p style={poppins(undefined,13,"#aaa")}>Global Members</p>
-                <p style={poppins(500,28,TEXT,{ marginTop:4 })}>500+ CEOs & Founders</p>
+                <p style={poppins(500,28,TEXT,{ marginTop:4 })}>2000+ CEOs & Founders</p>
               </div>
             </div>
           </motion.div>
@@ -755,17 +755,17 @@ function Section4BenefitsGrid() {
             <div ref={(el)=>{ contentRefs.current[i]=el; }} style={{ maxWidth:isCompactLayout?"100%":480,willChange:"transform, opacity" }}>
               <p style={poppins(400,13,GOLD,{ letterSpacing:"0.2em",textTransform:"uppercase",marginBottom:20 })}>{slide.id}</p>
               <h3 style={poppins(300,"clamp(32px,3vw,48px)","#ffffff",{ lineHeight:1.1,marginBottom:24 })}>{slide.title}</h3>
-              <p style={poppins(300,16,"rgba(245,240,232,0.6)",{ lineHeight:1.6,marginBottom:40 })}>{slide.desc}</p>
+              <p style={poppins(400,16,"rgba(255,255,255,0.82)",{ lineHeight:1.65,marginBottom:40,textShadow:"0 2px 18px rgba(0,0,0,0.55)" })}>{slide.desc}</p>
               <ul style={{ listStyle:"none",padding:0,margin:0,display:"flex",flexDirection:"column",gap:16 }}>
                 {slide.features.map((f)=>(
-                  <li key={f} style={poppins(300,14,"rgba(245,240,232,0.8)",{ display:"flex",alignItems:"center" })}>
+                  <li key={f} style={poppins(400,14,"rgba(255,255,255,0.9)",{ display:"flex",alignItems:"center",textShadow:"0 2px 14px rgba(0,0,0,0.5)" })}>
                     <span style={{ color:GOLD,marginRight:16,fontSize:18 }}>✦</span>{f}
                   </li>
                 ))}
               </ul>
             </div>
           </div>
-          <div ref={(el)=>{ titleRefs.current[i]=el; }} className="benefits-slide-giant" style={isCompactLayout?{ position:"relative",bottom:"auto",left:"auto",transform:"none",zIndex:1,width:"100%",pointerEvents:"none",display:"flex",justifyContent:"flex-start",alignItems:"flex-start",fontFamily:"Poppins,sans-serif",fontWeight:300,fontSize:"clamp(34px,9vw,72px)",color:"rgba(255,255,255,0.22)",letterSpacing:"0.08em",lineHeight:0.92,mixBlendMode:"overlay",textShadow:"0px 12px 36px rgba(0,0,0,0.55)",filter:"drop-shadow(0 0 18px rgba(201,168,76,0.12))",perspective:"1000px",padding:"0 20px 20px" }:{ position:"absolute",bottom:"7%",left:"50%",transform:"translateX(-50%)",zIndex:1,width:"100%",pointerEvents:"none",display:"flex",justifyContent:"center",alignItems:"flex-end",fontFamily:"Poppins,sans-serif",fontWeight:300,fontSize:"clamp(46px,8.5vw,120px)",color:"rgba(255,255,255,0.58)",letterSpacing:"0.08em",lineHeight:0.92,mixBlendMode:"overlay",textShadow:"0px 12px 36px rgba(0,0,0,0.55)",filter:"drop-shadow(0 0 18px rgba(201,168,76,0.12))",perspective:"1000px" }}>
+          <div ref={(el)=>{ titleRefs.current[i]=el; }} className="benefits-slide-giant" style={isCompactLayout?{ position:"relative",bottom:"auto",left:"auto",transform:"none",zIndex:1,width:"100%",pointerEvents:"none",display:"flex",justifyContent:"flex-start",alignItems:"flex-start",fontFamily:"'Poppins', sans-serif",fontWeight:500,fontSize:"clamp(34px,9vw,72px)",color:"rgba(255,255,255,0.78)",letterSpacing:"0.06em",lineHeight:0.92,textShadow:"0 8px 28px rgba(0,0,0,0.82),0 0 18px rgba(201,168,76,0.28)",filter:"drop-shadow(0 0 20px rgba(201,168,76,0.22))",perspective:"1000px",padding:"0 20px 20px" }:{ position:"absolute",bottom:"7%",left:"50%",transform:"translateX(-50%)",zIndex:1,width:"100%",pointerEvents:"none",display:"flex",justifyContent:"center",alignItems:"flex-end",fontFamily:"'Poppins', sans-serif",fontWeight:500,fontSize:"clamp(46px,8.5vw,120px)",color:"rgba(255,255,255,0.82)",letterSpacing:"0.06em",lineHeight:0.92,textShadow:"0 10px 34px rgba(0,0,0,0.88),0 0 22px rgba(201,168,76,0.3)",filter:"drop-shadow(0 0 22px rgba(201,168,76,0.22))",perspective:"1000px" }}>
             {splitTextToSpans(slide.giantText)}
           </div>
         </div>

@@ -127,7 +127,10 @@ export function ResponsiveStyles() {
           -webkit-backdrop-filter:none!important;
           overflow:visible!important;
         }
-        .community-benefits-block__scene h2,.community-benefits-block__scene .scene-eyebrow,.community-benefits-block__scene .scene-sub,.community-benefits-block__scene .scene-detail,.community-benefits-block__scene .scene-stat h3,.community-benefits-block__scene .scene-stat p{text-shadow:0 2px 18px rgba(0,0,0,0.32)}
+        .community-benefits-block__scene h2,.community-benefits-block__scene .scene-eyebrow,.community-benefits-block__scene .scene-sub,.community-benefits-block__scene .scene-detail,.community-benefits-block__scene .scene-stat h3,.community-benefits-block__scene .scene-stat p{text-shadow:0 3px 18px rgba(0,0,0,0.88),0 0 26px rgba(0,0,0,0.55)}
+        .community-benefits-block__scene .scene-sub{color:rgba(255,250,240,0.98)!important;font-weight:500!important}
+        .community-benefits-block__scene .scene-detail{color:rgba(255,250,240,0.92)!important;font-weight:400!important}
+        .community-benefits-block__scene .scene-stat p{color:rgba(245,240,232,0.8)!important;font-weight:400!important}
         .benefits-grid-section{height:auto!important;overflow:visible!important}
         .benefits-slide-wrapper{position:relative!important;display:flex!important;flex-direction:column!important;width:100%!important;height:auto!important;z-index:auto!important;border-bottom:1px solid rgba(201,168,76,0.08);padding-bottom:8px!important;margin-bottom:24px!important}
         .benefits-slide-wrapper:last-child{margin-bottom:0!important}
@@ -180,7 +183,7 @@ export function ResponsiveStyles() {
         .community-benefits-block__scene h2{font-size:clamp(30px,8vw,44px)!important;line-height:1.15!important;margin-bottom:22px!important}
         .community-benefits-block__scene .scene-eyebrow{letter-spacing:0.18em!important}
         .community-benefits-block__scene .scene-sub{font-size:16px!important;line-height:1.6!important;margin-bottom:18px!important}
-        .community-benefits-block__scene .scene-detail{font-size:13px!important;line-height:1.8!important;margin-bottom:24px!important}
+        .community-benefits-block__scene .scene-detail{font-size:15px!important;line-height:1.8!important;margin-bottom:24px!important}
         .community-benefits-block__scene .scene-stat{margin-bottom:24px!important}
         .community-benefits-block__scene .scene-stat h3{font-size:34px!important}
       }
