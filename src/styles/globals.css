@@ -357,4 +357,16 @@ body {
   html {
     @apply font-sans;
   }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus {
+    -webkit-text-fill-color: #ffffff;
+    caret-color: #ffffff;
+    box-shadow: 0 0 0 1000px #0f0f0f inset;
+    transition: background-color 9999s ease-in-out 0s;
+  }
 }
